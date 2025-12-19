@@ -237,14 +237,14 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
     }
 
     return (
-        <div className="flex flex-col h-full bg-background/50 backdrop-blur-sm">
+        <div className="flex flex-col h-full bg-black">
             {/* Chat Header */}
-            <div className="p-4 border-b border-border flex items-center justify-between bg-card/30">
-                <div className="flex items-center gap-3">
-                    <Avatar src={headerAvatar} fallback={headerName[0] || "R"} />
+            <div className="px-6 py-4 flex items-center justify-between border-b border-white/5">
+                <div className="flex items-center gap-4">
+                    <Avatar src={headerAvatar} fallback={headerName[0] || "R"} className="w-10 h-10 border border-white/10" />
                     <div>
-                        <h3 className="font-bold">{headerName}</h3>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <h3 className="font-bold text-white text-lg">{headerName}</h3>
+                        <p className="text-xs text-gray-400 flex items-center gap-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                             Active now
                         </p>
@@ -271,10 +271,10 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                         <div key={msg.id} className={cn("flex gap-3", isMe ? "flex-row-reverse" : "")}>
                             {!isMe && <Avatar src={msg.profiles?.avatar_url || ''} fallback={msg.profiles?.username || "?"} className="w-8 h-8 mt-1" />}
                             <div className={cn(
-                                "max-w-[70%] rounded-2xl p-3 text-sm relative group transition-all",
+                                "max-w-[75%] rounded-2xl p-4 text-[15px] leading-relaxed relative group transition-all font-sans",
                                 isMe
-                                    ? "bg-primary text-primary-foreground rounded-tr-sm shadow-[0_5px_15px_rgba(139,92,246,0.3)]"
-                                    : "bg-muted text-foreground rounded-tl-sm"
+                                    ? "bg-[#6B4EFF] text-white rounded-tr-md" // Premium Purple
+                                    : "bg-[#1F2125] text-gray-100 rounded-tl-md" // Dark Gray
                             )}>
                                 {msg.deleted_for_all ? (
                                     <p className="italic text-xs opacity-70 flex items-center gap-1">
@@ -369,7 +369,7 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
             </div>
 
             {/* Input Area */}
-            <form onSubmit={(e) => handleSendMessage(e, 'text')} className="p-4 border-t border-border bg-card/30">
+            <form onSubmit={(e) => handleSendMessage(e, 'text')} className="p-4 bg-black">
                 {replyingTo && (
                     <div className="flex items-center justify-between bg-primary/10 p-2 rounded-t-xl border-b border-primary/20 mb-2">
                         <div className="flex items-center gap-2 overflow-hidden">
@@ -395,7 +395,7 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                     onChange={handleFileUpload}
                     accept="image/*,video/*,audio/*"
                 />
-                <div className="flex gap-2 items-center bg-muted/50 p-2 rounded-xl border border-border focus-within:border-primary/50 transition-colors">
+                <div className="flex gap-3 items-center bg-[#1F2125] p-2 pl-4 rounded-full border border-transparent focus-within:border-[#6B4EFF]/50 transition-all">
                     {recording ? (
                         <div className="flex-1 flex items-center gap-3 animate-pulse">
                             <span className="text-red-500 text-xs font-bold uppercase tracking-wider">Recording...</span>
