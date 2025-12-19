@@ -14,7 +14,7 @@ interface CallOverlayProps {
 }
 
 export function CallOverlay({ roomId, currentUser, minimize = false, onClose }: CallOverlayProps) {
-    const { localStream, remoteStream } = useCall();
+    const { localStream, remoteStream, callType, connectionState, signalingStatus, iceCandidateCount } = useCall();
     const [isMinimized, setIsMinimized] = useState(minimize);
     const [isMuted, setIsMuted] = useState(false);
     const [isVideoOff, setIsVideoOff] = useState(false);
@@ -32,6 +32,7 @@ export function CallOverlay({ roomId, currentUser, minimize = false, onClose }: 
     useEffect(() => {
         if (remoteVideoRef.current && remoteStream) {
             remoteVideoRef.current.srcObject = remoteStream;
+            remoteVideoRef.current.play().catch(e => console.error("Error auto-playing video:", e));
         }
     }, [remoteStream]);
 
@@ -52,6 +53,8 @@ export function CallOverlay({ roomId, currentUser, minimize = false, onClose }: 
         }
     }
 
+    const isAudioOnly = callType === 'audio';
+
     return (
         <div className={cn(
             "fixed transition-all duration-500 ease-in-out bg-black/90 backdrop-blur-md shadow-2xl border border-white/10 overflow-hidden z-50",
@@ -59,34 +62,51 @@ export function CallOverlay({ roomId, currentUser, minimize = false, onClose }: 
                 ? "bottom-4 right-4 w-72 h-48 rounded-2xl"
                 : "inset-4 rounded-3xl"
         )}>
+            {/* DEBUG OVERLAY */}
+            <div className="absolute top-4 left-4 z-50 bg-black/50 p-2 rounded text-xs text-white/70 font-mono pointer-events-none">
+                <div>Signal: {signalingStatus}</div>
+                <div>WebRTC: {connectionState}</div>
+                <div>Candidates: {iceCandidateCount}</div>
+                <div>Type: {callType}</div>
+                <div>L-Tracks: {localStream?.getTracks().length || 0}</div>
+                <div>R-Tracks: {remoteStream?.getTracks().length || 0}</div>
+            </div>
+
             {/* Main Video Area */}
             <div className="relative w-full h-full flex items-center justify-center">
-                {/* Remote Video (Full Size) */}
+                {/* Remote Video or Audio Avatar */}
                 <div className="w-full h-full bg-zinc-900 flex items-center justify-center relative">
-                    {(!remoteStream) && (
-                        <div className="flex flex-col items-center">
-                            <Avatar fallback="Remote" className="w-24 h-24 bg-zinc-800 text-zinc-500 mb-4" />
-                            <p className="text-zinc-500 animate-pulse">Connecting...</p>
+                    {/* Show Avatar if Audio Only OR No Remote Stream yet */}
+                    {(isAudioOnly || !remoteStream) && (
+                        <div className="flex flex-col items-center animate-pulse">
+                            <Avatar fallback="Remote" className="w-32 h-32 bg-zinc-800 text-zinc-500 mb-6 text-4xl" />
+                            <p className="text-zinc-400 text-lg font-medium">
+                                {connectionState === 'connected' ? 'Connected' : 'Connecting...'}
+                            </p>
                         </div>
                     )}
+
+                    {/* Video Element - Hidden if Audio Only */}
                     <video
                         ref={remoteVideoRef}
                         autoPlay
                         playsInline
-                        className={cn("absolute inset-0 w-full h-full object-cover", !remoteStream && "hidden")}
+                        className={cn("absolute inset-0 w-full h-full object-cover", (isAudioOnly || !remoteStream) && "opacity-0 pointer-events-none")}
                     />
                 </div>
 
-                {/* Local Video (PIP) */}
-                <div className={cn(
-                    "absolute transition-all duration-300 bg-zinc-800 rounded-xl overflow-hidden shadow-lg border border-white/10 z-10",
-                    isMinimized ? "hidden" : "top-4 right-4 w-48 h-36"
-                )}>
-                    <div className="w-full h-full flex items-center justify-center relative bg-black">
-                        {!localStream && <span className="text-xs text-muted-foreground">You</span>}
-                        <video ref={localVideoRef} autoPlay muted playsInline className="w-full h-full object-cover transform -scale-x-100" />
+                {/* Local Video (PIP) - Only show if Video Call */}
+                {!isAudioOnly && (
+                    <div className={cn(
+                        "absolute transition-all duration-300 bg-zinc-800 rounded-xl overflow-hidden shadow-lg border border-white/10 z-10",
+                        isMinimized ? "hidden" : "top-4 right-4 w-48 h-36"
+                    )}>
+                        <div className="w-full h-full flex items-center justify-center relative bg-black">
+                            {!localStream && <span className="text-xs text-muted-foreground">You</span>}
+                            <video ref={localVideoRef} autoPlay muted playsInline className="w-full h-full object-cover transform -scale-x-100" />
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* Controls Overlay */}
                 <div className={cn(
@@ -95,8 +115,13 @@ export function CallOverlay({ roomId, currentUser, minimize = false, onClose }: 
                 )}>
                     {!isMinimized && (
                         <div className="mb-8 text-center">
-                            <h3 className="text-2xl font-bold text-white">Call in Progress</h3>
-                            <p className="text-white/60">Connected</p>
+                            <h3 className="text-2xl font-bold text-white">
+                                {isAudioOnly ? "Voice Call" : "Video Call"}
+                            </h3>
+                            <div className="flex items-center justify-center gap-2">
+                                <span className={cn("w-2 h-2 rounded-full", connectionState === 'connected' ? "bg-green-500" : "bg-yellow-500")}></span>
+                                <p className="text-white/60 capitalize">{connectionState}</p>
+                            </div>
                         </div>
                     )}
 

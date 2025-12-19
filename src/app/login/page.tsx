@@ -31,7 +31,7 @@ export default function LoginPage() {
                     password,
                 });
                 if (error) throw error;
-                router.push("/");
+                router.push("/onboarding");
             }
         } catch (error: any) {
             alert(error.message);
