@@ -17,6 +17,14 @@ interface Room {
     is_group: boolean;
     last_message?: string;
     updated_at: string;
+    room_participants?: {
+        user_id: string;
+        profiles: {
+            username: string;
+            full_name: string;
+            avatar_url: string;
+        }
+    }[];
 }
 
 export function Sidebar({ user }: { user: any }) {
@@ -32,8 +40,19 @@ export function Sidebar({ user }: { user: any }) {
         const fetchRooms = async () => {
             // For simplicity in this demo, fetching all rooms. 
             // In real app: fetch rooms where user is participant.
-            const { data } = await supabase.from("rooms").select("*").order("created_at", { ascending: false });
-            if (data) setRooms(data);
+            // Fetch rooms with participants to determine names for DMs
+            const { data } = await supabase
+                .from("rooms")
+                .select(`
+                    *,
+                    room_participants(
+                        user_id,
+                        profiles(username, full_name, avatar_url)
+                    )
+                `)
+                .order("created_at", { ascending: false });
+
+            if (data) setRooms(data as any);
         };
 
         const fetchPendingCount = async () => {
@@ -106,24 +125,37 @@ export function Sidebar({ user }: { user: any }) {
                 </div>
 
                 <div className="flex-1 overflow-y-auto p-4 space-y-2">
-                    {rooms.map((room) => (
-                        <Link href={`/chat/${room.id}`} key={room.id}>
-                            <div className={cn(
-                                "p-3 rounded-xl transition-all cursor-pointer flex items-center gap-3 border border-transparent",
-                                pathname === `/chat/${room.id}`
-                                    ? "bg-primary/10 border-primary/20 shadow-[0_0_10px_rgba(139,92,246,0.1)]"
-                                    : "hover:bg-white/5"
-                            )}>
-                                <Avatar fallback={room.name || "Room"} />
-                                <div className="overflow-hidden">
-                                    <p className="font-medium truncate text-sm">{room.name || "Unnamed Room"}</p>
-                                    <p className="text-xs text-muted-foreground truncate">
-                                        {room.is_group ? "Group" : "Direct Message"}
-                                    </p>
+                    {rooms.map((room) => {
+                        // Determine display name and avatar
+                        let displayName = room.name || "Unnamed Room";
+                        let displayAvatar = undefined; // Default room avatar
+
+                        if (!room.is_group && room.room_participants) {
+                            const other = room.room_participants.find(p => p.user_id !== user?.id);
+                            if (other && other.profiles) {
+                                displayName = other.profiles.full_name || other.profiles.username || "Unknown User";
+                                displayAvatar = other.profiles.avatar_url;
+                            }
+                        }
+
+                        return (
+                            <Link href={`/chat/${room.id}`} key={room.id}>
+                                <div className={cn(
+                                    "p-3 rounded-xl transition-all cursor-pointer flex items-center gap-3 border border-transparent",
+                                    pathname === `/chat/${room.id}`
+                                        ? "bg-primary/10 border-primary/20 shadow-[0_0_10px_rgba(139,92,246,0.1)]"
+                                        : "hover:bg-white/5"
+                                )}>
+                                    <Avatar src={displayAvatar} fallback={displayName[0] || "?"} />
+                                    <div className="overflow-hidden">
+                                        <p className="font-medium truncate text-sm">{displayName}</p>
+                                        <p className="text-xs text-muted-foreground truncate">
+                                            {room.is_group ? "Group" : "Direct Message"}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
-                    ))}
+                            </Link>
+                        ))}
 
                     {rooms.length === 0 && (
                         <div className="text-center text-muted-foreground text-sm py-8">

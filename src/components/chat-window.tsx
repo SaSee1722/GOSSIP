@@ -29,7 +29,11 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
 
     useEffect(() => {
         const fetchRoomAndMessages = async () => {
-            const { data: roomData } = await supabase.from("rooms").select("*").eq("id", roomId).single();
+            const { data: roomData } = await supabase
+                .from("rooms")
+                .select(`*, room_participants(user_id, profiles(username, full_name, avatar_url))`)
+                .eq("id", roomId)
+                .single();
             setRoom(roomData);
 
             const { data: msgData } = await supabase
@@ -219,14 +223,27 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
 
     if (!room) return <div className="flex-1 flex items-center justify-center">Loading chat...</div>;
 
+    // Determine header info
+    let headerName = room.name || "Chat Room";
+    let headerAvatar = undefined;
+    let isGroup = room.is_group;
+
+    if (!isGroup && room.room_participants) {
+        const other = room.room_participants.find((p: any) => p.user_id !== user.id);
+        if (other && other.profiles) {
+            headerName = other.profiles.full_name || other.profiles.username || "Unknown User";
+            headerAvatar = other.profiles.avatar_url;
+        }
+    }
+
     return (
         <div className="flex flex-col h-full bg-background/50 backdrop-blur-sm">
             {/* Chat Header */}
             <div className="p-4 border-b border-border flex items-center justify-between bg-card/30">
                 <div className="flex items-center gap-3">
-                    <Avatar fallback={room.name || "R"} />
+                    <Avatar src={headerAvatar} fallback={headerName[0] || "R"} />
                     <div>
-                        <h3 className="font-bold">{room.name || "Chat Room"}</h3>
+                        <h3 className="font-bold">{headerName}</h3>
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
                             Active now
@@ -270,7 +287,11 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                                                 "mb-2 p-2 rounded-lg border-l-2 text-xs opacity-80 backdrop-brightness-95",
                                                 isMe ? "border-white/50 bg-black/10" : "border-primary bg-primary/5"
                                             )}>
-                                                <p className="font-bold mb-0.5">{msg.reply_item.profiles?.username || 'User'}</p>
+                                                <p className="font-bold mb-0.5">
+                                                    {Array.isArray(msg.reply_item.profiles)
+                                                        ? msg.reply_item.profiles[0]?.username
+                                                        : msg.reply_item.profiles?.username || 'User'}
+                                                </p>
                                                 <p className="line-clamp-1">
                                                     {msg.reply_item.content || (
                                                         msg.reply_item.message_type === 'image' ? '📷 Photo' :
@@ -354,7 +375,11 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                         <div className="flex items-center gap-2 overflow-hidden">
                             <div className="w-1 h-8 bg-primary rounded-full"></div>
                             <div className="flex flex-col">
-                                <span className="text-xs font-bold text-primary">Replying to {replyingTo.profiles?.username || 'user'}</span>
+                                <span className="text-xs font-bold text-primary">
+                                    Replying to {
+                                        replyingTo.profiles?.username || 'user'
+                                    }
+                                </span>
                                 <span className="text-xs text-muted-foreground truncate max-w-[200px]">{replyingTo.content || 'Media message'}</span>
                             </div>
                         </div>
