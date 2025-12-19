@@ -6,6 +6,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Search, UserPlus, Check, X } from "lucide-react";
 import { Profile } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/contexts/toast-context";
 
 interface UserSearchProps {
     onClose: () => void;
@@ -18,6 +19,7 @@ export function UserSearch({ onClose, currentUserId }: UserSearchProps) {
     const [loading, setLoading] = useState(false);
     const [requested, setRequested] = useState<Set<string>>(new Set());
     const supabase = createClient();
+    const { addToast } = useToast();
 
     const handleSearch = async () => {
         if (!query.trim()) return;
@@ -86,7 +88,9 @@ export function UserSearch({ onClose, currentUserId }: UserSearchProps) {
                 next.delete(targetId);
                 return next;
             });
-            alert("Failed to send request: " + error.message);
+            addToast("Failed to send request: " + error.message, "error");
+        } else {
+            addToast("Request sent!", "success");
         }
     };
 

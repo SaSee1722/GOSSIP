@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { X, Shield, Eye, EyeOff, UserX, Loader2, Unlock } from "lucide-react";
 import { Avatar } from "@/components/ui/avatar";
+import { useToast } from "@/contexts/toast-context";
 
 export function SettingsModal({ onClose, user }: { onClose: () => void; user: any }) {
     const [lastSeenEnabled, setLastSeenEnabled] = useState(true);
     const [blockedUsers, setBlockedUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const supabase = createClient();
+    const { addToast } = useToast();
 
     useEffect(() => {
         const fetchSettings = async () => {
@@ -43,6 +45,9 @@ export function SettingsModal({ onClose, user }: { onClose: () => void; user: an
         const { error } = await supabase.from("blocked_users").delete().eq("id", blockId);
         if (!error) {
             setBlockedUsers(prev => prev.filter(b => b.id !== blockId));
+            addToast("User unblocked", "success");
+        } else {
+            addToast("Failed to unblock", "error");
         }
     };
 

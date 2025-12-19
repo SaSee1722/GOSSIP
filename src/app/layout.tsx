@@ -8,6 +8,8 @@ export const metadata: Metadata = {
   description: "Experience the next level of communication.",
 };
 
+import { ToastProvider } from "@/contexts/toast-context";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -20,7 +22,9 @@ export default function RootLayout({
           "min-h-screen bg-background font-sans antialiased text-foreground"
         )}
       >
-        {children}
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );

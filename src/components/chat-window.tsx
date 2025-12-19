@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Avatar } from "@/components/ui/avatar";
 import { ArrowLeft, Mic, Send, Paperclip, X, Image as ImageIcon, Check, CheckCheck, Trash2, Ban, Phone, Video, MoreVertical, Loader2, Square, Reply as ReplyIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/contexts/toast-context";
 import { useCall } from "@/contexts/call-context";
 import { Message, MessageType } from "@/lib/types";
 import { GroupInfo } from "./group-info";
@@ -34,6 +35,7 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
 
     // Use CallContext
     const { startCall } = useCall();
+    const { addToast } = useToast();
 
     useEffect(() => {
         const fetchRoomAndMessages = async () => {
@@ -262,17 +264,24 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
         const other = room.room_participants?.find((p: any) => p.user_id !== user?.id);
         if (!other) return;
 
-        if (isBlocked) {
-            // Unblock
-            await supabase.from("blocked_users").delete().eq("blocker_id", user?.id).eq("blocked_id", other.user_id);
-            setIsBlocked(false);
-            alert("User unblocked");
-        } else {
-            // Block
-            await supabase.from("blocked_users").insert({ blocker_id: user?.id, blocked_id: other.user_id });
-            setIsBlocked(true);
-            alert("User blocked");
-            router.push('/chat'); // Redirect to home
+        try {
+            if (isBlocked) {
+                // Unblock
+                const { error } = await supabase.from("blocked_users").delete().eq("blocker_id", user?.id).eq("blocked_id", other.user_id);
+                if (error) throw error;
+                setIsBlocked(false);
+                addToast("User unblocked", "success");
+            } else {
+                // Block
+                const { error } = await supabase.from("blocked_users").insert({ blocker_id: user?.id, blocked_id: other.user_id });
+                if (error) throw error;
+                setIsBlocked(true);
+                addToast("User blocked. Redirecting to home...", "error");
+                setTimeout(() => router.push('/chat'), 1500);
+            }
+        } catch (err: any) {
+            console.error("Block/Unblock error:", err);
+            addToast(`Action failed: ${err.message}`, "error");
         }
     };
 
@@ -340,14 +349,7 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                                     </p>
                                 ) : (
                                     <>
-                                        {msg.reply_item && (
-                                            <div className="border-l-4 border-primary/50 pl-2 mb-2 text-xs text-muted-foreground">
-                                                <p className="font-bold">{msg.reply_item.profiles?.username || 'User'}</p>
-                                                <p className="truncate max-w-[150px]">
-                                                    {msg.reply_item.message_type === 'text' ? msg.reply_item.content : `[${msg.reply_item.message_type}]`}
-                                                </p>
-                                            </div>
-                                        )}
+                                        {/* Reply preview removed */}
                                         {msg.message_type === 'text' && <p>{msg.content}</p>}
 
                                         {msg.message_type === 'image' && (
