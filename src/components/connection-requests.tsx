@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Avatar } from "@/components/ui/avatar";
-import { Check, X, UserCheck } from "lucide-react";
+import { Check, X, UserCheck, MessageCircle } from "lucide-react";
 import { Connection } from "@/lib/types";
+import { useRouter } from "next/navigation";
 
 interface ConnectionRequestsProps {
     onClose: () => void;
@@ -15,6 +16,7 @@ export function ConnectionRequests({ onClose, currentUserId }: ConnectionRequest
     const [requests, setRequests] = useState<Connection[]>([]);
     const [loading, setLoading] = useState(true);
     const supabase = createClient();
+    const router = useRouter();
 
     useEffect(() => {
         fetchRequests();
@@ -42,10 +44,42 @@ export function ConnectionRequests({ onClose, currentUserId }: ConnectionRequest
         if (!error) {
             setRequests((prev) => prev.filter(req => req.id !== id));
             if (status === 'accepted') {
-                // Optional: Create DM room logic here or rely on the user to start one
-                // Ideally we check if a DM exists, if not create one.
-                // For now, let's just accept.
+                // Find and get request details to get the other user ID
+                const req = requests.find(r => r.id === id);
+                if (req) {
+                    await getOrCreateDm(req.requester_id);
+                }
             }
+        }
+    };
+
+    const getOrCreateDm = async (otherUserId: string) => {
+        setLoading(true);
+        // 1. Check if a DM room already exists
+        // This is a bit complex in Supabase SQL without a function, but we can try a simple creating approach
+        // or just create a new one for now and rely on unique constraints if we had them (we might not).
+        // Better approach: Create a new room with is_group=false. 
+        // Real-world app would query room_participants to find common room.
+
+        // Let's create a new DM room for simplicity and reliability in this session
+        const { data: roomData, error: roomError } = await supabase
+            .from("rooms")
+            .insert({ is_group: false, name: "Direct Message" }) // Name is often ignored for DMs in UI
+            .select()
+            .single();
+
+        if (roomData) {
+            // Add participants
+            await supabase.from("room_participants").insert([
+                { room_id: roomData.id, user_id: currentUserId },
+                { room_id: roomData.id, user_id: otherUserId }
+            ]);
+
+            onClose();
+            router.push(`/chat/${roomData.id}`);
+        } else {
+            console.error("Failed to create room", roomError);
+            setLoading(false);
         }
     };
 
