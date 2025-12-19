@@ -282,26 +282,7 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                                     </p>
                                 ) : (
                                     <>
-                                        {msg.reply_item && (
-                                            <div className={cn(
-                                                "mb-2 p-2 rounded-lg border-l-2 text-xs opacity-80 backdrop-brightness-95",
-                                                isMe ? "border-white/50 bg-black/10" : "border-primary bg-primary/5"
-                                            )}>
-                                                <p className="font-bold mb-0.5">
-                                                    {Array.isArray(msg.reply_item.profiles)
-                                                        ? msg.reply_item.profiles[0]?.username
-                                                        : msg.reply_item.profiles?.username || 'User'}
-                                                </p>
-                                                <p className="line-clamp-1">
-                                                    {msg.reply_item.content || (
-                                                        msg.reply_item.message_type === 'image' ? '📷 Photo' :
-                                                            msg.reply_item.message_type === 'video' ? '📹 Video' :
-                                                                msg.reply_item.message_type === 'audio' ? '🎤 Voice Note' :
-                                                                    '📎 Attachment'
-                                                    )}
-                                                </p>
-                                            </div>
-                                        )}
+                                        {/* Reply context removed per user request for cleaner UI */}
                                         {msg.message_type === 'text' && <p>{msg.content}</p>}
 
                                         {msg.message_type === 'image' && (
