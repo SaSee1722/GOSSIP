@@ -25,15 +25,6 @@ interface Room {
             avatar_url: string;
         }
     }[];
-    updated_at: string;
-    room_participants?: {
-        user_id: string;
-        profiles: {
-            username: string;
-            full_name: string;
-            avatar_url: string;
-        }
-    }[];
 }
 
 interface Connection {
