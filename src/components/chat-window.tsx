@@ -34,7 +34,7 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
 
             const { data: msgData } = await supabase
                 .from("messages")
-                .select(`*, profiles(*), reply_item:messages!reply_to(content, profiles(username))`)
+                .select(`*, profiles(*), reply_item:messages!reply_to(content, message_type, profiles(username))`)
                 .eq("room_id", roomId)
                 .order("created_at", { ascending: true });
 
@@ -47,7 +47,7 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
             .channel(`room:${roomId}`)
             .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `room_id=eq.${roomId}` },
                 async (payload) => {
-                    const { data } = await supabase.from("messages").select(`*, profiles(*), reply_item:messages!reply_to(content, profiles(username))`).eq("id", payload.new.id).single();
+                    const { data } = await supabase.from("messages").select(`*, profiles(*), reply_item:messages!reply_to(content, message_type, profiles(username))`).eq("id", payload.new.id).single();
                     if (data) setMessages((prev) => [...prev, data as any]);
                 })
             .subscribe();
@@ -271,7 +271,14 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                                                 isMe ? "border-white/50 bg-black/10" : "border-primary bg-primary/5"
                                             )}>
                                                 <p className="font-bold mb-0.5">{msg.reply_item.profiles?.username || 'User'}</p>
-                                                <p className="line-clamp-1">{msg.reply_item.content || 'Media'}</p>
+                                                <p className="line-clamp-1">
+                                                    {msg.reply_item.content || (
+                                                        msg.reply_item.message_type === 'image' ? '📷 Photo' :
+                                                            msg.reply_item.message_type === 'video' ? '📹 Video' :
+                                                                msg.reply_item.message_type === 'audio' ? '🎤 Voice Note' :
+                                                                    '📎 Attachment'
+                                                    )}
+                                                </p>
                                             </div>
                                         )}
                                         {msg.message_type === 'text' && <p>{msg.content}</p>}

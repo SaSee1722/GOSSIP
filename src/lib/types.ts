@@ -35,6 +35,7 @@ export interface Message {
     profiles?: Profile; // Sender joined data
     reply_item?: { // Joined reply data
         content: string | null;
+        message_type: MessageType;
         profiles: { username: string | null } | null;
     } | null;
     deleted_for_all?: boolean;
