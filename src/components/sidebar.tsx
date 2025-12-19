@@ -10,6 +10,8 @@ import { LogOut, Plus, Search, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { UserSearch } from "./user-search";
 import { ConnectionRequests } from "./connection-requests";
+import { SettingsModal } from "./settings-modal";
+import { Settings } from "lucide-react";
 
 interface Room {
     id: string;
@@ -41,7 +43,9 @@ export function Sidebar({ user }: { user: any }) {
     const [matches, setMatches] = useState<Connection[]>([]);
     const [showSearch, setShowSearch] = useState(false);
     const [showRequests, setShowRequests] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
     const [pendingCount, setPendingCount] = useState(0);
+    const [blockedIds, setBlockedIds] = useState<Set<string>>(new Set());
     const supabase = createClient();
     const pathname = usePathname();
     const router = useRouter();
@@ -86,6 +90,16 @@ export function Sidebar({ user }: { user: any }) {
                 .limit(10);
 
             if (matchesData) setMatches(matchesData as any);
+
+            // Fetch Blocked Users
+            const { data: blocks } = await supabase
+                .from("blocked_users")
+                .select("blocked_id")
+                .eq("blocker_id", user.id);
+
+            if (blocks) {
+                setBlockedIds(new Set(blocks.map(b => b.blocked_id)));
+            }
         };
 
         if (user) {
@@ -191,7 +205,13 @@ export function Sidebar({ user }: { user: any }) {
 
                 {/* Chat List */}
                 <div className="flex-1 overflow-y-auto px-4 py-2 space-y-1">
-                    {rooms.map((room) => {
+                    {rooms.filter(room => {
+                        if (room.is_group) return true;
+                        // Filter out DMs with blocked users
+                        const other = room.room_participants?.find(p => p.user_id !== user?.id);
+                        if (other && blockedIds.has(other.user_id)) return false;
+                        return true;
+                    }).map((room) => {
                         // Determine display name and avatar
                         let displayName = room.name || "Unnamed Room";
                         let displayAvatar = undefined; // Default room avatar
@@ -250,7 +270,10 @@ export function Sidebar({ user }: { user: any }) {
                                 My Profile
                             </p>
                         </div>
-                        <button onClick={handleLogout} className="text-gray-500 hover:text-white transition-colors">
+                        <button onClick={() => setShowSettings(true)} className="text-gray-500 hover:text-white transition-colors" title="Settings">
+                            <Settings className="w-5 h-5" />
+                        </button>
+                        <button onClick={handleLogout} className="text-gray-500 hover:text-red-400 transition-colors" title="Logout">
                             <LogOut className="w-5 h-5" />
                         </button>
                     </div>
@@ -258,6 +281,7 @@ export function Sidebar({ user }: { user: any }) {
             </aside>
             {showSearch && <UserSearch onClose={() => setShowSearch(false)} currentUserId={user?.id} />}
             {showRequests && <ConnectionRequests onClose={() => setShowRequests(false)} currentUserId={user?.id} />}
+            {showSettings && <SettingsModal onClose={() => setShowSettings(false)} user={user} />}
         </>
     );
 }

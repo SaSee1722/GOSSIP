@@ -7,6 +7,7 @@ export interface Profile {
     is_public: boolean;
     last_seen?: string;
     is_online?: boolean;
+    last_seen_enabled?: boolean;
     updated_at: string;
 }
 
