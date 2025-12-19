@@ -155,7 +155,8 @@ export function Sidebar({ user }: { user: any }) {
                                     </div>
                                 </div>
                             </Link>
-                        ))}
+                        )
+                    })}
 
                     {rooms.length === 0 && (
                         <div className="text-center text-muted-foreground text-sm py-8">
