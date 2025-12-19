@@ -42,9 +42,41 @@ export function UserSearch({ onClose, currentUserId }: UserSearchProps) {
         // Optimistic update
         setRequested((prev) => new Set(prev).add(targetId));
 
-        const { error } = await supabase
+        // 1. Check if a connection tuple already exists (in either direction)
+        const { data: existing, error: fetchError } = await supabase
             .from("connections")
-            .insert({ requester_id: currentUserId, addressee_id: targetId });
+            .select("*")
+            .or(`and(requester_id.eq.${currentUserId},addressee_id.eq.${targetId}),and(requester_id.eq.${targetId},addressee_id.eq.${currentUserId})`)
+            .maybeSingle();
+
+        if (fetchError) {
+            console.error("Error checking connection:", fetchError);
+            return;
+        }
+
+        let error = null;
+
+        if (existing) {
+            // 2. If exists, handle based on status
+            if (existing.status === 'rejected') {
+                // Re-activate as a new request from me
+                const { error: updateError } = await supabase
+                    .from("connections")
+                    .update({ status: 'pending', requester_id: currentUserId, addressee_id: targetId })
+                    .eq("id", existing.id);
+                error = updateError;
+            } else {
+                // 'pending' or 'accepted' - Do nothing to prevent duplicate key error
+                // The UI already shows a checkmark optimistically
+                console.log("Connection already exists or is pending.");
+            }
+        } else {
+            // 3. New Record
+            const { error: insertError } = await supabase
+                .from("connections")
+                .insert({ requester_id: currentUserId, addressee_id: targetId });
+            error = insertError;
+        }
 
         if (error) {
             console.error("Failed to send request", error);
