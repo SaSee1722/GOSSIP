@@ -79,7 +79,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
       const pollInterval = setInterval(() => {
         refreshChats();
-      }, 10000); // Increased to 10s to reduce load
+      }, 15000); // Increased to 15s to reduce load
 
       return () => {
         clearInterval(pollInterval);
@@ -115,7 +115,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         ChatService.getPendingRequests()
       ]);
 
-      if (requestsResponse.data) setPendingRequests(requestsResponse.data);
+      if (requestsResponse.data) {
+        setPendingRequests(prev => {
+          if (JSON.stringify(prev) === JSON.stringify(requestsResponse.data)) return prev;
+          return requestsResponse.data;
+        });
+      }
 
       if (roomsResponse.data) {
         const formattedChats: Chat[] = [];

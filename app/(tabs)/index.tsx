@@ -60,6 +60,11 @@ export default function ChatsScreen() {
     }
   };
 
+  const existingUserIds = useRef<string[]>([]);
+  useEffect(() => {
+    existingUserIds.current = chats.map(c => c.userId);
+  }, [chats]);
+
   useEffect(() => {
     const searchTimer = setTimeout(async () => {
       if (searchQuery.trim().length >= 2) {
@@ -67,9 +72,7 @@ export default function ChatsScreen() {
         const { ProfileService } = await import('@/services/ProfileService');
         const { data, error } = await ProfileService.searchProfiles(searchQuery);
         if (!error && data) {
-          // Filter out users who already have a chat room with the current user
-          const existingUserIds = chats.map(c => c.userId);
-          const newResults = data.filter(p => !existingUserIds.includes(p.id));
+          const newResults = data.filter(p => !existingUserIds.current.includes(p.id));
           setSearchResults(newResults);
         }
         setSearchLoading(false);
@@ -79,7 +82,7 @@ export default function ChatsScreen() {
     }, 500);
 
     return () => clearTimeout(searchTimer);
-  }, [searchQuery, chats]);
+  }, [searchQuery]);
 
   // Mocking ages for now as they aren't in the data model yet
   const getAge = (id: string) => {

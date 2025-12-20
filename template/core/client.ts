@@ -51,7 +51,7 @@ class SupabaseManager {
         },
         realtime: {
           params: {
-            eventsPerSecond: 20,
+            eventsPerSecond: 10,
           },
         },
       });

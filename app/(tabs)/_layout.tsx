@@ -64,8 +64,8 @@ function FloatingTabBar({ state, descriptors, navigation }: any) {
             }
           }
 
-          const getBadgeCount = () => {
-            const { chats, pendingRequests } = useChat();
+          const { chats, pendingRequests } = useChat();
+          const count = React.useMemo(() => {
             if (route.name === 'index') {
               return chats.reduce((acc, chat) => acc + (chat.unreadCount || 0), 0);
             }
@@ -73,9 +73,7 @@ function FloatingTabBar({ state, descriptors, navigation }: any) {
               return pendingRequests.length;
             }
             return 0;
-          };
-
-          const count = getBadgeCount();
+          }, [route.name, chats, pendingRequests]);
 
           return (
             <TouchableOpacity
