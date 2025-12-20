@@ -26,14 +26,20 @@ export default function ChatsScreen() {
   const [requestLoading, setRequestLoading] = useState(false);
   const [isSendingRequest, setIsSendingRequest] = useState<string | null>(null);
 
+
   const handleSendRequest = async (userId: string) => {
     try {
+      console.log('[ChatsScreen] Sending request to userId:', userId);
       setIsSendingRequest(userId);
+
       await sendRequest(userId);
+
+      console.log('[ChatsScreen] Request sent successfully');
       Alert.alert('Success', 'Chat request sent!');
       setSearchResults(prev => prev.filter(p => p.id !== userId));
     } catch (err: any) {
-      Alert.alert('Error', err.message);
+      console.error('[ChatsScreen] Failed to send request:', err);
+      Alert.alert('Error', err.message || 'Failed to send request');
     } finally {
       setIsSendingRequest(null);
     }

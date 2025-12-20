@@ -191,15 +191,32 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     return null;
   };
 
+
   const setupRealtime = () => {
     // Clean up existing any existing channels
-    if (channelRef.current) supabase.removeChannel(channelRef.current);
-    if (connChannelRef.current) supabase.removeChannel(connChannelRef.current);
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+    if (connChannelRef.current) {
+      supabase.removeChannel(connChannelRef.current);
+      connChannelRef.current = null;
+    }
 
-    console.log('[ChatContext] Setting up Realtime for user:', user?.id);
+    if (!user?.id) {
+      console.warn('[ChatContext] Cannot setup Realtime: No user');
+      return;
+    }
+
+    console.log('[ChatContext] Setting up Realtime for user:', user.id);
 
     const mainChannel = supabase
-      .channel('gossip-main')
+      .channel('gossip-main', {
+        config: {
+          broadcast: { self: false },
+          presence: { key: user.id }
+        }
+      })
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
@@ -252,7 +269,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         event: '*',
         schema: 'public',
         table: 'connections',
-        filter: `addressee_id=eq.${user?.id}`
+        filter: `addressee_id=eq.${user.id}`
       }, async () => {
         console.log('[ChatContext] Inbound connection change detected');
         const { data: requests } = await ChatService.getPendingRequests();
@@ -262,7 +279,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         event: 'INSERT',
         schema: 'public',
         table: 'room_participants',
-        filter: `user_id=eq.${user?.id}`
+        filter: `user_id=eq.${user.id}`
       }, () => {
         console.log('[ChatContext] Added to new room');
         refreshChats();
@@ -275,9 +292,17 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         ));
       })
       .subscribe((status) => {
-        console.log('[ChatContext] Realtime status:', status);
-        if (status === 'CHANNEL_ERROR') {
-          console.error('[ChatContext] Realtime connection failed. Check if Realtime is enabled in Supabase dashboard.');
+        if (status === 'SUBSCRIBED') {
+          console.log('[ChatContext] ✅ Realtime connected successfully');
+        } else if (status === 'CHANNEL_ERROR') {
+          console.error('[ChatContext] ❌ Realtime connection failed. Please run realtime_fix.sql in Supabase.');
+          // Don't retry - prevents console spam
+          if (channelRef.current) {
+            supabase.removeChannel(channelRef.current);
+            channelRef.current = null;
+          }
+        } else if (status === 'TIMED_OUT') {
+          console.warn('[ChatContext] ⏱️ Realtime connection timed out');
         }
       });
 
@@ -325,8 +350,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   };
 
   const sendRequest = async (userId: string) => {
+    console.log('[ChatContext] sendRequest called for userId:', userId);
     const { error } = await ChatService.sendConnectionRequest(userId);
-    if (error) throw new Error(error);
+    if (error) {
+      console.error('[ChatContext] sendRequest failed:', error);
+      throw new Error(error);
+    }
+    console.log('[ChatContext] sendRequest completed successfully');
   };
 
   const respondToRequest = async (requestId: string, status: 'accepted' | 'rejected'): Promise<string | null> => {
