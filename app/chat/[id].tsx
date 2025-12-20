@@ -29,7 +29,9 @@ import { TypingIndicator } from '@/components/ui/TypingIndicator';
 import { BlurView } from 'expo-blur';
 import { theme } from '@/constants/theme';
 
+import { StickerPicker } from '@/components/chat/StickerPicker';
 import { useCall } from '@/contexts/CallContext';
+import { Keyboard } from 'react-native';
 
 export default function ChatDetailScreen() {
   const insets = useSafeAreaInsets();
@@ -52,6 +54,8 @@ export default function ChatDetailScreen() {
   const [newGroupAvatar, setNewGroupAvatar] = useState('');
   const [updating, setUpdating] = useState(false);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
+  const [showStickerPicker, setShowStickerPicker] = useState(false);
+  const inputRef = useRef<TextInput>(null);
 
   const chat = chats.find(c => c.id === id);
   const chatMessages = messages[id as string] || [];
@@ -207,6 +211,31 @@ export default function ChatDetailScreen() {
     Alert.alert('Contacts', 'Contact sharing will be available in the next update.');
   };
 
+  const toggleStickerPicker = () => {
+    if (showStickerPicker) {
+      setShowStickerPicker(false);
+      inputRef.current?.focus();
+    } else {
+      Keyboard.dismiss();
+      setTimeout(() => setShowStickerPicker(true), 150); // Slight delay for keyboard to hide
+    }
+  };
+
+  const handleEmojiSelect = (emoji: string) => {
+    setMessageText(prev => prev + emoji);
+  };
+
+  const handleStickerSelect = async (url: string) => {
+    // Send sticker as image
+    await sendMessage(id as string, 'Sticker', 'image', url);
+    setShowStickerPicker(false);
+  };
+
+  // Close sticker picker when typing
+  const handleInputFocus = () => {
+    setShowStickerPicker(false);
+  };
+
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
   };
@@ -218,6 +247,20 @@ export default function ChatDetailScreen() {
       </View>
     );
   }
+
+  const getBubbleStyle = (isSent: boolean) => {
+    if (isSent) {
+      return {
+        backgroundColor: colors.primary,
+        borderBottomRightRadius: 5,
+      };
+    } else {
+      return {
+        backgroundColor: '#333',
+        borderBottomLeftRadius: 5,
+      };
+    }
+  };
 
   const getGenderColors = (gender?: string) => {
     switch (gender?.toLowerCase()) {
@@ -348,41 +391,48 @@ export default function ChatDetailScreen() {
             </View>
           ) : (
             <>
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Whisper something..."
-                  placeholderTextColor="#666"
-                  value={messageText}
-                  onChangeText={handleTyping}
-                  onSubmitEditing={handleSend}
-                />
-                <View style={styles.inputIcons}>
-                  <TouchableOpacity style={styles.iconBtn}>
-                    <Ionicons name="happy-outline" size={24} color="#888" />
+              <View style={styles.inputContainer}>
+                <View style={styles.inputWrapper}>
+                  <TouchableOpacity style={styles.iconBtn} onPress={toggleStickerPicker}>
+                    <Ionicons name={showStickerPicker ? "keypad-outline" : "happy-outline"} size={24} color="#666" />
                   </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.iconBtn}
-                    onPress={() => setShowAttachMenu(true)}
-                  >
-                    <Ionicons name="attach" size={24} color="#888" />
-                  </TouchableOpacity>
+
+                  <TextInput
+                    ref={inputRef}
+                    style={styles.input}
+                    placeholder="Message..."
+                    placeholderTextColor="#666"
+                    value={messageText}
+                    onChangeText={handleTyping}
+                    onFocus={handleInputFocus}
+                    multiline
+                  />
+
+                  <View style={styles.inputIcons}>
+                    <TouchableOpacity style={styles.iconBtn} onPress={() => setShowAttachMenu(true)}>
+                      <Ionicons name="attach" size={24} color="#666" />
+                    </TouchableOpacity>
+                    {/* <TouchableOpacity style={styles.iconBtn}>
+                      <Ionicons name="camera-outline" size={24} color="#666" />
+                    </TouchableOpacity> */}
+                  </View>
                 </View>
+
+                <TouchableOpacity
+                  style={[styles.sendBtn, { backgroundColor: (messageText.trim() || showStickerPicker) ? colors.primary : '#1A1A1A' }]}
+                  onPress={handleSend}
+                  disabled={!messageText.trim() && !showStickerPicker}
+                >
+                  <Ionicons name={messageText.trim() ? "send" : "mic"} size={24} color={messageText.trim() ? "#000" : "#666"} />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={handleSend}
-                style={[
-                  styles.sendBtn,
-                  { backgroundColor: messageText.length > 0 ? colors.primary : '#1A1A1A' }
-                ]}
-                disabled={messageText.length === 0}
-              >
-                <Ionicons
-                  name="send"
-                  size={20}
-                  color={messageText.length > 0 ? '#000' : '#444'}
-                />
-              </TouchableOpacity>
+
+              <StickerPicker
+                visible={showStickerPicker}
+                onEmojiSelect={handleEmojiSelect}
+                onStickerSelect={handleStickerSelect}
+                onClose={() => setShowStickerPicker(false)}
+              />
             </>
           )}
         </View>
