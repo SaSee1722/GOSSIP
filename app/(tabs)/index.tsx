@@ -255,11 +255,11 @@ export default function ChatsScreen() {
 
       {chats.length > 0 && !searchQuery && (
         <View style={styles.chatsLabel}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Text style={styles.sectionTitle}>RECENT GOSSIPS</Text>
             <Image
               source={require('@/assets/images/gossip_illustration.png')}
-              style={{ width: 45, height: 45, opacity: 0.5, marginRight: -10 }}
+              style={{ width: 60, height: 60, marginTop: -15 }}
               resizeMode="contain"
             />
           </View>
