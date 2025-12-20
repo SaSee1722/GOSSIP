@@ -101,5 +101,18 @@ export const ProfileService = {
                 return { data: null, error: err.message };
             }
         });
+    },
+
+    async updatePushToken(userId: string, token: string): Promise<{ error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { error } = await client
+                .from('profiles')
+                .update({ push_token: token })
+                .eq('id', userId);
+
+            if (error) console.error('[ProfileService] Update Token Error:', error);
+
+            return { error: error?.message || null };
+        });
     }
 };

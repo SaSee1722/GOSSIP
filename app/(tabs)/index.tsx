@@ -6,7 +6,9 @@ import { useRouter } from 'expo-router';
 import { BlurView } from 'expo-blur';
 import { useTheme } from '@/hooks/useTheme';
 import { useChat } from '@/hooks/useChat';
+import { useToast } from '@/contexts/ToastContext';
 import { useStatus } from '@/contexts/StatusContext';
+import { usePushNotifications } from '@/hooks/usePushNotifications';
 import { Avatar } from '@/components/ui/Avatar';
 import { GradientText } from '@/components/ui/GradientText';
 
@@ -14,7 +16,9 @@ export default function ChatsScreen() {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const { chats, loading: chatLoading, pendingRequests, sendRequest, respondToRequest, createChat, blockUser, lockedChats, lockChat, unlockChat } = useChat();
+  const { showToast } = useToast();
   const { statuses, loading: statusLoading } = useStatus();
+  usePushNotifications();
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -63,7 +67,7 @@ export default function ChatsScreen() {
     try {
       setIsSendingRequest(userId);
       await sendRequest(userId);
-      Alert.alert('Success', 'Chat request sent!');
+      showToast('Chat request sent!', 'success');
       setSearchResults(prev => prev.filter(p => p.id !== userId));
     } catch (err: any) {
       Alert.alert('Error', err.message || 'Failed to send request');
@@ -77,7 +81,7 @@ export default function ChatsScreen() {
       setRequestLoading(true);
       const roomId = await respondToRequest(requestId, status);
       if (status === 'accepted') {
-        Alert.alert('Success', 'You are now connected!');
+        showToast('You are now connected!', 'success');
         setShowRequestsModal(false);
         if (roomId) router.push(`/chat/${roomId}`);
       }
@@ -173,7 +177,7 @@ export default function ChatsScreen() {
       setShowBlockConfirm(false);
       setSelectionMode(false);
       setSelectedChats(new Set());
-      Alert.alert('Success', 'Gossipers blocked successfully!');
+      showToast('Gossipers blocked successfully!', 'success');
     } catch (err: any) {
       Alert.alert('Error', 'Failed to block: ' + err.message);
     } finally {
@@ -197,7 +201,7 @@ export default function ChatsScreen() {
             await unlockChat(chatId);
             setSelectionMode(false);
             setSelectedChats(new Set());
-            Alert.alert('Success', 'Chat unlocked!');
+            showToast('Chat unlocked!', 'success');
           }
         }
       ]);
@@ -234,9 +238,9 @@ export default function ChatsScreen() {
           setSelectedChats(new Set());
           setPinInput('');
           setConfirmPin('');
-          Alert.alert('Success', 'Chat Locked! You will need this PIN to open it.');
+          showToast('Chat Locked! Use PIN to open.', 'success');
         } else {
-          Alert.alert('Error', 'PINs do not match. Try again.');
+          showToast('PINs do not match. Try again.', 'error');
           setConfirmPin('');
           setPinInput('');
         }
@@ -356,6 +360,18 @@ export default function ChatsScreen() {
 
   const renderChatItem = ({ item }: { item: any }) => {
     const isSelected = selectedChats.has(item.id);
+    const isLocked = !!lockedChats[item.id];
+
+    // Determine what text to show
+    let previewText = item.typing ? 'typing...' : (item.lastMessage || 'Started a gossip...');
+    if (isLocked) {
+      if (item.unreadCount > 0) {
+        previewText = `${item.unreadCount} New Message${item.unreadCount > 1 ? 's' : ''}`;
+      } else {
+        previewText = 'Locked Gossip';
+      }
+    }
+
     return (
       <TouchableOpacity
         style={[styles.chatItem, isSelected && { backgroundColor: 'rgba(0,191,255,0.08)' }]}
@@ -377,16 +393,21 @@ export default function ChatsScreen() {
             <Text style={[styles.chatName, { color: getNameColor(item.gender) }]} numberOfLines={1}>
               {item.userName.toUpperCase()}
             </Text>
+            {isLocked && <Ionicons name="lock-closed" size={12} color="#666" style={{ marginLeft: 5, marginRight: 'auto' }} />}
             <Text style={styles.chatTime}>
               {formatTime(item.lastMessageTime || new Date())}
             </Text>
           </View>
           <View style={styles.chatFooter}>
             <Text
-              style={[styles.chatMessage, item.unreadCount > 0 && { color: '#FFF', fontWeight: '600' }]}
+              style={[
+                styles.chatMessage,
+                (item.unreadCount > 0 || isLocked) && { color: (isLocked && item.unreadCount > 0) ? colors.primary : (item.unreadCount > 0 ? '#FFF' : '#777'), fontWeight: item.unreadCount > 0 ? '600' : 'normal' },
+                isLocked && { fontStyle: 'italic' }
+              ]}
               numberOfLines={1}
             >
-              {item.typing ? 'typing...' : (item.lastMessage || 'Started a gossip...')}
+              {previewText}
             </Text>
             {item.unreadCount > 0 && !selectionMode && (
               <View style={[styles.unreadBadge, { backgroundColor: colors.primary }]}>

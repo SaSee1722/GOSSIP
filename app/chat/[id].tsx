@@ -22,6 +22,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTheme } from '@/hooks/useTheme';
 import { useChat } from '@/hooks/useChat';
+import { useToast } from '@/contexts/ToastContext';
 import { useAuth } from '@/template';
 import { Avatar } from '@/components/ui/Avatar';
 import { GradientText } from '@/components/ui/GradientText';
@@ -39,6 +40,7 @@ export default function ChatDetailScreen() {
   const { id } = useLocalSearchParams();
   const { chats, messages, sendMessage, markAsRead, setTyping, blockUser, deleteGroup, fetchMessages, updateGroup, getParticipants, lockedChats, lockChat, unlockChat } = useChat();
   const { user } = useAuth();
+  const { showToast } = useToast();
   const { initiateCall } = useCall();
   const router = useRouter();
   const [messageText, setMessageText] = useState('');
@@ -671,9 +673,9 @@ export default function ChatDetailScreen() {
                               if (newPin === lockedChats[chat?.id!]) {
                                 await unlockChat(chat?.id!);
                                 setShowPinModal(false);
-                                Alert.alert('Unlocked', 'This chat is now unlocked.');
+                                showToast('This chat is now unlocked.', 'success');
                               } else {
-                                Alert.alert('Error', 'Incorrect PIN');
+                                showToast('Incorrect PIN', 'error');
                                 setPinInput('');
                               }
                             } else {
@@ -685,9 +687,9 @@ export default function ChatDetailScreen() {
                                 if (newPin === confirmPin) {
                                   await lockChat(chat?.id!, newPin);
                                   setShowPinModal(false);
-                                  Alert.alert('Locked', 'This chat is now locked.');
+                                  showToast('This chat is now locked.', 'success');
                                 } else {
-                                  Alert.alert('Error', 'PINs do not match. Try again.');
+                                  showToast('PINs do not match. Try again.', 'error');
                                   setConfirmPin('');
                                   setPinInput('');
                                 }
