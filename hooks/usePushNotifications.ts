@@ -6,16 +6,8 @@ import { ProfileService } from '@/services/ProfileService';
 import { useAuth } from '@/template';
 
 // Configure how notifications behave when the app is in foreground
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: false,
-        shouldShowBanner: true,
-        shouldShowList: true,
-        priority: Notifications.AndroidNotificationPriority.HIGH,
-    }),
-});
+// Handler moved to NotificationService.ts to support dynamic suppression based on active chat
+
 
 export function usePushNotifications() {
     const { user } = useAuth();

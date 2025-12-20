@@ -1,4 +1,5 @@
 import { safeSupabaseOperation } from '@/template/core/client';
+import { sendPushNotification } from '@/services/NotificationService';
 
 export interface Room {
     id: string;
@@ -164,6 +165,37 @@ export const ChatService = {
                     console.error('[ChatService] sendMessage error:', error);
                     return { data: null, error: error.message };
                 }
+
+                // Send Push Notifications asynchronously
+                (async () => {
+                    try {
+                        // Get all participants except sender
+                        const { data: recipients } = await client
+                            .from('room_participants')
+                            .select('user_id, profiles(push_token, full_name, username)')
+                            .eq('room_id', roomId)
+                            .neq('user_id', user.id);
+
+                        if (recipients) {
+                            const senderName = user.user_metadata?.username || 'Gossiper';
+                            const title = `New Gossip from ${senderName}`;
+                            const body = type === 'text' ? content : `Sent a ${type}`;
+
+                            for (const r of recipients) {
+                                const profile = r.profiles as any;
+                                if (profile && profile.push_token) {
+                                    sendPushNotification(profile.push_token, title, body, {
+                                        chatId: roomId,
+                                        senderId: user.id
+                                    });
+                                }
+                            }
+                        }
+                    } catch (pushErr) {
+                        console.error('[ChatService] Failed to send push:', pushErr);
+                    }
+                })();
+
                 return { data: data as MessageData, error: null };
             });
         } catch (err: any) {

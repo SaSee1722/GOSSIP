@@ -29,6 +29,7 @@ import { GradientText } from '@/components/ui/GradientText';
 import { TypingIndicator } from '@/components/ui/TypingIndicator';
 import { BlurView } from 'expo-blur';
 import { theme } from '@/constants/theme';
+import { setActiveChatId } from '@/services/NotificationService';
 
 import { StickerPicker } from '@/components/chat/StickerPicker';
 import { useCall } from '@/contexts/CallContext';
@@ -73,6 +74,13 @@ export default function ChatDetailScreen() {
       markAsRead(id as string);
       fetchMessages(id as string);
       checkBlockStatus();
+
+      // Set active chat for notifications suppression
+      setActiveChatId(id as string);
+
+      return () => {
+        setActiveChatId(null);
+      };
     }
   }, [id]);
 
