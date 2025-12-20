@@ -263,5 +263,66 @@ export const ChatService = {
 
             return { data: roomId, error: null };
         });
+    },
+
+    async deleteRoom(roomId: string): Promise<{ error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { error } = await client.from('rooms').delete().eq('id', roomId);
+            return { error: error?.message || null };
+        });
+    },
+
+    async updateMessageStatus(messageId: string, status: 'delivered' | 'read'): Promise<{ error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const updateObj: any = { status };
+            if (status === 'delivered') updateObj.delivered_at = new Date().toISOString();
+            if (status === 'read') updateObj.read_at = new Date().toISOString();
+
+            const { error } = await client
+                .from('messages')
+                .update(updateObj)
+                .eq('id', messageId);
+            return { error: error?.message || null };
+        });
+    },
+
+    async blockUser(targetUserId: string): Promise<{ error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { data: { user } } = await client.auth.getUser();
+            if (!user) return { error: 'Not authenticated' };
+
+            const { error } = await client
+                .from('blocked_users')
+                .insert({ blocker_id: user.id, blocked_id: targetUserId });
+            return { error: error?.message || null };
+        });
+    },
+
+    async unblockUser(targetUserId: string): Promise<{ error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { data: { user } } = await client.auth.getUser();
+            if (!user) return { error: 'Not authenticated' };
+
+            const { error } = await client
+                .from('blocked_users')
+                .delete()
+                .eq('blocker_id', user.id)
+                .eq('blocked_id', targetUserId);
+            return { error: error?.message || null };
+        });
+    },
+
+    async isBlocked(targetUserId: string): Promise<boolean> {
+        const { data } = await safeSupabaseOperation(async (client) => {
+            const { data: { user } } = await client.auth.getUser();
+            if (!user) return { data: null };
+
+            return await client
+                .from('blocked_users')
+                .select('id')
+                .or(`and(blocker_id.eq.${user.id},blocked_id.eq.${targetUserId}),and(blocker_id.eq.${targetUserId},blocked_id.eq.${user.id})`)
+                .single();
+        });
+        return !!data;
     }
 };

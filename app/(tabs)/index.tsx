@@ -81,10 +81,6 @@ export default function ChatsScreen() {
     return () => clearTimeout(searchTimer);
   }, [searchQuery]);
 
-  const getAge = (id: string) => {
-    const ages: Record<string, number> = { '1': 21, '2': 28, '3': 24, '4': 27, '5': 23 };
-    return ages[id] || 22;
-  };
 
   const formatTime = (date: Date) => {
     const now = new Date();
@@ -234,7 +230,7 @@ export default function ChatsScreen() {
       <View style={styles.chatContent}>
         <View style={styles.chatHeader}>
           <Text style={[styles.chatName, { color: '#00E5FF' }]} numberOfLines={1}>
-            {item.userName.split(' ')[0]}, {getAge(item.id)}
+            {item.userName.split(' ')[0]}{item.age ? `, ${item.age}` : ''}
             {item.online && <Text style={{ color: colors.success }}> •</Text>}
           </Text>
           <Text style={[styles.chatTime, { color: '#666' }]}>

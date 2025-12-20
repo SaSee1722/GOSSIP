@@ -19,6 +19,7 @@ import { Avatar } from '@/components/ui/Avatar';
 import { GradientText } from '@/components/ui/GradientText';
 import { useChat } from '@/hooks/useChat';
 import { useCall } from '@/contexts/CallContext';
+import { useAuth } from '@/template';
 import { LinearGradient } from 'expo-linear-gradient';
 
 interface CallItem {
@@ -37,10 +38,24 @@ export default function CallsScreen() {
   const { colors } = useTheme();
   const router = useRouter();
   const { chats } = useChat();
-  const { initiateCall } = useCall();
+  const { initiateCall, callHistory, loading: callsLoading } = useCall();
+  const { user } = useAuth();
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  const formatDuration = (seconds: number) => {
+    if (!seconds) return '0s';
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+  };
+
+  const formatDate = (date: Date) => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const d = new Date(date);
+    return `${days[d.getDay()]}, ${d.toLocaleDateString()}`;
+  };
 
   const calls: CallItem[] = [];
 
@@ -90,7 +105,11 @@ export default function CallsScreen() {
         </TouchableOpacity>
       </View>
 
-      {calls.length === 0 ? (
+      {callsLoading ? (
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <ActivityIndicator color={colors.primary} />
+        </View>
+      ) : callHistory.length === 0 ? (
         <View style={styles.emptyContainer}>
           <View style={[styles.emptyIcon, { backgroundColor: '#111' }]}>
             <Ionicons name="call-outline" size={40} color="#333" />
@@ -105,28 +124,33 @@ export default function CallsScreen() {
         </View>
       ) : (
         <FlatList
-          data={calls}
+          data={callHistory}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.listContent}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={styles.callItem}>
-              <Avatar uri={item.userAvatar} size={56} />
-              <View style={styles.callDetails}>
-                <Text style={[styles.callName, { color: '#FFF' }]}>{item.userName}</Text>
-                <View style={styles.callMeta}>
-                  <Ionicons
-                    name={item.direction === 'incoming' ? 'arrow-down' : 'arrow-up'}
-                    size={14}
-                    color={item.direction === 'missed' ? '#FFB6C1' : '#00BFFF'}
-                  />
-                  <Text style={styles.callTime}>{formatTime(item.timestamp)}</Text>
+          renderItem={({ item }) => {
+            const isOutgoing = item.caller_id === user?.id;
+            const otherUser = item.profiles;
+            return (
+              <TouchableOpacity style={styles.callItem}>
+                <Avatar uri={otherUser?.avatar_url || ''} size={56} />
+                <View style={styles.callDetails}>
+                  <Text style={[styles.callName, { color: '#FFF' }]}>{otherUser?.full_name || otherUser?.username || 'User'}</Text>
+                  <View style={styles.callMeta}>
+                    <Ionicons
+                      name={isOutgoing ? 'arrow-up' : 'arrow-down'}
+                      size={14}
+                      color={item.status === 'missed' ? '#FFB6C1' : '#00BFFF'}
+                    />
+                    <Text style={styles.callTime}>{formatDate(new Date(item.created_at))} • {formatTime(new Date(item.created_at))}</Text>
+                  </View>
+                  <Text style={{ color: '#444', fontSize: 11, marginTop: 2 }}>Duration: {formatDuration(item.duration)}</Text>
                 </View>
-              </View>
-              <TouchableOpacity onPress={() => handleStartCall(item.userId, item.type)}>
-                <Ionicons name={item.type === 'video' ? 'videocam-outline' : 'call-outline'} size={24} color="#00BFFF" />
+                <TouchableOpacity onPress={() => handleStartCall(isOutgoing ? item.profiles?.id || '' : item.caller_id, item.type)}>
+                  <Ionicons name={item.type === 'video' ? 'videocam-outline' : 'call-outline'} size={24} color="#00BFFF" />
+                </TouchableOpacity>
               </TouchableOpacity>
-            </TouchableOpacity>
-          )}
+            );
+          }}
         />
       )}
 

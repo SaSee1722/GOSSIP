@@ -8,7 +8,8 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  StatusBar
+  StatusBar,
+  Alert
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -26,28 +27,34 @@ export default function ChatDetailScreen() {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const { id } = useLocalSearchParams();
-  const { chats, messages, sendMessage, markAsRead, setTyping } = useChat();
+  const { chats, messages, sendMessage, markAsRead, setTyping, blockUser, deleteGroup } = useChat();
   const { initiateCall } = useCall();
   const { user } = useAuth();
   const router = useRouter();
   const [messageText, setMessageText] = useState('');
   const flatListRef = useRef<FlatList>(null);
   const typingTimeoutRef = useRef<any>(null);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [checkingBlock, setCheckingBlock] = useState(true);
 
   const chat = chats.find(c => c.id === id);
   const chatMessages = messages[id as string] || [];
 
-  // Mocking ages for now
-  const getAge = (chatId: string) => {
-    const ages: Record<string, number> = { '1': 21, '2': 28, '3': 24, '4': 27, '5': 23 };
-    return ages[chatId] || 22;
-  };
-
   useEffect(() => {
     if (id) {
       markAsRead(id as string);
+      checkBlockStatus();
     }
   }, [id]);
+
+  const checkBlockStatus = async () => {
+    if (chat?.type === 'direct') {
+      const { ChatService } = await import('@/services/ChatService');
+      const blocked = await ChatService.isBlocked(chat.userId);
+      setIsBlocked(blocked);
+    }
+    setCheckingBlock(false);
+  };
 
   const handleTyping = (text: string) => {
     setMessageText(text);
@@ -95,17 +102,35 @@ export default function ChatDetailScreen() {
 
         <View style={styles.headerTitleContainer}>
           <GradientText
-            text={`${chat.userName.split(' ')[0]}, ${getAge(chat.id)}`}
+            text={chat.type === 'direct' ? `${chat.userName.split(' ')[0]}${chat.age ? `, ${chat.age}` : ''}` : chat.userName}
             style={styles.headerName}
           />
         </View>
 
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => initiateCall(chat.userId, 'audio')} style={styles.headerAction}>
+          <TouchableOpacity onPress={() => initiateCall(chat.id, 'audio', chat.type === 'group')} style={styles.headerAction}>
             <Ionicons name="call-outline" size={22} color="#FFF" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => initiateCall(chat.userId, 'video')} style={styles.headerAction}>
+          <TouchableOpacity onPress={() => initiateCall(chat.id, 'video', chat.type === 'group')} style={styles.headerAction}>
             <Ionicons name="videocam-outline" size={22} color="#FFF" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              if (chat.type === 'direct') {
+                Alert.alert('Gossip Settings', 'What do you want to do?', [
+                  { text: 'Block User', style: 'destructive', onPress: () => blockUser(chat.userId).then(() => router.back()) },
+                  { text: 'Cancel', style: 'cancel' }
+                ]);
+              } else {
+                Alert.alert('Group Settings', 'Options for this gossip group', [
+                  { text: 'Delete Group', style: 'destructive', onPress: () => deleteGroup(chat.id).then(() => router.back()) },
+                  { text: 'Cancel', style: 'cancel' }
+                ]);
+              }
+            }}
+            style={styles.headerAction}
+          >
+            <Ionicons name="ellipsis-vertical" size={22} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerAvatar}>
             <Avatar uri={chat.userAvatar} size={36} />
@@ -138,11 +163,18 @@ export default function ChatDetailScreen() {
                     {item.content}
                   </Text>
                 </View>
-                {isSent && (
-                  <Text style={styles.readIndicator}>
-                    Read {formatTime(item.timestamp)}
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                  <Text style={[styles.timeText, { color: isSent ? 'rgba(255,255,255,0.6)' : '#666' }]}>
+                    {formatTime(item.timestamp)}
                   </Text>
-                )}
+                  {isSent && (
+                    <Ionicons
+                      name={item.status === 'read' ? 'checkmark-done' : (item.status === 'delivered' ? 'checkmark-done' : 'checkmark')}
+                      size={16}
+                      color={item.status === 'read' ? '#00E5FF' : 'rgba(255,255,255,0.6)'}
+                    />
+                  )}
+                </View>
               </View>
             );
           }}
@@ -150,25 +182,31 @@ export default function ChatDetailScreen() {
 
         {/* Input Bar */}
         <View style={[styles.inputContainer, { paddingBottom: Math.max(insets.bottom, 20) }]}>
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={styles.input}
-              placeholder="Message"
-              placeholderTextColor="#666"
-              value={messageText}
-              onChangeText={handleTyping}
-              onSubmitEditing={handleSend}
-            />
-            <View style={styles.inputIcons}>
-              <TouchableOpacity style={styles.iconBtn}>
-                <Ionicons name="happy-outline" size={24} color="#666" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.iconBtn}>
-                <Ionicons name="attach" size={24} color="#666" />
-              </TouchableOpacity>
+          {isBlocked ? (
+            <View style={[styles.inputWrapper, { justifyContent: 'center' }]}>
+              <Text style={{ color: '#666', fontSize: 14 }}>You have blocked this user or they blocked you.</Text>
             </View>
-          </View>
-          {messageText.length > 0 && (
+          ) : (
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Message"
+                placeholderTextColor="#666"
+                value={messageText}
+                onChangeText={handleTyping}
+                onSubmitEditing={handleSend}
+              />
+              <View style={styles.inputIcons}>
+                <TouchableOpacity style={styles.iconBtn}>
+                  <Ionicons name="happy-outline" size={24} color="#666" />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.iconBtn}>
+                  <Ionicons name="attach" size={24} color="#666" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          {!isBlocked && messageText.length > 0 && (
             <TouchableOpacity onPress={handleSend} style={styles.realSendBtn}>
               <Ionicons name="send" size={22} color={colors.primary} />
             </TouchableOpacity>
@@ -248,6 +286,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
     fontWeight: '400',
+  },
+  timeText: {
+    fontSize: 11,
   },
   readIndicator: {
     fontSize: 11,

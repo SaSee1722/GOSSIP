@@ -1,27 +1,27 @@
--- GOSSIP MASTER DATABASE SETUP (CLEAN RESTART)
--- This script will:
--- 1. Drop existing tables and functions
--- 2. Create the complete schema
--- 3. Set up triggers and RLS policies
--- 4. Configure Realtime
+-- GOSSIP MASTER DATABASE SETUP (FUNCTIONAL RESTART)
+-- This script implements the core logic for:
+-- 1. Real-time Chat & Requests
+-- 2. Blocking Logic
+-- 3. Group Creation & Admin Rules
+-- 4. Call History & Signaling
+-- 5. Message Tick System (Sent/Delivered/Read)
 
 -- ==========================================
 -- 1. CLEANUP
 -- ==========================================
 
--- Drop in reverse dependency order
 drop trigger if exists on_auth_user_created on auth.users;
 drop function if exists public.handle_new_user();
 
-drop table if exists ice_candidates;
-drop table if exists calls;
-drop table if exists messages;
-drop table if exists room_participants;
-drop table if exists rooms;
-drop table if exists connections;
-drop table if exists statuses;
-drop table if exists blocked_users;
-drop table if exists profiles;
+drop table if exists public.ice_candidates cascade;
+drop table if exists public.calls cascade;
+drop table if exists public.messages cascade;
+drop table if exists public.room_participants cascade;
+drop table if exists public.rooms cascade;
+drop table if exists public.connections cascade;
+drop table if exists public.statuses cascade;
+drop table if exists public.blocked_users cascade;
+drop table if exists public.profiles cascade;
 
 -- ==========================================
 -- 2. CORE TABLES
@@ -37,10 +37,8 @@ create table public.profiles (
   age integer,
   phone text,
   gender text,
-  is_public boolean default true,
-  last_seen_enabled boolean default true,
-  last_seen timestamp with time zone,
   is_online boolean default false,
+  last_seen timestamp with time zone default now(),
   updated_at timestamp with time zone default now()
 );
 
@@ -54,7 +52,7 @@ create table public.connections (
   unique(requester_id, addressee_id)
 );
 
--- BLOCKED USERS
+-- BLOCKING LOGIC
 create table public.blocked_users (
   id uuid default gen_random_uuid() primary key,
   blocker_id uuid references auth.users(id) on delete cascade not null,
@@ -66,9 +64,9 @@ create table public.blocked_users (
 -- ROOMS (Chats/Groups)
 create table public.rooms (
   id uuid default gen_random_uuid() primary key,
-  name text,
+  name text, -- Group name
   type text check (type in ('direct', 'group')) default 'direct',
-  created_by uuid references auth.users(id),
+  created_by uuid references auth.users(id), -- Admin/Creator
   created_at timestamp with time zone default now()
 );
 
@@ -78,12 +76,11 @@ create table public.room_participants (
   room_id uuid references public.rooms(id) on delete cascade not null,
   user_id uuid references public.profiles(id) on delete cascade not null,
   role text check (role in ('owner', 'admin', 'member')) default 'member',
-  muted_until timestamp with time zone,
-  created_at timestamp with time zone default now(),
+  joined_at timestamp with time zone default now(),
   unique(room_id, user_id)
 );
 
--- MESSAGES
+-- MESSAGES (Tick behavior: sent, delivered, read)
 create table public.messages (
   id uuid default gen_random_uuid() primary key,
   room_id uuid references public.rooms(id) on delete cascade not null,
@@ -91,22 +88,20 @@ create table public.messages (
   content text,
   message_type text check (message_type in ('text', 'image', 'video', 'audio', 'document')) default 'text',
   media_url text,
-  media_meta jsonb,
   status text check (status in ('sent', 'delivered', 'read')) default 'sent',
-  reply_to uuid references public.messages(id),
-  deleted_for_all boolean default false,
   delivered_at timestamp with time zone,
   read_at timestamp with time zone,
   created_at timestamp with time zone default now()
 );
 
--- CALLS
+-- CALLS (Recents/History)
 create table public.calls (
   id uuid default gen_random_uuid() primary key,
   room_id uuid references public.rooms(id) on delete cascade,
   caller_id uuid references auth.users(id) not null,
   type text check (type in ('audio', 'video')) default 'video',
   status text check (status in ('ringing', 'accepted', 'rejected', 'missed', 'ended')) default 'ringing',
+  duration integer default 0, -- in seconds
   created_at timestamp with time zone default now(),
   ended_at timestamp with time zone
 );
@@ -133,7 +128,7 @@ create table public.statuses (
 -- 3. TRIGGERS & FUNCTIONS
 -- ==========================================
 
--- Trigger function to create profile on signup
+-- Create profile on signup
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -151,40 +146,33 @@ begin
 end;
 $$;
 
--- Create the trigger
-drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
--- Populate profiles for existing users if missing (Crucial after table drops/clean restarts)
+-- Backfill existing users
 insert into public.profiles (id, username, full_name, avatar_url)
-select 
-  id, 
-  raw_user_meta_data ->> 'username', 
-  raw_user_meta_data ->> 'full_name', 
-  raw_user_meta_data ->> 'avatar_url'
+select id, raw_user_meta_data ->> 'username', raw_user_meta_data ->> 'full_name', raw_user_meta_data ->> 'avatar_url'
 from auth.users
 on conflict (id) do nothing;
 
--- Function to get a direct room between two users
+-- Helper to find direct room
 create or replace function public.get_direct_room(user1 uuid, user2 uuid)
 returns uuid
 language plpgsql
 security definer
 as $$
 declare
-  room_id uuid;
+  found_room_id uuid;
 begin
-  select rp1.room_id into room_id
+  select rp1.room_id into found_room_id
   from public.room_participants rp1
   join public.room_participants rp2 on rp1.room_id = rp2.room_id
   join public.rooms r on r.id = rp1.room_id
   where r.type = 'direct'
     and rp1.user_id = user1
     and rp2.user_id = user2;
-    
-  return room_id;
+  return found_room_id;
 end;
 $$;
 
@@ -192,7 +180,6 @@ $$;
 -- 4. SECURITY (RLS)
 -- ==========================================
 
--- Enable RLS
 alter table public.profiles enable row level security;
 alter table public.connections enable row level security;
 alter table public.blocked_users enable row level security;
@@ -203,76 +190,67 @@ alter table public.calls enable row level security;
 alter table public.ice_candidates enable row level security;
 alter table public.statuses enable row level security;
 
--- Policies (Simplified for development, should be hardened for production)
-create policy "Public profiles are viewable by everyone" on public.profiles for select using (true);
-create policy "Users can update own profile" on public.profiles for update using (auth.uid() = id);
+-- Policies
+create policy "Public visibility" on public.profiles for select using (true);
+create policy "Self update" on public.profiles for update using (auth.uid() = id);
 
-create policy "Users can see their connections" on public.connections for select using (auth.uid() = requester_id or auth.uid() = addressee_id);
-create policy "Users can manage their connections" on public.connections for all using (auth.uid() = requester_id or auth.uid() = addressee_id);
+create policy "Connections visibility" on public.connections for select using (auth.uid() = requester_id or auth.uid() = addressee_id);
+create policy "Connections management" on public.connections for all using (auth.uid() = requester_id or auth.uid() = addressee_id);
 
-create policy "Users can see participants" on public.room_participants for select using (true);
-create policy "Users can see rooms" on public.rooms for select using (true);
+create policy "Block visibility" on public.blocked_users for select using (auth.uid() = blocker_id);
+create policy "Block management" on public.blocked_users for all using (auth.uid() = blocker_id);
 
-create policy "Users can see messages in their rooms" on public.messages for select using (true);
-create policy "Users can insert messages" on public.messages for insert with check (auth.uid() = user_id);
+create policy "Room visibility" on public.rooms for select using (
+  exists (select 1 from public.room_participants where room_id = public.rooms.id and user_id = auth.uid())
+);
+create policy "Room creation" on public.rooms for insert with check (auth.uid() = created_by);
+create policy "Room admin delete" on public.rooms for delete using (auth.uid() = created_by);
 
-create policy "Ice candidates access" on public.ice_candidates for all using (true);
+create policy "Participants visibility" on public.room_participants for select using (true);
+create policy "Participants management" on public.room_participants for all using (true);
+
+-- Message policies with Blocking check
+create policy "Message visibility" on public.messages for select using (
+  exists (select 1 from public.room_participants where room_id = public.messages.room_id and user_id = auth.uid())
+);
+create policy "Message sending" on public.messages for insert with check (
+  auth.uid() = user_id AND 
+  NOT exists (
+    select 1 from public.blocked_users 
+    where (blocker_id = auth.uid() and blocked_id = (select user_id from public.room_participants where room_id = messages.room_id and user_id != auth.uid() limit 1))
+    OR (blocked_id = auth.uid() and blocker_id = (select user_id from public.room_participants where room_id = messages.room_id and user_id != auth.uid() limit 1))
+  )
+);
+create policy "Message update stats" on public.messages for update using (true);
+
 create policy "Calls access" on public.calls for all using (true);
-
-create policy "Statuses are viewable by everyone" on public.statuses for select using (true);
-create policy "Users can insert their own status" on public.statuses for insert with check (auth.uid() = user_id);
-
--- ==========================================
--- 5. STORAGE
--- ==========================================
-
--- Ensure storage bucket exists
-insert into storage.buckets (id, name, public) 
-values ('chat-media', 'chat-media', true)
-on conflict (id) do nothing;
-
--- Ensure existence of bucket object policies (handling existing ones)
-do $$
-begin
-    create policy "Allow Public Select" on storage.objects for select to public using ( bucket_id = 'chat-media' );
-exception when others then
-    null;
-end;
-$$;
-
-do $$
-begin
-    create policy "Allow Authenticated Uploads" on storage.objects for insert to authenticated with check ( bucket_id = 'chat-media' );
-exception when others then
-    null;
-end;
-$$;
+create policy "Ice access" on public.ice_candidates for all using (true);
+create policy "Status access" on public.statuses for all using (true);
 
 -- ==========================================
--- 6. REALTIME
+-- 5. REALTIME
 -- ==========================================
 
--- Enable Realtime
+alter table public.profiles replica identity full;
+alter table public.connections replica identity full;
+alter table public.rooms replica identity full;
 alter table public.messages replica identity full;
 alter table public.calls replica identity full;
 alter table public.ice_candidates replica identity full;
-alter table public.profiles replica identity full;
-alter table public.statuses replica identity full;
 
 begin;
   drop publication if exists supabase_realtime;
   create publication supabase_realtime for table 
-    public.messages, 
+    public.profiles, 
+    public.connections, 
     public.rooms, 
     public.room_participants, 
-    public.profiles, 
+    public.messages, 
     public.calls, 
-    public.ice_candidates, 
-    public.connections,
+    public.ice_candidates,
     public.statuses;
 commit;
 
--- Grant permissions to anon and authenticated for direct access
 grant all on all tables in schema public to postgres, anon, authenticated, service_role;
 grant all on all functions in schema public to postgres, anon, authenticated, service_role;
 grant all on all sequences in schema public to postgres, anon, authenticated, service_role;

@@ -10,7 +10,7 @@ export interface Message {
   content: string;
   type: 'text' | 'image' | 'video' | 'audio' | 'document';
   timestamp: Date;
-  read: boolean;
+  status: 'sent' | 'delivered' | 'read';
   reactions?: string[];
 }
 
@@ -25,6 +25,7 @@ export interface Chat {
   online: boolean;
   typing: boolean;
   type: 'direct' | 'group';
+  age?: number;
 }
 
 export interface ConnectionRequest {
@@ -51,6 +52,9 @@ interface ChatContextType {
   sendRequest: (userId: string) => Promise<void>;
   respondToRequest: (requestId: string, status: 'accepted' | 'rejected') => Promise<string | null>;
   refreshChats: () => Promise<void>;
+  blockUser: (userId: string) => Promise<void>;
+  unblockUser: (userId: string) => Promise<void>;
+  deleteGroup: (roomId: string) => Promise<void>;
 }
 
 export const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -165,6 +169,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           online: otherUser.is_online || false,
           typing: false,
           type: 'direct',
+          age: otherUser.age,
         };
       }
     } else {
@@ -207,8 +212,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           content: newMessage.content,
           type: newMessage.message_type as any,
           timestamp: new Date(newMessage.created_at),
-          read: newMessage.status === 'read',
+          status: newMessage.status,
         };
+
+        // If message is for me, mark as delivered
+        if (newMessage.user_id !== user?.id && newMessage.status === 'sent') {
+          ChatService.updateMessageStatus(newMessage.id, 'delivered');
+        }
 
         setMessages(prev => ({
           ...prev,
@@ -279,10 +289,21 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   };
 
   const markAsRead = async (chatId: string) => {
-    // Implement read receipt update in DB
+    const chatMsgs = messages[chatId] || [];
+    const unreadMsgs = chatMsgs.filter(m => m.senderId !== user?.id && m.status !== 'read');
+
+    for (const msg of unreadMsgs) {
+      ChatService.updateMessageStatus(msg.id, 'read');
+    }
+
     setChats(prev => prev.map(chat =>
       chat.id === chatId ? { ...chat, unreadCount: 0 } : chat
     ));
+
+    setMessages(prev => ({
+      ...prev,
+      [chatId]: (prev[chatId] || []).map(m => m.senderId !== user?.id ? { ...m, status: 'read' } : m)
+    }));
   };
 
   const setTyping = async (chatId: string, isTyping: boolean) => {
@@ -324,6 +345,24 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     await loadInitialData();
   };
 
+  const blockUser = async (userId: string) => {
+    const { error } = await ChatService.blockUser(userId);
+    if (error) throw new Error(error);
+    await refreshChats();
+  };
+
+  const unblockUser = async (userId: string) => {
+    const { error } = await ChatService.unblockUser(userId);
+    if (error) throw new Error(error);
+    await refreshChats();
+  };
+
+  const deleteGroup = async (roomId: string) => {
+    const { error } = await ChatService.deleteRoom(roomId);
+    if (error) throw new Error(error);
+    await refreshChats();
+  };
+
   const contextValue = React.useMemo(() => ({
     chats,
     messages,
@@ -336,6 +375,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     sendRequest,
     respondToRequest,
     refreshChats,
+    blockUser,
+    unblockUser,
+    deleteGroup,
   }), [chats, messages, pendingRequests, loading]);
 
   return (

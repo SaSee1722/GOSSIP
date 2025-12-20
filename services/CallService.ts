@@ -6,11 +6,19 @@ export interface Call {
     caller_id: string;
     type: 'audio' | 'video';
     status: 'ringing' | 'accepted' | 'rejected' | 'missed' | 'ended';
+    duration: number;
     created_at: string;
+    ended_at: string | null;
+    profiles?: {
+        id: string;
+        username: string;
+        full_name: string;
+        avatar_url: string;
+    };
 }
 
 export const CallService = {
-    async initiateCall(receiverId: string, type: 'audio' | 'video'): Promise<{ data: Call | null; error: string | null }> {
+    async initiateCall(receiverId: string, type: 'audio' | 'video', roomId?: string): Promise<{ data: Call | null; error: string | null }> {
         try {
             return await safeSupabaseOperation(async (client) => {
                 const { data: { user } } = await client.auth.getUser();
@@ -20,6 +28,7 @@ export const CallService = {
                     .from('calls')
                     .insert({
                         caller_id: user.id,
+                        room_id: roomId || null,
                         type,
                         status: 'ringing'
                     })
@@ -37,13 +46,27 @@ export const CallService = {
     async updateCallStatus(callId: string, status: Call['status']): Promise<{ error: string | null }> {
         try {
             return await safeSupabaseOperation(async (client) => {
+                const updateData: any = { status };
+                if (status === 'ended' || status === 'rejected' || status === 'missed') {
+                    updateData.ended_at = new Date().toISOString();
+
+                    // Calculate duration if it's ending
+                    if (status === 'ended') {
+                        const { data: call } = await client.from('calls').select('created_at').eq('id', callId).single();
+                        if (call) {
+                            const start = new Date(call.created_at).getTime();
+                            const end = new Date().getTime();
+                            updateData.duration = Math.floor((end - start) / 1000);
+                        }
+                    }
+                }
+
                 const { error } = await client
                     .from('calls')
-                    .update({ status, ended_at: status === 'ended' ? new Date().toISOString() : null })
+                    .update(updateData)
                     .eq('id', callId);
 
-                if (error) return { error: error.message };
-                return { error: null };
+                return { error: error?.message || null };
             });
         } catch (err: any) {
             return { error: err.message };
@@ -65,6 +88,30 @@ export const CallService = {
             });
         } catch (err: any) {
             return { error: err.message };
+        }
+    },
+
+    async getCallHistory(): Promise<{ data: Call[]; error: string | null }> {
+        try {
+            return await safeSupabaseOperation(async (client) => {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
+
+                const { data, error } = await client
+                    .from('calls')
+                    .select(`
+                        *,
+                        profiles:caller_id (id, username, full_name, avatar_url)
+                    `)
+                    .or(`caller_id.eq.${user.id},room_id.in.(select room_id from room_participants where user_id = ${user.id})`)
+                    .neq('status', 'ringing') // Only show completed/acted upon calls
+                    .order('created_at', { ascending: false });
+
+                if (error) return { data: [], error: error.message };
+                return { data: data as Call[] || [], error: null };
+            });
+        } catch (err: any) {
+            return { data: [], error: err.message };
         }
     }
 };

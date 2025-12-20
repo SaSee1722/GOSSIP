@@ -6,19 +6,40 @@ import { useRouter } from 'expo-router';
 
 interface CallContextType {
     currentCall: Call | null;
-    initiateCall: (receiverId: string, type: 'audio' | 'video') => Promise<void>;
+    callHistory: Call[];
+    loading: boolean;
+    initiateCall: (targetId: string, type: 'audio' | 'video', isRoom?: boolean) => Promise<void>;
     endCall: () => Promise<void>;
     acceptCall: () => Promise<void>;
     rejectCall: () => Promise<void>;
+    refreshHistory: () => Promise<void>;
 }
 
 const CallContext = createContext<CallContextType | undefined>(undefined);
 
 export function CallProvider({ children }: { children: ReactNode }) {
     const [currentCall, setCurrentCall] = useState<Call | null>(null);
+    const [callHistory, setCallHistory] = useState<Call[]>([]);
+    const [loading, setLoading] = useState(false);
     const { user } = useAuth();
     const supabase = getSharedSupabaseClient();
     const router = useRouter();
+
+    const refreshHistory = async () => {
+        if (!user) return;
+        setLoading(true);
+        const { data, error } = await CallService.getCallHistory();
+        if (!error && data) {
+            setCallHistory(data);
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        if (user) {
+            refreshHistory();
+        }
+    }, [user?.id]);
 
     useEffect(() => {
         if (user) {
@@ -38,8 +59,11 @@ export function CallProvider({ children }: { children: ReactNode }) {
                         setCurrentCall(updatedCall);
                         if (updatedCall.status === 'ended' || updatedCall.status === 'rejected') {
                             setCurrentCall(null);
+                            refreshHistory();
                             router.back();
                         }
+                    } else if (updatedCall.status === 'ended' || updatedCall.status === 'rejected') {
+                        refreshHistory();
                     }
                 })
                 .subscribe();
@@ -50,8 +74,12 @@ export function CallProvider({ children }: { children: ReactNode }) {
         }
     }, [user?.id, currentCall?.id]);
 
-    const initiateCall = async (receiverId: string, type: 'audio' | 'video') => {
-        const { data, error } = await CallService.initiateCall(receiverId, type);
+    const initiateCall = async (targetId: string, type: 'audio' | 'video', isRoom: boolean = false) => {
+        const { data, error } = await CallService.initiateCall(
+            isRoom ? '' : targetId,
+            type,
+            isRoom ? targetId : undefined
+        );
         if (data) {
             setCurrentCall(data);
             router.push(`/call/${type}`);
@@ -82,10 +110,13 @@ export function CallProvider({ children }: { children: ReactNode }) {
     return (
         <CallContext.Provider value={{
             currentCall,
+            callHistory,
+            loading,
             initiateCall,
             endCall,
             acceptCall,
-            rejectCall
+            rejectCall,
+            refreshHistory
         }}>
             {children}
         </CallContext.Provider>
