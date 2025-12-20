@@ -1,4 +1,5 @@
 import { safeSupabaseOperation } from '@/template/core/client';
+import * as FileSystem from 'expo-file-system';
 
 export interface Profile {
     id: string;
@@ -63,12 +64,9 @@ export const ProfileService = {
             try {
                 console.log('[ProfileService] Starting upload for URI:', uri);
 
-                // Use FileSystem for React Native compatibility
-                const FileSystem = require('expo-file-system');
-
                 // Read file as base64
                 const base64 = await FileSystem.readAsStringAsync(uri, {
-                    encoding: FileSystem.EncodingType.Base64,
+                    encoding: 'base64',
                 });
 
                 console.log('[ProfileService] File read successfully, size:', base64.length);
