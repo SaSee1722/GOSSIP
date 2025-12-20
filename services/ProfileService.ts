@@ -61,24 +61,53 @@ export const ProfileService = {
     async uploadAvatar(userId: string, uri: string): Promise<{ data: string | null; error: string | null }> {
         return await safeSupabaseOperation(async (client) => {
             try {
-                const response = await fetch(uri);
-                const blob = await response.blob();
-                const fileExt = uri.split('.').pop();
-                const fileName = `${userId}_${Math.random()}.${fileExt}`;
+                console.log('[ProfileService] Starting upload for URI:', uri);
+
+                // Use FileSystem for React Native compatibility
+                const FileSystem = require('expo-file-system');
+
+                // Read file as base64
+                const base64 = await FileSystem.readAsStringAsync(uri, {
+                    encoding: FileSystem.EncodingType.Base64,
+                });
+
+                console.log('[ProfileService] File read successfully, size:', base64.length);
+
+                // Convert base64 to blob
+                const byteCharacters = atob(base64);
+                const byteNumbers = new Array(byteCharacters.length);
+                for (let i = 0; i < byteCharacters.length; i++) {
+                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                }
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: 'image/jpeg' });
+
+                const fileExt = uri.split('.').pop() || 'jpg';
+                const fileName = `${userId}_${Date.now()}.${fileExt}`;
                 const filePath = `avatars/${fileName}`;
 
-                const { error: uploadError } = await client.storage
-                    .from('gossip-avatars') // Using a specific bucket name
-                    .upload(filePath, blob);
+                console.log('[ProfileService] Uploading to:', filePath);
 
-                if (uploadError) throw uploadError;
+                const { error: uploadError } = await client.storage
+                    .from('gossip-avatars')
+                    .upload(filePath, blob, {
+                        contentType: 'image/jpeg',
+                        upsert: false
+                    });
+
+                if (uploadError) {
+                    console.error('[ProfileService] Upload error:', uploadError);
+                    throw uploadError;
+                }
 
                 const { data } = client.storage
                     .from('gossip-avatars')
                     .getPublicUrl(filePath);
 
+                console.log('[ProfileService] Upload successful, URL:', data.publicUrl);
                 return { data: data.publicUrl, error: null };
             } catch (err: any) {
+                console.error('[ProfileService] Upload failed:', err);
                 return { data: null, error: err.message };
             }
         });
