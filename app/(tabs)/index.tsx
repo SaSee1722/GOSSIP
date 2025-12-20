@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ScrollView, ActivityIndicator, Alert, Image as RNImage, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,10 +18,48 @@ export default function ChatsScreen() {
   const { statuses, loading: statusLoading } = useStatus();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   const filteredChats = chats.filter(chat =>
     chat.userName.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  useEffect(() => {
+    const searchTimer = setTimeout(async () => {
+      if (searchQuery.trim().length >= 2) {
+        setSearchLoading(true);
+        const { ProfileService } = await import('@/services/ProfileService');
+        const { data, error } = await ProfileService.searchProfiles(searchQuery);
+        if (!error && data) {
+          // Filter out users who already have a chat room with the current user
+          const existingUserIds = chats.map(c => c.userId);
+          const newResults = data.filter(p => !existingUserIds.includes(p.id));
+          setSearchResults(newResults);
+        }
+        setSearchLoading(false);
+      } else {
+        setSearchResults([]);
+      }
+    }, 500);
+
+    return () => clearTimeout(searchTimer);
+  }, [searchQuery, chats]);
+
+  const startNewChat = async (userId: string) => {
+    try {
+      const { ChatService } = await import('@/services/ChatService');
+      const { data: roomId, error } = await ChatService.createDirectChat(userId);
+      if (error) {
+        Alert.alert('Error', error);
+      } else if (roomId) {
+        setSearchQuery('');
+        router.push(`/chat/${roomId}`);
+      }
+    } catch (err: any) {
+      Alert.alert('Error', err.message);
+    }
+  };
 
   // Mocking ages for now as they aren't in the data model yet
   const getAge = (id: string) => {
@@ -66,10 +104,7 @@ export default function ChatsScreen() {
         <GradientText
           text="Connect, share, and whisper in style."
           style={styles.brandQuote}
-          colors={['#E0E0E0', '#C0C0C0']} // Keep quote subtle/grey or use gradient? User said "every parts... black,lightblue,baby pink". Let's stick to theme or simple text for quote. 
-        // Actually user said "every parts... black,lightblue,baby pink". 
-        // But grey is needed for secondary text. I'll make the quote grey for readability or maybe subtle gradient.
-        // Let's use subtle grey.
+          colors={['#E0E0E0', '#C0C0C0']}
         />
       </View>
 
@@ -115,12 +150,42 @@ export default function ChatsScreen() {
         <Ionicons name="search" size={20} color="#555" />
         <TextInput
           style={styles.searchInput as any}
-          placeholder="Search..."
+          placeholder="Find people to gossip with..."
           placeholderTextColor="#555"
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
+        {searchLoading && <ActivityIndicator size="small" color={colors.primary} style={{ marginRight: 10 }} />}
       </View>
+
+      {/* Search Results Section */}
+      {searchQuery.trim().length > 0 && searchResults.length > 0 && (
+        <View style={styles.searchResultSection}>
+          <Text style={styles.searchResultTitle}>FOUND NEW GOSSIPERS</Text>
+          {searchResults.map(profile => (
+            <TouchableOpacity
+              key={profile.id}
+              style={styles.searchResultItem}
+              onPress={() => startNewChat(profile.id)}
+            >
+              <Avatar uri={profile.avatar_url} size={48} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.searchResultName}>{profile.full_name || profile.username}</Text>
+                <Text style={styles.searchResultUser}>@{profile.username}</Text>
+              </View>
+              <Ionicons name="chatbubble-ellipses-outline" size={22} color={colors.primary} />
+            </TouchableOpacity>
+          ))}
+          <View style={styles.divider} />
+          {filteredChats.length > 0 && <Text style={styles.searchResultTitle}>EXISTING GOSSIPS</Text>}
+        </View>
+      )}
+
+      {searchQuery.trim().length > 0 && !searchLoading && searchResults.length === 0 && filteredChats.length === 0 && (
+        <View style={styles.noResults}>
+          <Text style={{ color: '#666' }}>No gossiper found with that name.</Text>
+        </View>
+      )}
     </View>
   );
 
@@ -317,5 +382,45 @@ const styles = StyleSheet.create({
   chatMessage: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  searchResultSection: {
+    paddingHorizontal: 20,
+    marginTop: 10,
+    gap: 12,
+  },
+  searchResultTitle: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#333',
+    letterSpacing: 2,
+    marginBottom: 5,
+  },
+  searchResultItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#080808',
+    padding: 12,
+    borderRadius: 16,
+    gap: 15,
+    borderWidth: 1,
+    borderColor: '#111',
+  },
+  searchResultName: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  searchResultUser: {
+    color: '#666',
+    fontSize: 13,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#111',
+    marginVertical: 10,
+  },
+  noResults: {
+    padding: 40,
+    alignItems: 'center',
   },
 });
