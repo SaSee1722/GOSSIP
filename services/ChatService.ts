@@ -121,7 +121,7 @@ export const ChatService = {
         }
     },
 
-    async sendMessage(roomId: string, content: string, type: string = 'text'): Promise<{ data: MessageData | null; error: string | null }> {
+    async sendMessage(roomId: string, content: string, type: string = 'text', mediaUrl?: string): Promise<{ data: MessageData | null; error: string | null }> {
         try {
             return await safeSupabaseOperation(async (client) => {
                 const { data: { user } } = await client.auth.getUser();
@@ -154,6 +154,7 @@ export const ChatService = {
                         user_id: user.id,
                         content,
                         message_type: type,
+                        media_url: mediaUrl,
                         status: 'sent'
                     })
                     .select()
@@ -276,6 +277,41 @@ export const ChatService = {
                 const { data } = client.storage
                     .from('gossip-avatars')
                     .getPublicUrl(filePath);
+
+                return { data: data.publicUrl, error: null };
+            } catch (err: any) {
+                return { data: null, error: err.message };
+            }
+        });
+    },
+
+    async uploadChatAttachment(roomId: string, uri: string, type: 'image' | 'video' | 'audio' | 'document'): Promise<{ data: string | null; error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            try {
+                const fileExt = uri.split('.').pop() || 'dat';
+                const folder = type === 'image' ? 'images' : type === 'video' ? 'videos' : 'docs';
+                const fileName = `${folder}/${roomId}_${Date.now()}.${fileExt}`;
+
+                const response = await fetch(uri);
+                const blob = await response.blob();
+
+                // Determine mime type
+                let mimeType = 'application/octet-stream';
+                if (type === 'image') mimeType = 'image/jpeg';
+                else if (type === 'video') mimeType = 'video/mp4';
+
+                const { error: uploadError } = await client.storage
+                    .from('chat-attachments')
+                    .upload(fileName, blob, {
+                        contentType: mimeType,
+                        upsert: false
+                    });
+
+                if (uploadError) throw uploadError;
+
+                const { data } = client.storage
+                    .from('chat-attachments')
+                    .getPublicUrl(fileName);
 
                 return { data: data.publicUrl, error: null };
             } catch (err: any) {

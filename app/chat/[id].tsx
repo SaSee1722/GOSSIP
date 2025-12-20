@@ -15,6 +15,8 @@ import {
   Image as RNImage
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as DocumentPicker from 'expo-document-picker';
+import { ChatService } from '@/services/ChatService';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -26,7 +28,7 @@ import { GradientText } from '@/components/ui/GradientText';
 import { TypingIndicator } from '@/components/ui/TypingIndicator';
 import { BlurView } from 'expo-blur';
 import { theme } from '@/constants/theme';
-import { ChatService } from '@/services/ChatService';
+
 import { useCall } from '@/contexts/CallContext';
 
 export default function ChatDetailScreen() {
@@ -157,6 +159,52 @@ export default function ChatDetailScreen() {
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
     }
+  };
+
+  const uploadAndSend = async (uri: string, type: 'image' | 'video' | 'document') => {
+    setUpdating(true); // Show spinner
+    setShowAttachMenu(false); // Close menu
+    try {
+      const { data: url, error } = await ChatService.uploadChatAttachment(id as string, uri, type);
+      if (error || !url) throw new Error(error || 'Upload failed');
+
+      await sendMessage(id as string, type === 'document' ? 'File Attachment' : (type === 'image' ? 'Image Attachment' : 'Video Attachment'), type, url);
+    } catch (e: any) {
+      Alert.alert('Error', e.message);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleMediaPick = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: false, // Videos shouldn't be edited usually
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      await uploadAndSend(result.assets[0].uri, result.assets[0].type === 'video' ? 'video' : 'image');
+    }
+  };
+
+  const handleDocumentPick = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: '*/*',
+        copyToCacheDirectory: true
+      });
+      if (!result.canceled && result.assets[0]) {
+        await uploadAndSend(result.assets[0].uri, 'document');
+      }
+    } catch (err) {
+      console.log("Document Picker Error", err);
+    }
+  };
+
+  const handleContactPick = () => {
+    setShowAttachMenu(false);
+    Alert.alert('Contacts', 'Contact sharing will be available in the next update.');
   };
 
   const formatTime = (date: Date) => {
@@ -476,33 +524,22 @@ export default function ChatDetailScreen() {
         >
           <View style={[styles.attachMenu, { paddingBottom: insets.bottom + 20 }]}>
             <View style={styles.attachGrid}>
-              <TouchableOpacity style={styles.attachItem}>
-                <View style={[styles.attachIcon, { backgroundColor: '#5F66CD' }]}>
+              <TouchableOpacity style={styles.attachItem} onPress={handleDocumentPick}>
+                <View style={[styles.attachIcon, { backgroundColor: '#5f27cd' }]}>
                   <Ionicons name="document-text" size={24} color="#FFF" />
                 </View>
                 <Text style={styles.attachLabel}>Document</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                style={styles.attachItem}
-                onPress={async () => {
-                  setShowAttachMenu(false);
-                  // Placeholder for image picker logic
-                  const result = await ImagePicker.launchImageLibraryAsync({
-                    mediaTypes: ImagePicker.MediaTypeOptions.All,
-                    quality: 0.8,
-                  });
-                  console.log(result);
-                }}
-              >
-                <View style={[styles.attachIcon, { backgroundColor: '#D3396D' }]}>
+              <TouchableOpacity style={styles.attachItem} onPress={handleMediaPick}>
+                <View style={[styles.attachIcon, { backgroundColor: '#ff9f43' }]}>
                   <Ionicons name="images" size={24} color="#FFF" />
                 </View>
                 <Text style={styles.attachLabel}>Media</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.attachItem}>
-                <View style={[styles.attachIcon, { backgroundColor: '#009688' }]}>
+              <TouchableOpacity style={styles.attachItem} onPress={handleContactPick}>
+                <View style={[styles.attachIcon, { backgroundColor: '#0abde3' }]}>
                   <Ionicons name="person" size={24} color="#FFF" />
                 </View>
                 <Text style={styles.attachLabel}>Contact</Text>

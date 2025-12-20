@@ -51,7 +51,7 @@ interface ChatContextType {
   messages: Record<string, Message[]>;
   pendingRequests: ConnectionRequest[];
   loading: boolean;
-  sendMessage: (chatId: string, content: string, type?: string) => Promise<void>;
+  sendMessage: (chatId: string, content: string, type?: string, mediaUrl?: string) => Promise<void>;
   markAsRead: (chatId: string) => void;
   setTyping: (chatId: string, isTyping: boolean) => void;
   createChat: (userId: string, userName: string, userAvatar: string) => Promise<string>;
@@ -410,8 +410,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     channelRef.current = mainChannel;
   };
 
-  const sendMessage = async (chatId: string, content: string, type: string = 'text') => {
-    const { data: sentMsg, error } = await ChatService.sendMessage(chatId, content, type);
+  const sendMessage = async (chatId: string, content: string, type: string = 'text', mediaUrl?: string) => {
+    const { data: sentMsg, error } = await ChatService.sendMessage(chatId, content, type, mediaUrl);
     if (error) {
       console.error('[ChatContext] sendMessage failed:', error);
       throw new Error(error);
