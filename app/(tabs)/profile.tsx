@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useTheme } from '@/hooks/useTheme';
 import { useAuth, useAlert } from '@/template';
 import { Avatar } from '@/components/ui/Avatar';
@@ -31,7 +32,6 @@ const translations: Record<string, Record<string, string>> = {
     profile: 'Profile',
     personalInfo: 'PERSONAL INFO',
     settings: 'SETTINGS',
-    darkMode: 'Dark Mode',
     notifications: 'Notifications',
     language: 'Language',
     logout: 'Logout',
@@ -52,7 +52,6 @@ const translations: Record<string, Record<string, string>> = {
     profile: 'சுயவிவரம்',
     personalInfo: 'தனிப்பட்ட தகவல்',
     settings: 'அமைப்புகள்',
-    darkMode: 'இருண்ட பயன்முறை',
     notifications: 'அறிவிப்புகள்',
     language: 'மொழி',
     logout: 'வெளியேறு',
@@ -75,6 +74,7 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { colors, toggleTheme, isDark } = useTheme();
   const { user, logout, refreshUser } = useAuth();
+  const router = useRouter();
   const { showAlert } = useAlert();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -112,7 +112,14 @@ export default function ProfileScreen() {
   const handleLogout = async () => {
     Alert.alert(t.logout, 'Are you sure?', [
       { text: t.cancel, style: 'cancel' },
-      { text: t.logout, style: 'destructive', onPress: logout }
+      {
+        text: t.logout,
+        style: 'destructive',
+        onPress: async () => {
+          await logout();
+          router.replace('/welcome');
+        }
+      }
     ]);
   };
 
@@ -302,11 +309,6 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <GradientText text={t.settings} style={[styles.sectionTitleGradient, { marginBottom: 15 }]} />
           <BlurView intensity={25} tint="dark" style={styles.glassCard}>
-            <SettingItem
-              icon="moon-outline"
-              label={t.darkMode}
-              value={<Switch value={isDark} onValueChange={toggleTheme} trackColor={{ false: '#333', true: '#00BFFF' }} thumbColor={Platform.OS === 'ios' ? '#FFF' : isDark ? '#FFF' : '#f4f3f4'} />}
-            />
             <SettingItem
               icon="notifications-outline"
               label={t.notifications}

@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AlertProvider, AuthProvider } from '@/template';
+import { AlertProvider, AuthProvider, AuthRouter } from '@/template';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { ChatProvider } from '@/contexts/ChatContext';
 import { StatusProvider } from '@/contexts/StatusContext';
@@ -41,16 +41,21 @@ export default function RootLayout() {
               <CallProvider>
                 <SafeAreaProvider>
                   <View style={Platform.OS === 'web' ? styles.webContainer : styles.container}>
-                    <Stack screenOptions={{ headerShown: false }}>
-                      <Stack.Screen name="index" options={{ headerShown: false }} />
-                      <Stack.Screen name="welcome" options={{ headerShown: false }} />
-                      <Stack.Screen name="login" options={{ headerShown: false }} />
-                      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                      <Stack.Screen name="chat/[id]" options={{ headerShown: false }} />
-                      <Stack.Screen name="call/audio" options={{ headerShown: false }} />
-                      <Stack.Screen name="call/video" options={{ headerShown: false }} />
-                      <Stack.Screen name="call/incoming" options={{ headerShown: false, presentation: 'modal' }} />
-                    </Stack>
+                    <AuthRouter
+                      loginRoute="/welcome"
+                      excludeRoutes={['/login', '/signup', '/welcome']}
+                    >
+                      <Stack screenOptions={{ headerShown: false }}>
+                        <Stack.Screen name="index" options={{ headerShown: false }} />
+                        <Stack.Screen name="welcome" options={{ headerShown: false }} />
+                        <Stack.Screen name="login" options={{ headerShown: false }} />
+                        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                        <Stack.Screen name="chat/[id]" options={{ headerShown: false }} />
+                        <Stack.Screen name="call/audio" options={{ headerShown: false }} />
+                        <Stack.Screen name="call/video" options={{ headerShown: false }} />
+                        <Stack.Screen name="call/incoming" options={{ headerShown: false, presentation: 'modal' }} />
+                      </Stack>
+                    </AuthRouter>
                   </View>
                 </SafeAreaProvider>
               </CallProvider>
