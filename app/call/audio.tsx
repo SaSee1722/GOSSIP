@@ -26,13 +26,13 @@ export default function AudioCallScreen() {
   const [isSpeaker, setIsSpeaker] = useState(false);
 
   useEffect(() => {
-    if (!currentCall) return;
+    if (!currentCall || currentCall.status !== 'accepted') return;
     const interval = setInterval(() => {
       setDuration(prev => prev + 1);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentCall]);
+  }, [currentCall?.status]);
 
   if (!currentCall) return null;
 

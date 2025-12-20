@@ -384,6 +384,7 @@ export function CallProvider({ children }: { children: ReactNode }) {
             if (audioTrack) {
                 audioTrack.enabled = !audioTrack.enabled;
                 setIsMuted(!audioTrack.enabled);
+                console.log('[CallContext] Toggled Mute to:', !audioTrack.enabled);
             }
         }
     };
@@ -402,7 +403,15 @@ export function CallProvider({ children }: { children: ReactNode }) {
         if (localStream) {
             const videoTrack = localStream.getVideoTracks()[0];
             if (videoTrack) {
-                (videoTrack as any)._switchCamera();
+                console.log('[CallContext] Switching camera');
+                // Try standard method first, then private fallback
+                if ((videoTrack as any).switchCamera) {
+                    (videoTrack as any).switchCamera();
+                } else if ((videoTrack as any)._switchCamera) {
+                    (videoTrack as any)._switchCamera();
+                } else {
+                    console.warn('[CallContext] switchCamera method not found on video track');
+                }
             }
         }
     };

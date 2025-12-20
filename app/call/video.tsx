@@ -29,13 +29,13 @@ export default function VideoCallScreen() {
   const [duration, setDuration] = useState(0);
 
   useEffect(() => {
-    if (!currentCall) return;
+    if (!currentCall || currentCall.status !== 'accepted') return;
     const interval = setInterval(() => {
       setDuration(prev => prev + 1);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentCall]);
+  }, [currentCall?.status]);
 
   if (!currentCall) return null;
 
