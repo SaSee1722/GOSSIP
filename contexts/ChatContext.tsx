@@ -59,50 +59,85 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [chats, setChats] = useState<Chat[]>([]);
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [pendingRequests, setPendingRequests] = useState<ConnectionRequest[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const supabase = getSharedSupabaseClient();
   const channelRef = useRef<any>(null);
   const connChannelRef = useRef<any>(null);
+  const isFetchingRef = useRef(false);
+  const hasInitialLoaded = useRef(false);
 
   useEffect(() => {
-    if (user) {
-      loadInitialData();
+    if (user?.id) {
+      if (!hasInitialLoaded.current) {
+        setLoading(true);
+        loadInitialData().finally(() => {
+          setLoading(false);
+          hasInitialLoaded.current = true;
+        });
+      }
       setupRealtime();
 
-      // Fallback Polling: Ensure the app works even if WebSockets are blocked or flaky
       const pollInterval = setInterval(() => {
         refreshChats();
-      }, 5000); // Poll every 5 seconds for a "live" feel
+      }, 10000); // Increased to 10s to reduce load
 
       return () => {
         clearInterval(pollInterval);
-        if (channelRef.current) supabase.removeChannel(channelRef.current);
-        if (connChannelRef.current) supabase.removeChannel(connChannelRef.current);
+        cleanupRealtime();
       };
     } else {
       setChats([]);
       setMessages({});
       setPendingRequests([]);
       setLoading(false);
+      hasInitialLoaded.current = false;
+      cleanupRealtime();
     }
   }, [user?.id]);
 
-  const loadInitialData = async () => {
-    setLoading(true);
-    const { data: rooms } = await ChatService.getMyRooms();
-    const { data: requests } = await ChatService.getPendingRequests();
-
-    if (requests) setPendingRequests(requests);
-
-    if (rooms) {
-      const formattedChats: Chat[] = [];
-      for (const room of rooms) {
-        const chat = await formatRoomToChat(room);
-        if (chat) formattedChats.push(chat);
-      }
-      setChats(formattedChats.sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime()));
+  const cleanupRealtime = () => {
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
     }
-    setLoading(false);
+    if (connChannelRef.current) {
+      supabase.removeChannel(connChannelRef.current);
+      connChannelRef.current = null;
+    }
+  };
+
+  const loadInitialData = async () => {
+    if (isFetchingRef.current) return;
+    isFetchingRef.current = true;
+    try {
+      const [roomsResponse, requestsResponse] = await Promise.all([
+        ChatService.getMyRooms(),
+        ChatService.getPendingRequests()
+      ]);
+
+      if (requestsResponse.data) setPendingRequests(requestsResponse.data);
+
+      if (roomsResponse.data) {
+        const formattedChats: Chat[] = [];
+        // Process in parallel to be faster
+        const chatPromises = roomsResponse.data.map(room => formatRoomToChat(room));
+        const results = await Promise.all(chatPromises);
+        results.forEach(chat => {
+          if (chat) formattedChats.push(chat);
+        });
+
+        setChats(prev => {
+          const newSorted = formattedChats.sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime());
+          // Only update if data actually changed to prevent render loops
+          if (JSON.stringify(prev) === JSON.stringify(newSorted)) return prev;
+          return newSorted;
+        });
+      }
+    } catch (error) {
+      console.error('[ChatContext] Load error:', error);
+    } finally {
+      isFetchingRef.current = false;
+    }
   };
 
   const formatRoomToChat = async (room: any): Promise<Chat | null> => {
@@ -267,20 +302,22 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     await loadInitialData();
   };
 
+  const contextValue = React.useMemo(() => ({
+    chats,
+    messages,
+    pendingRequests,
+    loading,
+    sendMessage,
+    markAsRead,
+    setTyping,
+    createChat,
+    sendRequest,
+    respondToRequest,
+    refreshChats,
+  }), [chats, messages, pendingRequests, loading]);
+
   return (
-    <ChatContext.Provider value={{
-      chats,
-      messages,
-      pendingRequests,
-      loading,
-      sendMessage,
-      markAsRead,
-      setTyping,
-      createChat,
-      sendRequest,
-      respondToRequest,
-      refreshChats,
-    }}>
+    <ChatContext.Provider value={contextValue}>
       {children}
     </ChatContext.Provider>
   );
