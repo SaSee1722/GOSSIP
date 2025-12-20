@@ -1,7 +1,7 @@
 import React, { createContext, useState, ReactNode, useEffect, useRef } from 'react';
 import { Alert } from 'react-native';
 import { useAuth } from '@/template';
-import { getSharedSupabaseClient } from '@/template/core/client';
+import { getSharedSupabaseClient, safeSupabaseOperation } from '@/template/core/client';
 import { ChatService, MessageData, Room } from '@/services/ChatService';
 
 export interface Message {
@@ -351,6 +351,30 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   const sendRequest = async (userId: string) => {
     console.log('[ChatContext] sendRequest called for userId:', userId);
+
+    // Check if connection already exists
+    const { data: existingConnection } = await safeSupabaseOperation(async (client) => {
+      const { data: { user: currentUser } } = await client.auth.getUser();
+      if (!currentUser) return { data: null };
+
+      return await client
+        .from('connections')
+        .select('id, status')
+        .or(`and(requester_id.eq.${currentUser.id},addressee_id.eq.${userId}),and(requester_id.eq.${userId},addressee_id.eq.${currentUser.id})`)
+        .maybeSingle();
+    });
+
+    if (existingConnection) {
+      const status = existingConnection.status;
+      if (status === 'pending') {
+        throw new Error('You already sent a request to this user');
+      } else if (status === 'accepted') {
+        throw new Error('You are already connected with this user');
+      } else if (status === 'rejected') {
+        throw new Error('Your previous request was rejected. Please wait before trying again.');
+      }
+    }
+
     const { error } = await ChatService.sendConnectionRequest(userId);
     if (error) {
       console.error('[ChatContext] sendRequest failed:', error);
