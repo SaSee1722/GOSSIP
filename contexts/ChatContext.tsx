@@ -1,4 +1,5 @@
 import React, { createContext, useState, ReactNode, useEffect, useRef } from 'react';
+import { Alert } from 'react-native';
 import { useAuth } from '@/template';
 import { getSharedSupabaseClient } from '@/template/core/client';
 import { ChatService, MessageData, Room } from '@/services/ChatService';
@@ -330,22 +331,38 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   const respondToRequest = async (requestId: string, status: 'accepted' | 'rejected'): Promise<string | null> => {
     try {
+      console.log(`[ChatContext] Responding to request ${requestId} with status: ${status}`);
       setLoading(true);
-      const { data: roomId, error } = await ChatService.respondToConnection(requestId, status);
-      if (error) throw new Error(error);
 
-      // Remove from pending
+      const { data: roomId, error } = await ChatService.respondToConnection(requestId, status);
+
+      if (error) {
+        console.error('[ChatContext] respondToRequest error from service:', error);
+        Alert.alert('Error', error);
+        return null;
+      }
+
+      // Optimistically remove from pending list immediately and keep it removed
       setPendingRequests(prev => prev.filter(r => r.id !== requestId));
 
-      if (status === 'accepted' && roomId) {
-        // Force a refresh of rooms to ensure we have the new one
+      if (status === 'accepted') {
+        console.log('[ChatContext] Request accepted successfully. RoomId:', roomId);
+
+        // Wait a longer bit for DB transaction to be fully visible to new queries
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Refresh all data
         await loadInitialData();
 
-        // Brief delay to ensure state updates have propagated if needed
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Force filter again in case loadInitialData brought back stale data
+        setPendingRequests(prev => prev.filter(r => r.id !== requestId));
 
         return roomId;
       }
+      return null;
+    } catch (err: any) {
+      console.error('[ChatContext] respondToRequest critical exception:', err);
+      Alert.alert('System Error', err.message || 'Failed to respond to request');
       return null;
     } finally {
       setLoading(false);
