@@ -120,9 +120,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     if (isFetchingRef.current) return;
     isFetchingRef.current = true;
     try {
-      const [roomsResponse, requestsResponse] = await Promise.all([
+      const [roomsResponse, requestsResponse, connectionsResponse] = await Promise.all([
         ChatService.getMyRooms(),
-        ChatService.getPendingRequests()
+        ChatService.getPendingRequests(),
+        ChatService.getAcceptedConnections()
       ]);
 
       if (requestsResponse.data) {
@@ -132,22 +133,47 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         });
       }
 
+      const formattedChats: Chat[] = [];
+      const existingUserIds = new Set<string>();
+
       if (roomsResponse.data) {
-        const formattedChats: Chat[] = [];
-        // Process in parallel to be faster
+        // Process rooms in parallel
         const chatPromises = roomsResponse.data.map(room => formatRoomToChat(room));
         const results = await Promise.all(chatPromises);
         results.forEach(chat => {
-          if (chat) formattedChats.push(chat);
-        });
-
-        setChats(prev => {
-          const newSorted = formattedChats.sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime());
-          // Only update if data actually changed to prevent render loops
-          if (JSON.stringify(prev) === JSON.stringify(newSorted)) return prev;
-          return newSorted;
+          if (chat) {
+            formattedChats.push(chat);
+            if (chat.type === 'direct') existingUserIds.add(chat.userId);
+          }
         });
       }
+
+      // Add accepted connections that don't have a room yet
+      if (connectionsResponse.data) {
+        connectionsResponse.data.forEach((conn: any) => {
+          if (!existingUserIds.has(conn.id)) {
+            formattedChats.push({
+              id: `temp_${conn.id}`, // Temporary ID
+              userId: conn.id,
+              userName: conn.username || conn.full_name || 'User',
+              userAvatar: conn.avatar_url || `https://i.pravatar.cc/150?u=${conn.id}`,
+              lastMessage: 'Tap to start chatting',
+              lastMessageTime: new Date(conn.created_at || Date.now()),
+              unreadCount: 0,
+              online: conn.is_online || false,
+              typing: false,
+              type: 'direct',
+              age: conn.age,
+            });
+          }
+        });
+      }
+
+      setChats(prev => {
+        const newSorted = formattedChats.sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime());
+        if (JSON.stringify(prev) === JSON.stringify(newSorted)) return prev;
+        return newSorted;
+      });
     } catch (error) {
       console.error('[ChatContext] Load error:', error);
     } finally {

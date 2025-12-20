@@ -16,7 +16,7 @@ import { theme } from '@/constants/theme';
 export default function ChatsScreen() {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
-  const { chats, loading: chatLoading, pendingRequests, sendRequest, respondToRequest } = useChat();
+  const { chats, loading: chatLoading, pendingRequests, sendRequest, respondToRequest, createChat } = useChat();
   const { statuses, loading: statusLoading } = useStatus();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
@@ -226,11 +226,25 @@ export default function ChatsScreen() {
     </View>
   );
 
-  const renderChatItem = ({ item }: { item: Chat }) => (
+  const handleChatPress = async (item: any) => {
+    if (item.id.startsWith('temp_')) {
+      // It's a connection without a room, create one now
+      const result = await createChat(item.userId, item.userName, item.userAvatar);
+      if (result) {
+        router.push(`/chat/${result}`);
+      } else {
+        Alert.alert('Error', 'Failed to start chat');
+      }
+    } else {
+      router.push(`/chat/${item.id}`);
+    }
+  };
+
+  const renderChatItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.chatItem}
       activeOpacity={0.7}
-      onPress={() => router.push(`/chat/${item.id}`)}
+      onPress={() => handleChatPress(item)}
     >
       <Avatar uri={item.userAvatar} size={58} online={item.online} />
 

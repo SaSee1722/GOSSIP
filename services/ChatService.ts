@@ -236,6 +236,42 @@ export const ChatService = {
         });
     },
 
+    async getAcceptedConnections(): Promise<{ data: any[]; error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { data: { user } } = await client.auth.getUser();
+            if (!user) return { data: [], error: 'Not authenticated' };
+
+            // Get connections where I am requester OR addressee
+            const { data, error } = await client
+                .from('connections')
+                .select(`
+                    id,
+                    requester_id,
+                    addressee_id,
+                    status,
+                    created_at,
+                    requester:requester_id (id, username, full_name, avatar_url, is_online, last_seen),
+                    addressee:addressee_id (id, username, full_name, avatar_url, is_online, last_seen)
+                `)
+                .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`)
+                .eq('status', 'accepted');
+
+            if (error) return { data: [], error: error.message };
+
+            // Transform to just return the OTHER user's profile
+            const connections = data.map((conn: any) => {
+                const isRequester = conn.requester_id === user.id;
+                const profile = isRequester ? conn.addressee : conn.requester;
+                return {
+                    connection_id: conn.id,
+                    ...profile
+                };
+            });
+
+            return { data: connections, error: null };
+        });
+    },
+
     async respondToConnection(connectionId: string, status: 'accepted' | 'rejected'): Promise<{ data: string | null; error: string | null }> {
         return await safeSupabaseOperation(async (client) => {
             const { error } = await client
