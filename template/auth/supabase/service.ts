@@ -427,6 +427,7 @@ export class AuthService {
   async logout() {
     try {
       return await safeSupabaseOperation(async (client) => {
+        // Attempt to sign out
         const { error } = await withTimeout(
           client.auth.signOut(),
           TIMEOUT_CONFIG.AUTH_OPERATIONS,
@@ -434,10 +435,9 @@ export class AuthService {
         );
 
         if (error) {
-          if (error.message.includes('timeout')) {
-            return { error: 'Logout timeout, please retry', errorType: 'timeout' };
-          }
-          return { error: error.message, errorType: 'business' };
+          console.warn('[Template:AuthService] SignOut error:', error.message);
+          // Even if server sign out fails, clear local session
+          await client.auth.signOut({ scope: 'local' });
         }
 
         return {};
@@ -446,9 +446,11 @@ export class AuthService {
       const errorMessage = error instanceof Error ? error.message : 'Unknown logout error';
       console.warn('[Template:AuthService] Logout system exception:', errorMessage);
 
-      if (errorMessage.includes('timeout')) {
-        return { error: 'Logout timeout, please check network and retry', errorType: 'timeout' };
-      }
+      // Attempt local sign out as last resort
+      try {
+        const client = getSharedSupabaseClient();
+        await client.auth.signOut({ scope: 'local' });
+      } catch (e) { }
 
       return { error: errorMessage, errorType: 'network' };
     }

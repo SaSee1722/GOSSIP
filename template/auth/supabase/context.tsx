@@ -13,6 +13,7 @@ interface AuthContextState {
 interface AuthContextActions {
   setOperationLoading: (loading: boolean) => void;
   refreshUser: () => Promise<void>;
+  setUser: (user: AuthUser | null) => void;
 }
 
 type AuthContextType = AuthContextState & AuthContextActions;
@@ -49,6 +50,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     } catch (error) {
       console.warn('[Template:AuthProvider] Error refreshing user:', error);
     }
+  };
+
+  const setUser = (user: AuthUser | null) => {
+    updateState({ user });
   };
 
   useEffect(() => {
@@ -99,6 +104,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     ...state,
     setOperationLoading,
     refreshUser,
+    setUser,
   };
 
   return (

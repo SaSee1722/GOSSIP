@@ -114,6 +114,9 @@ export function useAuth(): AuthContextType {
     try {
       const result = await authService.logout();
 
+      // Force clear user state locally even if listener is slow
+      context.setUser(null);
+
       if (!result) {
         console.warn('[Template:useAuth] Invalid logout result format:', result);
         return { error: 'Invalid logout response' };
@@ -123,6 +126,7 @@ export function useAuth(): AuthContextType {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown logout error';
       console.warn('[Template:useAuth] Logout hook exception:', errorMessage);
+      context.setUser(null); // Clear anyway
       return { error: errorMessage };
     } finally {
       context.setOperationLoading(false);
