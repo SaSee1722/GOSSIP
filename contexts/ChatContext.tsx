@@ -120,10 +120,19 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   };
 
   const setupRealtime = () => {
-    // 1. Messages and Profile updates
-    const channel = supabase
-      .channel('public-chats')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async (payload) => {
+    // Clean up existing any existing channels
+    if (channelRef.current) supabase.removeChannel(channelRef.current);
+    if (connChannelRef.current) supabase.removeChannel(connChannelRef.current);
+
+    console.log('[ChatContext] Setting up Realtime for user:', user?.id);
+
+    const mainChannel = supabase
+      .channel('gossip-main')
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages'
+      }, async (payload) => {
         const newMessage = payload.new as MessageData;
         const formattedMsg: Message = {
           id: newMessage.id,
@@ -140,26 +149,21 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           [newMessage.room_id]: [...(prev[newMessage.room_id] || []), formattedMsg]
         }));
 
-        setChats(prev => {
-          const chatExists = prev.some(c => c.id === newMessage.room_id);
-          if (!chatExists) {
-            // New message in a room we haven't loaded yet? Refresh.
-            refreshChats();
-            return prev;
+        const { data: rooms } = await ChatService.getMyRooms();
+        if (rooms) {
+          const formattedChats: Chat[] = [];
+          for (const room of rooms) {
+            const chat = await formatRoomToChat(room);
+            if (chat) formattedChats.push(chat);
           }
-          return prev.map(chat =>
-            chat.id === newMessage.room_id
-              ? {
-                ...chat,
-                lastMessage: newMessage.content,
-                lastMessageTime: new Date(newMessage.created_at),
-                unreadCount: newMessage.user_id !== user?.id ? chat.unreadCount + 1 : chat.unreadCount
-              }
-              : chat
-          ).sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime());
-        });
+          setChats(formattedChats.sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime()));
+        }
       })
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, (payload) => {
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'profiles'
+      }, (payload) => {
         const updatedProfile = payload.new;
         setChats(prev => prev.map(chat =>
           chat.userId === updatedProfile.id
@@ -167,40 +171,40 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             : chat
         ));
       })
-      .on('broadcast', { event: 'typing' }, (payload) => {
-        const { chatId, userId, isTyping } = payload.payload;
-        if (userId === user?.id) return;
-
-        setChats(prev => prev.map(chat =>
-          chat.id === chatId ? { ...chat, typing: isTyping } : chat
-        ));
-      })
-      .subscribe();
-
-    channelRef.current = channel;
-
-    // 2. Room Participants and Connection updates
-    const connChannel = supabase
-      .channel('conn-updates')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'room_participants' }, (payload) => {
-        const newPart = payload.new as any;
-        if (newPart.user_id === user?.id) {
-          // I was added to a new room!
-          refreshChats();
-        }
-      })
       .on('postgres_changes', {
         event: '*',
         schema: 'public',
         table: 'connections',
         filter: `addressee_id=eq.${user?.id}`
-      }, async (payload) => {
+      }, async () => {
+        console.log('[ChatContext] Inbound connection change detected');
         const { data: requests } = await ChatService.getPendingRequests();
         if (requests) setPendingRequests(requests);
       })
-      .subscribe();
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'room_participants',
+        filter: `user_id=eq.${user?.id}`
+      }, () => {
+        console.log('[ChatContext] Added to new room');
+        refreshChats();
+      })
+      .on('broadcast', { event: 'typing' }, (payload) => {
+        const { chatId, userId, isTyping } = payload.payload;
+        if (userId === user?.id) return;
+        setChats(prev => prev.map(chat =>
+          chat.id === chatId ? { ...chat, typing: isTyping } : chat
+        ));
+      })
+      .subscribe((status) => {
+        console.log('[ChatContext] Realtime status:', status);
+        if (status === 'CHANNEL_ERROR') {
+          console.error('[ChatContext] Realtime connection failed. Check if Realtime is enabled in Supabase dashboard.');
+        }
+      });
 
-    connChannelRef.current = connChannel;
+    channelRef.current = mainChannel;
   };
 
   const sendMessage = async (chatId: string, content: string, type: string = 'text') => {

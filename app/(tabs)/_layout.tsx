@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { GradientIcon } from '@/components/ui/GradientIcon';
 import { useTheme } from '@/hooks/useTheme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useChat } from '@/hooks/useChat';
 
 export default function TabLayout() {
   const { colors } = useTheme();
@@ -64,10 +65,15 @@ function FloatingTabBar({ state, descriptors, navigation }: any) {
           }
 
           const getBadgeCount = () => {
-            if (route.name === 'index') return 3;
-            if (route.name === 'groups') return 1;
+            const { chats, pendingRequests } = useChat();
+            if (route.name === 'index') {
+              return chats.reduce((acc, chat) => acc + (chat.unreadCount || 0), 0);
+            }
+            if (route.name === 'groups') {
+              return pendingRequests.length;
+            }
             return 0;
-          }
+          };
 
           const count = getBadgeCount();
 
