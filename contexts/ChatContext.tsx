@@ -68,13 +68,22 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     if (user) {
       loadInitialData();
       setupRealtime();
+
+      // Fallback Polling: Ensure the app works even if WebSockets are blocked or flaky
+      const pollInterval = setInterval(() => {
+        refreshChats();
+      }, 5000); // Poll every 5 seconds for a "live" feel
+
+      return () => {
+        clearInterval(pollInterval);
+        if (channelRef.current) supabase.removeChannel(channelRef.current);
+        if (connChannelRef.current) supabase.removeChannel(connChannelRef.current);
+      };
     } else {
       setChats([]);
       setMessages({});
       setPendingRequests([]);
       setLoading(false);
-      if (channelRef.current) supabase.removeChannel(channelRef.current);
-      if (connChannelRef.current) supabase.removeChannel(connChannelRef.current);
     }
   }, [user?.id]);
 
