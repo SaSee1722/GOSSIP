@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ScrollView, ActivityIndicator, Alert, Platform, Modal } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ScrollView, ActivityIndicator, Alert, Platform, Modal, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -255,7 +255,14 @@ export default function ChatsScreen() {
 
       {chats.length > 0 && !searchQuery && (
         <View style={styles.chatsLabel}>
-          <Text style={styles.sectionTitle}>RECENT GOSSIPS</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Text style={styles.sectionTitle}>RECENT GOSSIPS</Text>
+            <Image
+              source={require('@/assets/images/gossip_illustration.png')}
+              style={{ width: 45, height: 45, opacity: 0.5, marginRight: -10 }}
+              resizeMode="contain"
+            />
+          </View>
         </View>
       )}
     </View>
