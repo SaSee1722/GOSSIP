@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "onspace-app",
-    "slug": "onspace-app",
+    "name": "GOSSIP",
+    "slug": "gossip",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
-    "scheme": "onspaceapp",
+    "scheme": "gossip",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.onspaceapp"
+      "bundleIdentifier": "com.sasee1722.gossip"
     },
     "android": {
       "adaptiveIcon": {
@@ -22,7 +22,7 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
       ],
-      "package": "com.anonymous.onspaceapp"
+      "package": "com.sasee1722.gossip"
     },
     "web": {
       "bundler": "metro",
@@ -45,7 +45,7 @@
       [
         "@stripe/stripe-react-native",
         {
-          "merchantIdentifier": "merchant.com.onspace.app",
+          "merchantIdentifier": "merchant.com.sasee1722.gossip",
           "enableGooglePay": true
         }
       ],
@@ -60,6 +60,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "defd5ee3-022c-4e4e-bcf2-0775e51ace36"
+      }
     }
   }
 }
