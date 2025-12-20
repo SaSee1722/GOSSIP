@@ -49,6 +49,7 @@ export default function ChatDetailScreen() {
   const [newGroupDesc, setNewGroupDesc] = useState('');
   const [newGroupAvatar, setNewGroupAvatar] = useState('');
   const [updating, setUpdating] = useState(false);
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
 
   const chat = chats.find(c => c.id === id);
   const chatMessages = messages[id as string] || [];
@@ -248,9 +249,9 @@ export default function ChatDetailScreen() {
       </View>
 
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.flex}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
         <FlatList
           ref={flatListRef}
@@ -312,7 +313,10 @@ export default function ChatDetailScreen() {
                   <TouchableOpacity style={styles.iconBtn}>
                     <Ionicons name="happy-outline" size={24} color="#888" />
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.iconBtn}>
+                  <TouchableOpacity
+                    style={styles.iconBtn}
+                    onPress={() => setShowAttachMenu(true)}
+                  >
                     <Ionicons name="attach" size={24} color="#888" />
                   </TouchableOpacity>
                 </View>
@@ -455,7 +459,59 @@ export default function ChatDetailScreen() {
           </BlurView>
         </View>
       </Modal>
-    </View>
+
+
+      {/* Attachment Menu Modal */}
+      < Modal
+        visible={showAttachMenu}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowAttachMenu(false)
+        }
+      >
+        <TouchableOpacity
+          style={styles.attachOverlay}
+          activeOpacity={1}
+          onPress={() => setShowAttachMenu(false)}
+        >
+          <View style={[styles.attachMenu, { paddingBottom: insets.bottom + 20 }]}>
+            <View style={styles.attachGrid}>
+              <TouchableOpacity style={styles.attachItem}>
+                <View style={[styles.attachIcon, { backgroundColor: '#5F66CD' }]}>
+                  <Ionicons name="document-text" size={24} color="#FFF" />
+                </View>
+                <Text style={styles.attachLabel}>Document</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.attachItem}
+                onPress={async () => {
+                  setShowAttachMenu(false);
+                  // Placeholder for image picker logic
+                  const result = await ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.All,
+                    quality: 0.8,
+                  });
+                  console.log(result);
+                }}
+              >
+                <View style={[styles.attachIcon, { backgroundColor: '#D3396D' }]}>
+                  <Ionicons name="images" size={24} color="#FFF" />
+                </View>
+                <Text style={styles.attachLabel}>Media</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.attachItem}>
+                <View style={[styles.attachIcon, { backgroundColor: '#009688' }]}>
+                  <Ionicons name="person" size={24} color="#FFF" />
+                </View>
+                <Text style={styles.attachLabel}>Contact</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Modal >
+    </View >
   );
 }
 
@@ -726,6 +782,38 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  attachOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  attachMenu: {
+    backgroundColor: '#1E1E1E',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+  },
+  attachGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 10,
+  },
+  attachItem: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  attachIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  attachLabel: {
+    color: '#CCC',
+    fontSize: 12,
+    fontWeight: '600',
   }
 });
 
