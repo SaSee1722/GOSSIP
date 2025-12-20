@@ -319,21 +319,14 @@ export default function ChatDetailScreen() {
         </View>
 
         <View style={styles.headerRight}>
-          {chat.type === 'direct' && (
-            <View style={{ flexDirection: 'row', gap: 15 }}>
-              <TouchableOpacity onPress={() => initiateCall(chat.userId, 'audio')}>
-                <Ionicons name="call-outline" size={24} color="#FFF" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => initiateCall(chat.userId, 'video')}>
-                <Ionicons name="videocam-outline" size={24} color="#FFF" />
-              </TouchableOpacity>
-            </View>
-          )}
+
 
           <TouchableOpacity
             onPress={() => {
               if (chat.type === 'direct') {
                 Alert.alert('Gossip Settings', 'What do you want to do?', [
+                  { text: 'Voice Call', onPress: () => initiateCall(chat.userId, 'audio') },
+                  { text: 'Video Call', onPress: () => initiateCall(chat.userId, 'video') },
                   { text: 'Block User', style: 'destructive', onPress: () => blockUser(chat.userId).then(() => router.back()) },
                   {
                     text: lockedChats[chat.id] ? 'Unlock Chat' : 'Lock Chat',
