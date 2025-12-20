@@ -74,7 +74,7 @@ const translations: Record<string, Record<string, string>> = {
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { colors, toggleTheme, isDark } = useTheme();
-  const { user, logout } = useAuth();
+  const { user, logout, refreshUser } = useAuth();
   const { showAlert } = useAlert();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -144,6 +144,7 @@ export default function ProfileScreen() {
     if (error) {
       showAlert('Error', error);
     } else {
+      await refreshUser();
       setIsEditing(false);
       showAlert('Success', 'Profile updated successfully');
     }
@@ -152,7 +153,7 @@ export default function ProfileScreen() {
   const languages = ['English', 'Spanish', 'French', 'German', 'Hindi', 'Tamil'];
 
   // Dynamic Avatar Glow Colors
-  const glowColors = profileData.gender === 'Male'
+  const glowColors: [string, string] = profileData.gender === 'Male'
     ? ['#00BFFF', 'rgba(0, 191, 255, 0)']
     : profileData.gender === 'Female'
       ? ['#FFB6C1', 'rgba(255, 182, 193, 0)']
@@ -476,7 +477,7 @@ const styles = StyleSheet.create({
         outlineStyle: 'none',
       }
     })
-  },
+  } as any,
   row: { flexDirection: 'row' },
   editActions: { flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 15, marginTop: 10 },
   cancelBtn: { padding: 12 },

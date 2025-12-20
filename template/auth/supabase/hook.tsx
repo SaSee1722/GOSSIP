@@ -165,5 +165,6 @@ export function useAuth(): AuthContextType {
     signInWithGoogle,
     logout,
     refreshSession,
+    refreshUser: context.refreshUser,
   };
 }

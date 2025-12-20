@@ -48,6 +48,11 @@ export interface GoogleSignInResult {
   error: string | null;
 }
 
+export interface AuthContextActions {
+  setOperationLoading: (loading: boolean) => void;
+  refreshUser: () => Promise<void>;
+}
+
 export interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
@@ -61,6 +66,7 @@ export interface AuthContextType {
   signInWithGoogle: () => Promise<GoogleSignInResult>;
   logout: () => Promise<LogoutResult>;
   refreshSession: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 export interface AuthConfig {

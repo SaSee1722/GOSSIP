@@ -19,6 +19,7 @@ drop table if exists messages;
 drop table if exists room_participants;
 drop table if exists rooms;
 drop table if exists connections;
+drop table if exists statuses;
 drop table if exists blocked_users;
 drop table if exists profiles;
 
@@ -116,11 +117,20 @@ create table public.ice_candidates (
   created_at timestamp with time zone default now() not null
 );
 
+-- STATUSES (Stories)
+create table public.statuses (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  media_url text not null,
+  caption text,
+  created_at timestamp with time zone default now() not null
+);
+
 -- ==========================================
 -- 3. TRIGGERS & FUNCTIONS
 -- ==========================================
 
--- Trigger to create profile on signup
+-- Trigger function to create profile on signup
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -137,6 +147,22 @@ begin
   return new;
 end;
 $$;
+
+-- Create the trigger
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
+
+-- Populate profiles for existing users if missing (Crucial after table drops/clean restarts)
+insert into public.profiles (id, username, full_name, avatar_url)
+select 
+  id, 
+  raw_user_meta_data ->> 'username', 
+  raw_user_meta_data ->> 'full_name', 
+  raw_user_meta_data ->> 'avatar_url'
+from auth.users
+on conflict (id) do nothing;
 
 -- Function to get a direct room between two users
 create or replace function public.get_direct_room(user1 uuid, user2 uuid)
@@ -172,6 +198,7 @@ alter table public.room_participants enable row level security;
 alter table public.messages enable row level security;
 alter table public.calls enable row level security;
 alter table public.ice_candidates enable row level security;
+alter table public.statuses enable row level security;
 
 -- Policies (Simplified for development, should be hardened for production)
 create policy "Public profiles are viewable by everyone" on public.profiles for select using (true);
@@ -188,6 +215,9 @@ create policy "Users can insert messages" on public.messages for insert with che
 
 create policy "Ice candidates access" on public.ice_candidates for all using (true);
 create policy "Calls access" on public.calls for all using (true);
+
+create policy "Statuses are viewable by everyone" on public.statuses for select using (true);
+create policy "Users can insert their own status" on public.statuses for insert with check (auth.uid() = user_id);
 
 -- ==========================================
 -- 5. STORAGE
@@ -224,6 +254,7 @@ alter table public.messages replica identity full;
 alter table public.calls replica identity full;
 alter table public.ice_candidates replica identity full;
 alter table public.profiles replica identity full;
+alter table public.statuses replica identity full;
 
 begin;
   drop publication if exists supabase_realtime;
@@ -234,7 +265,8 @@ begin;
     public.profiles, 
     public.calls, 
     public.ice_candidates, 
-    public.connections;
+    public.connections,
+    public.statuses;
 commit;
 
 -- Grant permissions to anon and authenticated for direct access

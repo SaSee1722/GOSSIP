@@ -12,6 +12,7 @@ interface AuthContextState {
 
 interface AuthContextActions {
   setOperationLoading: (loading: boolean) => void;
+  refreshUser: () => Promise<void>;
 }
 
 type AuthContextType = AuthContextState & AuthContextActions;
@@ -41,20 +42,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
     updateState({ operationLoading: loading });
   };
 
+  const refreshUser = async () => {
+    try {
+      const currentUser = await authService.getCurrentUser();
+      updateState({ user: currentUser });
+    } catch (error) {
+      console.warn('[Template:AuthProvider] Error refreshing user:', error);
+    }
+  };
+
   useEffect(() => {
     let isMounted = true;
     let authSubscription: any = null;
 
     const initializeAuth = async () => {
-      
+
       try {
         const currentUser = await authService.getCurrentUser();
-        
+
         if (isMounted) {
-          updateState({ 
-            user: currentUser, 
-            loading: false, 
-            initialized: true 
+          updateState({
+            user: currentUser,
+            loading: false,
+            initialized: true
           });
         }
 
@@ -67,10 +77,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       } catch (error) {
         console.warn('[Template:AuthProvider] Auth initialization failed:', error);
         if (isMounted) {
-          updateState({ 
-            user: null, 
-            loading: false, 
-            initialized: true 
+          updateState({
+            user: null,
+            loading: false,
+            initialized: true
           });
         }
       }
@@ -88,6 +98,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const contextValue: AuthContextType = {
     ...state,
     setOperationLoading,
+    refreshUser,
   };
 
   return (
@@ -100,10 +111,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 // useAuthContext Hook - internal use
 export function useAuthContext(): AuthContextType {
   const context = useContext(AuthContext);
-  
+
   if (context === undefined) {
     throw new Error('useAuthContext must be used within an AuthProvider');
   }
-  
+
   return context;
 }

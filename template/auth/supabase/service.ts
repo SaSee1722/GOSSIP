@@ -111,8 +111,34 @@ export class AuthService {
 
       if (!session?.user) return null;
 
-      // Map session.user to AuthUser (unified for all auth methods)
-      return this.mapSessionToAuthUser(session.user);
+      // Map basic user data
+      const authUser = this.mapSessionToAuthUser(session.user);
+
+      // Fetch extended profile data from profiles table
+      try {
+        const { data: profile } = await this.supabase // Use this.supabase here
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+
+        if (profile) {
+          return {
+            ...authUser,
+            username: profile.username || authUser.username,
+            full_name: profile.full_name || authUser.full_name,
+            avatar_url: profile.avatar_url || authUser.avatar_url,
+            age: profile.age,
+            phone: profile.phone,
+            bio: profile.bio,
+            gender: profile.gender
+          };
+        }
+      } catch (profileError) {
+        console.warn('[Template:AuthService] Failed to fetch extended profile:', profileError);
+      }
+
+      return authUser;
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown getCurrentUser error';
@@ -130,10 +156,13 @@ export class AuthService {
     return {
       id: sessionUser.id,
       email: sessionUser.email || '',
-      username: sessionUser.user_metadata?.full_name ||
+      username: sessionUser.user_metadata?.username ||
+        sessionUser.user_metadata?.full_name ||
         sessionUser.user_metadata?.name ||
         sessionUser.email?.split('@')[0] ||
         `user_${sessionUser.id.slice(0, 8)}`,
+      full_name: sessionUser.user_metadata?.full_name || sessionUser.user_metadata?.name,
+      avatar_url: sessionUser.user_metadata?.avatar_url,
       created_at: sessionUser.created_at,
       updated_at: sessionUser.updated_at || sessionUser.created_at,
     };
@@ -583,11 +612,32 @@ export class AuthService {
 
           if (session?.user) {
             try {
+              // Try to get fresh profile data
+              const { data: profile } = await this.supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+
               const authUser = this.mapSessionToAuthUser(session.user);
-              callback(authUser);
+
+              if (profile) {
+                callback({
+                  ...authUser,
+                  username: profile.username || authUser.username,
+                  full_name: profile.full_name || authUser.full_name,
+                  avatar_url: profile.avatar_url || authUser.avatar_url,
+                  age: profile.age,
+                  phone: profile.phone,
+                  bio: profile.bio,
+                  gender: profile.gender
+                });
+              } else {
+                callback(authUser);
+              }
             } catch (error) {
               console.warn('[Template:AuthService] Error in auth state change callback:', error);
-              callback(null);
+              callback(this.mapSessionToAuthUser(session.user));
             }
           } else {
             callback(null);
