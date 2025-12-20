@@ -26,14 +26,29 @@ export interface Chat {
   typing: boolean;
 }
 
+export interface ConnectionRequest {
+  id: string;
+  requester_id: string;
+  created_at: string;
+  profiles: {
+    id: string;
+    username: string;
+    full_name: string;
+    avatar_url: string;
+  };
+}
+
 interface ChatContextType {
   chats: Chat[];
   messages: Record<string, Message[]>;
+  pendingRequests: ConnectionRequest[];
   loading: boolean;
   sendMessage: (chatId: string, content: string, type?: string) => Promise<void>;
   markAsRead: (chatId: string) => void;
   setTyping: (chatId: string, isTyping: boolean) => void;
   createChat: (userId: string, userName: string, userAvatar: string) => Promise<string>;
+  sendRequest: (userId: string) => Promise<void>;
+  respondToRequest: (requestId: string, status: 'accepted' | 'rejected') => Promise<string | null>;
   refreshChats: () => Promise<void>;
 }
 
@@ -43,9 +58,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [chats, setChats] = useState<Chat[]>([]);
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
+  const [pendingRequests, setPendingRequests] = useState<ConnectionRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = getSharedSupabaseClient();
   const channelRef = useRef<any>(null);
+  const connChannelRef = useRef<any>(null);
 
   useEffect(() => {
     if (user) {
@@ -54,52 +71,60 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     } else {
       setChats([]);
       setMessages({});
+      setPendingRequests([]);
       setLoading(false);
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-      }
+      if (channelRef.current) supabase.removeChannel(channelRef.current);
+      if (connChannelRef.current) supabase.removeChannel(connChannelRef.current);
     }
   }, [user?.id]);
 
   const loadInitialData = async () => {
     setLoading(true);
-    const { data: rooms, error } = await ChatService.getMyRooms();
+    const { data: rooms } = await ChatService.getMyRooms();
+    const { data: requests } = await ChatService.getPendingRequests();
+
+    if (requests) setPendingRequests(requests);
 
     if (rooms) {
       const formattedChats: Chat[] = [];
       for (const room of rooms) {
-        const participants = await ChatService.getRoomParticipants(room.id);
-        const otherUser = participants.data?.find(p => p.id !== user?.id);
-
-        if (otherUser) {
-          const { data: msgs } = await ChatService.getMessages(room.id, 1);
-          const lastMsg = msgs?.[0];
-
-          formattedChats.push({
-            id: room.id,
-            userId: otherUser.id,
-            userName: otherUser.username || otherUser.full_name || 'User',
-            userAvatar: otherUser.avatar_url || `https://i.pravatar.cc/150?u=${otherUser.id}`,
-            lastMessage: lastMsg?.content || '',
-            lastMessageTime: lastMsg ? new Date(lastMsg.created_at) : new Date(room.created_at),
-            unreadCount: 0, // Should fetch real count
-            online: otherUser.is_online || false,
-            typing: false,
-          });
-        }
+        const chat = await formatRoomToChat(room);
+        if (chat) formattedChats.push(chat);
       }
       setChats(formattedChats.sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime()));
     }
     setLoading(false);
   };
 
+  const formatRoomToChat = async (room: any): Promise<Chat | null> => {
+    const participants = await ChatService.getRoomParticipants(room.id);
+    const otherUser = participants.data?.find(p => p.id !== user?.id);
+
+    if (otherUser) {
+      const { data: msgs } = await ChatService.getMessages(room.id, 1);
+      const lastMsg = msgs?.[0];
+
+      return {
+        id: room.id,
+        userId: otherUser.id,
+        userName: otherUser.username || otherUser.full_name || 'User',
+        userAvatar: otherUser.avatar_url || `https://i.pravatar.cc/150?u=${otherUser.id}`,
+        lastMessage: lastMsg?.content || 'Started a gossip...',
+        lastMessageTime: lastMsg ? new Date(lastMsg.created_at) : new Date(room.created_at),
+        unreadCount: 0,
+        online: otherUser.is_online || false,
+        typing: false,
+      };
+    }
+    return null;
+  };
+
   const setupRealtime = () => {
+    // 1. Messages and Profile updates
     const channel = supabase
       .channel('public-chats')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async (payload) => {
         const newMessage = payload.new as MessageData;
-
-        // Update messages state
         const formattedMsg: Message = {
           id: newMessage.id,
           chatId: newMessage.room_id,
@@ -115,17 +140,24 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           [newMessage.room_id]: [...(prev[newMessage.room_id] || []), formattedMsg]
         }));
 
-        // Update chat list last message
-        setChats(prev => prev.map(chat =>
-          chat.id === newMessage.room_id
-            ? {
-              ...chat,
-              lastMessage: newMessage.content,
-              lastMessageTime: new Date(newMessage.created_at),
-              unreadCount: newMessage.user_id !== user?.id ? chat.unreadCount + 1 : chat.unreadCount
-            }
-            : chat
-        ).sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime()));
+        setChats(prev => {
+          const chatExists = prev.some(c => c.id === newMessage.room_id);
+          if (!chatExists) {
+            // New message in a room we haven't loaded yet? Refresh.
+            refreshChats();
+            return prev;
+          }
+          return prev.map(chat =>
+            chat.id === newMessage.room_id
+              ? {
+                ...chat,
+                lastMessage: newMessage.content,
+                lastMessageTime: new Date(newMessage.created_at),
+                unreadCount: newMessage.user_id !== user?.id ? chat.unreadCount + 1 : chat.unreadCount
+              }
+              : chat
+          ).sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime());
+        });
       })
       .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles' }, (payload) => {
         const updatedProfile = payload.new;
@@ -140,14 +172,35 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         if (userId === user?.id) return;
 
         setChats(prev => prev.map(chat =>
-          chat.id === chatId
-            ? { ...chat, typing: isTyping }
-            : chat
+          chat.id === chatId ? { ...chat, typing: isTyping } : chat
         ));
       })
       .subscribe();
 
     channelRef.current = channel;
+
+    // 2. Room Participants and Connection updates
+    const connChannel = supabase
+      .channel('conn-updates')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'room_participants' }, (payload) => {
+        const newPart = payload.new as any;
+        if (newPart.user_id === user?.id) {
+          // I was added to a new room!
+          refreshChats();
+        }
+      })
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'connections',
+        filter: `addressee_id=eq.${user?.id}`
+      }, async (payload) => {
+        const { data: requests } = await ChatService.getPendingRequests();
+        if (requests) setPendingRequests(requests);
+      })
+      .subscribe();
+
+    connChannelRef.current = connChannel;
   };
 
   const sendMessage = async (chatId: string, content: string, type: string = 'text') => {
@@ -179,6 +232,24 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     return roomId!;
   };
 
+  const sendRequest = async (userId: string) => {
+    const { error } = await ChatService.sendConnectionRequest(userId);
+    if (error) throw new Error(error);
+  };
+
+  const respondToRequest = async (requestId: string, status: 'accepted' | 'rejected'): Promise<string | null> => {
+    const { data: roomId, error } = await ChatService.respondToConnection(requestId, status);
+    if (error) throw new Error(error);
+
+    // Optimistic UI or wait for reload
+    setPendingRequests(prev => prev.filter(r => r.id !== requestId));
+    if (status === 'accepted') {
+      await loadInitialData();
+      return roomId;
+    }
+    return null;
+  };
+
   const refreshChats = async () => {
     await loadInitialData();
   };
@@ -187,11 +258,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     <ChatContext.Provider value={{
       chats,
       messages,
+      pendingRequests,
       loading,
       sendMessage,
       markAsRead,
       setTyping,
       createChat,
+      sendRequest,
+      respondToRequest,
       refreshChats,
     }}>
       {children}

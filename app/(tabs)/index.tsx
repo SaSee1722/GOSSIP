@@ -15,14 +15,13 @@ import { theme } from '@/constants/theme';
 export default function ChatsScreen() {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
-  const { chats, loading: chatLoading } = useChat();
+  const { chats, loading: chatLoading, pendingRequests, sendRequest, respondToRequest } = useChat();
   const { statuses, loading: statusLoading } = useStatus();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [showRequestsModal, setShowRequestsModal] = useState(false);
-  const [pendingRequests, setPendingRequests] = useState<any[]>([]);
   const [requestLoading, setRequestLoading] = useState(false);
   const [isSendingRequest, setIsSendingRequest] = useState<string | null>(null);
 
@@ -30,35 +29,12 @@ export default function ChatsScreen() {
     chat.userName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  useEffect(() => {
-    fetchRequests();
-
-    // Refresh requests every 30 seconds
-    const interval = setInterval(fetchRequests, 30000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const fetchRequests = async () => {
-    try {
-      const { ChatService } = await import('@/services/ChatService');
-      const { data, error } = await ChatService.getPendingRequests();
-      if (!error && data) setPendingRequests(data);
-    } catch (err) {
-      console.error('Error fetching requests:', err);
-    }
-  };
-
   const handleSendRequest = async (userId: string) => {
     try {
       setIsSendingRequest(userId);
-      const { ChatService } = await import('@/services/ChatService');
-      const { error } = await ChatService.sendConnectionRequest(userId);
-      if (error) {
-        Alert.alert('Error', error);
-      } else {
-        Alert.alert('Success', 'Chat request sent!');
-        setSearchResults(prev => prev.filter(p => p.id !== userId));
-      }
+      await sendRequest(userId);
+      Alert.alert('Success', 'Chat request sent!');
+      setSearchResults(prev => prev.filter(p => p.id !== userId));
     } catch (err: any) {
       Alert.alert('Error', err.message);
     } finally {
@@ -69,15 +45,12 @@ export default function ChatsScreen() {
   const handleRespondToRequest = async (requestId: string, status: 'accepted' | 'rejected') => {
     try {
       setRequestLoading(true);
-      const { ChatService } = await import('@/services/ChatService');
-      const { error } = await ChatService.respondToConnection(requestId, status);
-      if (error) {
-        Alert.alert('Error', error);
-      } else {
-        setPendingRequests(prev => prev.filter(r => r.id !== requestId));
-        if (status === 'accepted') {
-          Alert.alert('Success', 'You are now connected!');
-          setShowRequestsModal(false);
+      const roomId = await respondToRequest(requestId, status);
+      if (status === 'accepted') {
+        Alert.alert('Success', 'You are now connected!');
+        setShowRequestsModal(false);
+        if (roomId) {
+          router.push(`/chat/${roomId}`);
         }
       }
     } catch (err: any) {

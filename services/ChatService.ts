@@ -236,15 +236,16 @@ export const ChatService = {
         });
     },
 
-    async respondToConnection(connectionId: string, status: 'accepted' | 'rejected'): Promise<{ error: string | null }> {
+    async respondToConnection(connectionId: string, status: 'accepted' | 'rejected'): Promise<{ data: string | null; error: string | null }> {
         return await safeSupabaseOperation(async (client) => {
             const { error } = await client
                 .from('connections')
                 .update({ status })
                 .eq('id', connectionId);
 
-            if (error) return { error: error.message };
+            if (error) return { data: null, error: error.message };
 
+            let roomId = null;
             // If accepted, create a direct chat room
             if (status === 'accepted') {
                 const { data: connection } = await client
@@ -254,11 +255,13 @@ export const ChatService = {
                     .single();
 
                 if (connection) {
-                    await this.createDirectChat(connection.requester_id);
+                    const { data: id, error: chatError } = await this.createDirectChat(connection.requester_id);
+                    if (chatError) return { data: null, error: chatError };
+                    roomId = id;
                 }
             }
 
-            return { error: null };
+            return { data: roomId, error: null };
         });
     }
 };
