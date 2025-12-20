@@ -24,6 +24,7 @@ export interface Chat {
   unreadCount: number;
   online: boolean;
   typing: boolean;
+  type: 'direct' | 'group';
 }
 
 export interface ConnectionRequest {
@@ -147,22 +148,38 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   const formatRoomToChat = async (room: any): Promise<Chat | null> => {
     const participants = await ChatService.getRoomParticipants(room.id);
-    const otherUser = participants.data?.find(p => p.id !== user?.id);
+    const { data: msgs } = await ChatService.getMessages(room.id, 1);
+    const lastMsg = msgs?.[0];
 
-    if (otherUser) {
-      const { data: msgs } = await ChatService.getMessages(room.id, 1);
-      const lastMsg = msgs?.[0];
-
+    if (room.type === 'direct') {
+      const otherUser = participants.data?.find(p => p.id !== user?.id);
+      if (otherUser) {
+        return {
+          id: room.id,
+          userId: otherUser.id,
+          userName: otherUser.username || otherUser.full_name || 'User',
+          userAvatar: otherUser.avatar_url || `https://i.pravatar.cc/150?u=${otherUser.id}`,
+          lastMessage: lastMsg?.content || 'Started a gossip...',
+          lastMessageTime: lastMsg ? new Date(lastMsg.created_at) : new Date(room.created_at),
+          unreadCount: 0,
+          online: otherUser.is_online || false,
+          typing: false,
+          type: 'direct',
+        };
+      }
+    } else {
+      // Group Chat
       return {
         id: room.id,
-        userId: otherUser.id,
-        userName: otherUser.username || otherUser.full_name || 'User',
-        userAvatar: otherUser.avatar_url || `https://i.pravatar.cc/150?u=${otherUser.id}`,
-        lastMessage: lastMsg?.content || 'Started a gossip...',
+        userId: room.id, // Group ID as virtual user ID
+        userName: room.name || 'Gossip Group',
+        userAvatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(room.name || 'G')}&background=FFB6C1&color=000`,
+        lastMessage: lastMsg?.content || 'New gossip group created!',
         lastMessageTime: lastMsg ? new Date(lastMsg.created_at) : new Date(room.created_at),
         unreadCount: 0,
-        online: otherUser.is_online || false,
+        online: true,
         typing: false,
+        type: 'group',
       };
     }
     return null;

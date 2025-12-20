@@ -138,9 +138,26 @@ begin
 end;
 $$;
 
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
+-- Function to get a direct room between two users
+create or replace function public.get_direct_room(user1 uuid, user2 uuid)
+returns uuid
+language plpgsql
+security definer
+as $$
+declare
+  room_id uuid;
+begin
+  select rp1.room_id into room_id
+  from public.room_participants rp1
+  join public.room_participants rp2 on rp1.room_id = rp2.room_id
+  join public.rooms r on r.id = rp1.room_id
+  where r.type = 'direct'
+    and rp1.user_id = user1
+    and rp2.user_id = user2;
+    
+  return room_id;
+end;
+$$;
 
 -- ==========================================
 -- 4. SECURITY (RLS)

@@ -7,6 +7,7 @@ import { Image } from 'expo-image';
 import { BlurView } from 'expo-blur';
 import { useTheme } from '@/hooks/useTheme';
 import { useChat } from '@/hooks/useChat';
+import { Chat } from '@/contexts/ChatContext';
 import { useStatus } from '@/contexts/StatusContext';
 import { Avatar } from '@/components/ui/Avatar';
 import { GradientText } from '@/components/ui/GradientText';
@@ -24,10 +25,6 @@ export default function ChatsScreen() {
   const [showRequestsModal, setShowRequestsModal] = useState(false);
   const [requestLoading, setRequestLoading] = useState(false);
   const [isSendingRequest, setIsSendingRequest] = useState<string | null>(null);
-
-  const filteredChats = chats.filter(chat =>
-    chat.userName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   const handleSendRequest = async (userId: string) => {
     try {
@@ -84,7 +81,6 @@ export default function ChatsScreen() {
     return () => clearTimeout(searchTimer);
   }, [searchQuery]);
 
-  // Mocking ages for now as they aren't in the data model yet
   const getAge = (id: string) => {
     const ages: Record<string, number> = { '1': 21, '2': 28, '3': 24, '4': 27, '5': 23 };
     return ages[id] || 22;
@@ -192,7 +188,6 @@ export default function ChatsScreen() {
         {searchLoading && <ActivityIndicator size="small" color={colors.primary} style={{ marginRight: 10 }} />}
       </View>
 
-      {/* Search Results Section */}
       {searchQuery.trim().length > 0 && searchResults.length > 0 && (
         <View style={styles.searchResultSection}>
           <Text style={styles.searchResultTitle}>FOUND NEW GOSSIPERS</Text>
@@ -217,16 +212,44 @@ export default function ChatsScreen() {
             </TouchableOpacity>
           ))}
           <View style={styles.divider} />
-          {filteredChats.length > 0 && <Text style={styles.searchResultTitle}>EXISTING GOSSIPS</Text>}
+          {chats.filter(c => c.type === 'direct' && c.userName.toLowerCase().includes(searchQuery.toLowerCase())).length > 0 && <Text style={styles.searchResultTitle}>EXISTING GOSSIPS</Text>}
         </View>
       )}
 
-      {searchQuery.trim().length > 0 && !searchLoading && searchResults.length === 0 && filteredChats.length === 0 && (
+      {searchQuery.trim().length > 0 && !searchLoading && searchResults.length === 0 && chats.filter(c => c.type === 'direct' && c.userName.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
         <View style={styles.noResults}>
           <Text style={{ color: '#666' }}>No gossiper found with that name.</Text>
         </View>
       )}
     </View>
+  );
+
+  const renderChatItem = ({ item }: { item: Chat }) => (
+    <TouchableOpacity
+      style={styles.chatItem}
+      onPress={() => router.push(`/chat/${item.id}`)}
+    >
+      <Avatar uri={item.userAvatar} size={64} online={item.online} />
+
+      <View style={styles.chatContent}>
+        <View style={styles.chatHeader}>
+          <Text style={[styles.chatName, { color: '#00E5FF' }]} numberOfLines={1}>
+            {item.userName.split(' ')[0]}, {getAge(item.id)}
+            {item.online && <Text style={{ color: colors.success }}> •</Text>}
+          </Text>
+          <Text style={[styles.chatTime, { color: '#666' }]}>
+            {formatTime(item.lastMessageTime || new Date())}
+          </Text>
+        </View>
+
+        <Text
+          style={[styles.chatMessage, { color: '#CCC' }]}
+          numberOfLines={1}
+        >
+          {item.typing ? 'typing...' : item.lastMessage}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 
   if (chatLoading && chats.length === 0) {
@@ -240,39 +263,14 @@ export default function ChatsScreen() {
   return (
     <View style={[styles.container, { backgroundColor: '#000', paddingTop: insets.top }]}>
       <FlatList
-        data={filteredChats}
-        keyExtractor={item => item.id}
+        data={chats.filter(c => c.type === 'direct' && (searchQuery ? c.userName.toLowerCase().includes(searchQuery.toLowerCase()) : true))}
+        keyExtractor={(item) => item.id}
         ListHeaderComponent={renderHeader()}
+        renderItem={renderChatItem}
         contentContainerStyle={styles.listContent}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.chatItem}
-            onPress={() => router.push(`/chat/${item.id}`)}
-          >
-            <Avatar uri={item.userAvatar} size={64} online={item.online} />
-
-            <View style={styles.chatContent}>
-              <View style={styles.chatHeader}>
-                <Text style={[styles.chatName, { color: '#00E5FF' }]} numberOfLines={1}>
-                  {item.userName.split(' ')[0]}, {getAge(item.id)}
-                  {item.online && <Text style={{ color: colors.success }}> •</Text>}
-                </Text>
-                <Text style={[styles.chatTime, { color: '#666' }]}>
-                  {formatTime(item.lastMessageTime || new Date())}
-                </Text>
-              </View>
-
-              <Text
-                style={[styles.chatMessage, { color: '#CCC' }]}
-                numberOfLines={1}
-              >
-                {item.typing ? 'typing...' : item.lastMessage}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
+        showsVerticalScrollIndicator={false}
       />
-      {/* Requests Modal */}
+
       <Modal
         visible={showRequestsModal}
         animationType="slide"
@@ -328,7 +326,7 @@ export default function ChatsScreen() {
           </BlurView>
         </View>
       </Modal>
-    </View>
+    </View >
   );
 }
 
