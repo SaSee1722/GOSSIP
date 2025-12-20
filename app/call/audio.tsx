@@ -9,25 +9,32 @@ import { Avatar } from '@/components/ui/Avatar';
 import { theme } from '@/constants/theme';
 
 import { useCall } from '@/contexts/CallContext';
+import { RTCView } from '@/utils/webrtc';
 
 export default function AudioCallScreen() {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
-  const { currentCall, endCall } = useCall();
+  const {
+    currentCall,
+    endCall,
+    toggleMute,
+    isMuted,
+    remoteStream
+  } = useCall();
   const router = useRouter();
   const [duration, setDuration] = useState(0);
-  const [isMuted, setIsMuted] = useState(false);
   const [isSpeaker, setIsSpeaker] = useState(false);
 
-  if (!currentCall) return null;
-
   useEffect(() => {
+    if (!currentCall) return;
     const interval = setInterval(() => {
       setDuration(prev => prev + 1);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [currentCall]);
+
+  if (!currentCall) return null;
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -48,9 +55,18 @@ export default function AudioCallScreen() {
         </TouchableOpacity>
 
         <View style={styles.callerInfo}>
-          <Avatar uri={`https://i.pravatar.cc/150?u=${currentCall.caller_id}`} size={120} />
-          <Text style={styles.callerName}>User {currentCall.caller_id.substring(0, 5)}</Text>
-          <Text style={styles.callStatus}>{formatDuration(duration)}</Text>
+          <Avatar uri={currentCall.profiles?.avatar_url} size={120} />
+          <Text style={styles.callerName}>{currentCall.profiles?.full_name || 'Gossiper'}</Text>
+          <Text style={styles.callStatus}>
+            {remoteStream ? formatDuration(duration) : 'Connecting...'}
+          </Text>
+          {/* Audio playback for web */}
+          {remoteStream && (
+            <RTCView
+              streamURL={(remoteStream as any).toURL()}
+              style={{ width: 0, height: 0, opacity: 0 }}
+            />
+          )}
         </View>
 
         <View style={styles.controls}>
@@ -64,7 +80,7 @@ export default function AudioCallScreen() {
 
           <TouchableOpacity
             style={[styles.controlButton, isMuted && styles.controlButtonActive]}
-            onPress={() => setIsMuted(!isMuted)}
+            onPress={toggleMute}
           >
             <Ionicons name={isMuted ? 'mic-off' : 'mic'} size={28} color="#FFFFFF" />
             <Text style={styles.controlLabel}>Mute</Text>

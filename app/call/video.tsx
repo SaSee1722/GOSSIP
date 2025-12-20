@@ -9,26 +9,35 @@ import { Avatar } from '@/components/ui/Avatar';
 import { theme } from '@/constants/theme';
 
 import { useCall } from '@/contexts/CallContext';
+import { RTCView } from '@/utils/webrtc';
 
 export default function VideoCallScreen() {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
-  const { currentCall, endCall } = useCall();
+  const {
+    currentCall,
+    endCall,
+    localStream,
+    remoteStream,
+    toggleMute,
+    toggleCamera,
+    switchCamera,
+    isMuted,
+    isCameraOff
+  } = useCall();
   const router = useRouter();
   const [duration, setDuration] = useState(0);
-  const [isMuted, setIsMuted] = useState(false);
-  const [isVideoOff, setIsVideoOff] = useState(false);
-  const [isFrontCamera, setIsFrontCamera] = useState(true);
-
-  if (!currentCall) return null;
 
   useEffect(() => {
+    if (!currentCall) return;
     const interval = setInterval(() => {
       setDuration(prev => prev + 1);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [currentCall]);
+
+  if (!currentCall) return null;
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -44,12 +53,37 @@ export default function VideoCallScreen() {
       />
 
       <View style={[styles.remoteVideo, { paddingTop: insets.top }]}>
-        <Avatar uri="https://i.pravatar.cc/150?img=1" size={120} />
-        <Text style={styles.remoteName}>Sarah Mitchell</Text>
+        {remoteStream ? (
+          <RTCView
+            streamURL={(remoteStream as any).toURL()}
+            style={StyleSheet.absoluteFill}
+            objectFit="cover"
+          />
+        ) : (
+          <>
+            <Avatar uri={currentCall.profiles?.avatar_url} size={120} />
+            <Text style={styles.remoteName}>{currentCall.profiles?.full_name || 'Gossiper'}</Text>
+            <Text style={{ color: '#888', marginTop: 10 }}>Connecting...</Text>
+          </>
+        )}
       </View>
 
       <View style={styles.localVideo}>
-        <Avatar uri="https://i.pravatar.cc/150?img=47" size={80} />
+        {localStream ? (
+          <RTCView
+            streamURL={(localStream as any).toURL()}
+            style={StyleSheet.absoluteFill}
+            objectFit="cover"
+            zOrder={1}
+          />
+        ) : (
+          <Avatar uri="https://i.pravatar.cc/150?img=47" size={80} />
+        )}
+        {isCameraOff && (
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: '#000', justifyContent: 'center', alignItems: 'center' }]}>
+            <Ionicons name="videocam-off" size={32} color="#444" />
+          </View>
+        )}
       </View>
 
       <View style={[styles.header, { paddingTop: insets.top + 16 }]}>
@@ -63,7 +97,7 @@ export default function VideoCallScreen() {
       <View style={[styles.controls, { paddingBottom: insets.bottom + 32 }]}>
         <TouchableOpacity
           style={[styles.controlButton, isMuted && styles.controlButtonActive]}
-          onPress={() => setIsMuted(!isMuted)}
+          onPress={toggleMute}
         >
           <Ionicons name={isMuted ? 'mic-off' : 'mic'} size={28} color="#FFFFFF" />
         </TouchableOpacity>
@@ -76,16 +110,16 @@ export default function VideoCallScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.controlButton, isVideoOff && styles.controlButtonActive]}
-          onPress={() => setIsVideoOff(!isVideoOff)}
+          style={[styles.controlButton, isCameraOff && styles.controlButtonActive]}
+          onPress={toggleCamera}
         >
-          <Ionicons name={isVideoOff ? 'videocam-off' : 'videocam'} size={28} color="#FFFFFF" />
+          <Ionicons name={isCameraOff ? 'videocam-off' : 'videocam'} size={28} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity
         style={styles.flipButton}
-        onPress={() => setIsFrontCamera(!isFrontCamera)}
+        onPress={switchCamera}
       >
         <Ionicons name="camera-reverse" size={24} color="#FFFFFF" />
       </TouchableOpacity>

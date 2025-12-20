@@ -25,12 +25,12 @@ export default function IncomingCallScreen() {
       />
 
       <View style={[styles.content, { paddingTop: insets.top + 60 }]}>
-        <Text style={styles.callType}>Incoming {currentCall.type} Call</Text>
+        <Text style={styles.callType}>Incoming {currentCall.type.toUpperCase()} Call</Text>
 
         <View style={styles.callerInfo}>
-          <Avatar uri={`https://i.pravatar.cc/150?u=${currentCall.caller_id}`} size={120} />
-          <Text style={styles.callerName}>User {currentCall.caller_id.substring(0, 5)}</Text>
-          <Text style={styles.callerSubtitle}>GOSSIP {currentCall.type} Call</Text>
+          <Avatar uri={currentCall.profiles?.avatar_url} size={120} />
+          <Text style={styles.callerName}>{currentCall.profiles?.full_name || 'Gossiper'}</Text>
+          <Text style={styles.callerSubtitle}>GOSSIP {currentCall.type.toUpperCase()} Call</Text>
         </View>
 
         <View style={styles.actions}>

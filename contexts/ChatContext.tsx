@@ -27,6 +27,11 @@ export interface Chat {
   typing: boolean;
   type: 'direct' | 'group';
   age?: number;
+  gender?: string;
+  onlineCount?: number;
+  memberCount?: number;
+  description?: string;
+  createdBy?: string;
 }
 
 export interface ConnectionRequest {
@@ -56,6 +61,9 @@ interface ChatContextType {
   blockUser: (userId: string) => Promise<void>;
   unblockUser: (userId: string) => Promise<void>;
   deleteGroup: (roomId: string) => Promise<void>;
+  fetchMessages: (chatId: string) => Promise<void>;
+  updateGroup: (roomId: string, updates: { name?: string; description?: string; avatar_url?: string }) => Promise<void>;
+  getParticipants: (roomId: string) => Promise<any[]>;
 }
 
 export const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -83,16 +91,16 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         });
       }
 
-      // REALTIME RE-ENABLED with new Supabase project
       setupRealtime();
+      ChatService.updateOnlineStatus(user.id, true);
 
-      // Keep polling as backup (every 30 seconds)
       const pollInterval = setInterval(() => {
         refreshChats();
       }, 30000);
 
       return () => {
         clearInterval(pollInterval);
+        ChatService.updateOnlineStatus(user.id, false);
         cleanupRealtime();
       };
     } else {
@@ -164,6 +172,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
               typing: false,
               type: 'direct',
               age: conn.age,
+              gender: conn.gender,
             });
           }
         });
@@ -183,12 +192,22 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   const formatRoomToChat = async (room: any): Promise<Chat | null> => {
     const participants = await ChatService.getRoomParticipants(room.id);
-    const { data: msgs } = await ChatService.getMessages(room.id, 1);
+    const { data: msgs } = await ChatService.getMessages(room.id, 1, false);
     const lastMsg = msgs?.[0];
 
     if (room.type === 'direct') {
       const otherUser = participants.data?.find(p => p.id !== user?.id);
       if (otherUser) {
+        // Count unread messages
+        const { count } = await safeSupabaseOperation(async (client) => {
+          return await client
+            .from('messages')
+            .select('*', { count: 'exact', head: true })
+            .eq('room_id', room.id)
+            .neq('user_id', user?.id)
+            .neq('status', 'read');
+        });
+
         return {
           id: room.id,
           userId: otherUser.id,
@@ -196,24 +215,41 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           userAvatar: otherUser.avatar_url || `https://i.pravatar.cc/150?u=${otherUser.id}`,
           lastMessage: lastMsg?.content || 'Started a gossip...',
           lastMessageTime: lastMsg ? new Date(lastMsg.created_at) : new Date(room.created_at),
-          unreadCount: 0,
+          unreadCount: count || 0,
           online: otherUser.is_online || false,
           typing: false,
           type: 'direct',
           age: otherUser.age,
+          gender: otherUser.gender,
         };
       }
     } else {
       // Group Chat
+      const { count } = await safeSupabaseOperation(async (client) => {
+        return await client
+          .from('messages')
+          .select('*', { count: 'exact', head: true })
+          .eq('room_id', room.id)
+          .neq('user_id', user?.id)
+          .neq('status', 'read');
+      });
+
+      const onlineCount = participants.data?.filter(p => p.is_online).length || 0;
+      const memberCount = participants.data?.length || 0;
+
       return {
         id: room.id,
-        userId: room.id, // Group ID as virtual user ID
+        userId: room.id,
         userName: room.name || 'Gossip Group',
-        userAvatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(room.name || 'G')}&background=FFB6C1&color=000`,
+        userAvatar: room.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(room.name || 'G')}&background=FFB6C1&color=000`,
         lastMessage: lastMsg?.content || 'New gossip group created!',
         lastMessageTime: lastMsg ? new Date(lastMsg.created_at) : new Date(room.created_at),
-        unreadCount: 0,
-        online: true,
+        unreadCount: count || 0,
+        online: onlineCount > 0,
+        onlineCount,
+        memberCount,
+        description: room.description || 'Welcome to the gossip group!',
+        createdBy: room.created_by,
         typing: false,
         type: 'group',
       };
@@ -268,10 +304,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           ChatService.updateMessageStatus(newMessage.id, 'delivered');
         }
 
-        setMessages(prev => ({
-          ...prev,
-          [newMessage.room_id]: [...(prev[newMessage.room_id] || []), formattedMsg]
-        }));
+        setMessages(prev => {
+          const currentMsgs = prev[newMessage.room_id] || [];
+          if (currentMsgs.some(m => m.id === formattedMsg.id)) return prev;
+          return {
+            ...prev,
+            [newMessage.room_id]: [...currentMsgs, formattedMsg]
+          };
+        });
 
         const { data: rooms } = await ChatService.getMyRooms();
         if (rooms) {
@@ -282,6 +322,22 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           }
           setChats(formattedChats.sort((a, b) => b.lastMessageTime.getTime() - a.lastMessageTime.getTime()));
         }
+      })
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'messages'
+      }, (payload) => {
+        const updatedMsg = payload.new as MessageData;
+        setMessages(prev => {
+          const roomMsgs = prev[updatedMsg.room_id] || [];
+          return {
+            ...prev,
+            [updatedMsg.room_id]: roomMsgs.map(m =>
+              m.id === updatedMsg.id ? { ...m, status: updatedMsg.status } : m
+            )
+          };
+        });
       })
       .on('postgres_changes', {
         event: 'UPDATE',
@@ -340,26 +396,52 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   };
 
   const sendMessage = async (chatId: string, content: string, type: string = 'text') => {
-    const { data, error } = await ChatService.sendMessage(chatId, content, type);
-    if (error) throw new Error(error);
+    const { data: sentMsg, error } = await ChatService.sendMessage(chatId, content, type);
+    if (error) {
+      console.error('[ChatContext] sendMessage failed:', error);
+      throw new Error(error);
+    }
+
+    if (sentMsg) {
+      // Manual optimistic update
+      const formattedMsg: Message = {
+        id: sentMsg.id,
+        chatId: sentMsg.room_id,
+        senderId: sentMsg.user_id,
+        content: sentMsg.content,
+        type: sentMsg.message_type as any,
+        timestamp: new Date(sentMsg.created_at),
+        status: sentMsg.status,
+      };
+
+      setMessages(prev => {
+        const currentMsgs = prev[chatId] || [];
+        if (currentMsgs.some(m => m.id === formattedMsg.id)) return prev;
+        return {
+          ...prev,
+          [chatId]: [...currentMsgs, formattedMsg]
+        };
+      });
+    }
   };
 
   const markAsRead = async (chatId: string) => {
-    const chatMsgs = messages[chatId] || [];
-    const unreadMsgs = chatMsgs.filter(m => m.senderId !== user?.id && m.status !== 'read');
+    if (!user?.id) return;
 
-    for (const msg of unreadMsgs) {
-      ChatService.updateMessageStatus(msg.id, 'read');
-    }
+    await ChatService.markRoomAsRead(chatId, user.id);
 
     setChats(prev => prev.map(chat =>
       chat.id === chatId ? { ...chat, unreadCount: 0 } : chat
     ));
 
-    setMessages(prev => ({
-      ...prev,
-      [chatId]: (prev[chatId] || []).map(m => m.senderId !== user?.id ? { ...m, status: 'read' } : m)
-    }));
+    setMessages(prev => {
+      const roomMsgs = prev[chatId];
+      if (!roomMsgs) return prev;
+      return {
+        ...prev,
+        [chatId]: roomMsgs.map(m => m.senderId !== user.id ? { ...m, status: 'read' } : m)
+      };
+    });
   };
 
   const setTyping = async (chatId: string, isTyping: boolean) => {
@@ -453,6 +535,26 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const fetchMessages = async (chatId: string) => {
+    const { data, error } = await ChatService.getMessages(chatId);
+    if (!error && data) {
+      const formattedMsgs: Message[] = data.map(m => ({
+        id: m.id,
+        chatId: m.room_id,
+        senderId: m.user_id,
+        content: m.content,
+        type: m.message_type as any,
+        timestamp: new Date(m.created_at),
+        status: m.status,
+      }));
+
+      setMessages(prev => ({
+        ...prev,
+        [chatId]: formattedMsgs
+      }));
+    }
+  };
+
   const refreshChats = async () => {
     await loadInitialData();
   };
@@ -475,6 +577,18 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     await refreshChats();
   };
 
+  const updateGroup = async (roomId: string, updates: { name?: string; description?: string; avatar_url?: string }) => {
+    const { error } = await ChatService.updateRoom(roomId, updates);
+    if (error) throw new Error(error);
+    await refreshChats();
+  };
+
+  const getParticipants = async (roomId: string) => {
+    const { data, error } = await ChatService.getRoomParticipantsProfiles(roomId);
+    if (error) throw new Error(error);
+    return data || [];
+  };
+
   const contextValue = React.useMemo(() => ({
     chats,
     messages,
@@ -490,6 +604,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     blockUser,
     unblockUser,
     deleteGroup,
+    fetchMessages,
+    updateGroup,
+    getParticipants,
   }), [chats, messages, pendingRequests, loading]);
 
   return (

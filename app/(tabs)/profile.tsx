@@ -25,6 +25,8 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { GradientText } from '@/components/ui/GradientText';
 import { BlurView } from 'expo-blur';
+import { useChat } from '@/hooks/useChat';
+import { ChatService } from '@/services/ChatService';
 
 // Basic Localization Mapping
 const translations: Record<string, Record<string, string>> = {
@@ -94,6 +96,32 @@ export default function ProfileScreen() {
   const [loading, setLoading] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [showBlockedModal, setShowBlockedModal] = useState(false);
+  const [blockedUsers, setBlockedUsers] = useState<any[]>([]);
+  const { blockUser, unblockUser, refreshChats } = useChat();
+
+  const fetchBlockedUsers = async () => {
+    const { data, error } = await ChatService.getBlockedUsers();
+    if (!error && data) {
+      setBlockedUsers(data);
+    }
+  };
+
+  useEffect(() => {
+    if (showBlockedModal) {
+      fetchBlockedUsers();
+    }
+  }, [showBlockedModal]);
+
+  const handleUnblock = async (userId: string) => {
+    try {
+      await unblockUser(userId);
+      await fetchBlockedUsers();
+      Alert.alert('Success', 'User unblocked');
+    } catch (err: any) {
+      Alert.alert('Error', err.message);
+    }
+  };
 
   useEffect(() => {
     if (user) {
@@ -338,6 +366,13 @@ export default function ProfileScreen() {
                 value={<View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}><Text style={{ color: '#FFB6C1', fontWeight: '700' }}>{language}</Text><Ionicons name="chevron-forward" color="#666" size={16} /></View>}
               />
             </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowBlockedModal(true)}>
+              <SettingItem
+                icon="hand-right-outline"
+                label="Blocked Users"
+                value={<Ionicons name="chevron-forward" color="#666" size={16} />}
+              />
+            </TouchableOpacity>
           </BlurView>
         </View>
 
@@ -368,6 +403,48 @@ export default function ProfileScreen() {
               ))}
             </ScrollView>
             <TouchableOpacity style={styles.closeBtn} onPress={() => setShowLanguageModal(false)}>
+              <Text style={{ color: '#FFB6C1', fontWeight: 'bold', fontSize: 16 }}>Close</Text>
+            </TouchableOpacity>
+          </BlurView>
+        </View>
+      </Modal>
+
+      <Modal visible={showBlockedModal} transparent animationType="slide">
+        <View style={styles.modalOverlay}>
+          <BlurView intensity={80} tint="dark" style={[styles.modalContent, { height: '80%' }]}>
+            <View style={styles.modalHeader}>
+              <GradientText text="Blocked Users" style={styles.modalTitle} />
+              <TouchableOpacity onPress={() => setShowBlockedModal(false)}>
+                <Ionicons name="close-circle" size={32} color="#444" />
+              </TouchableOpacity>
+            </View>
+
+            {blockedUsers.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Ionicons name="hand-right-outline" size={60} color="#333" />
+                <Text style={{ color: '#666', marginTop: 15 }}>No one is blocked.</Text>
+              </View>
+            ) : (
+              <ScrollView style={{ flex: 1 }}>
+                {blockedUsers.map(u => (
+                  <View key={u.id} style={styles.blockedItem}>
+                    <Avatar uri={u.avatar_url} size={45} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.blockedName}>{u.full_name || u.username}</Text>
+                      <Text style={styles.blockedUser}>@{u.username}</Text>
+                    </View>
+                    <TouchableOpacity
+                      style={styles.unblockBtn}
+                      onPress={() => handleUnblock(u.id)}
+                    >
+                      <Text style={styles.unblockText}>UNBLOCK</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
+            )}
+
+            <TouchableOpacity style={styles.closeBtn} onPress={() => setShowBlockedModal(false)}>
               <Text style={{ color: '#FFB6C1', fontWeight: 'bold', fontSize: 16 }}>Close</Text>
             </TouchableOpacity>
           </BlurView>
@@ -539,6 +616,7 @@ const styles = StyleSheet.create({
   },
   logoutText: { color: '#FFB6C1', fontSize: 16, fontWeight: '800' },
   version: { textAlign: 'center', color: '#444', marginTop: 30, fontSize: 11, fontWeight: '700' },
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.85)', justifyContent: 'center', padding: 25 },
   modalContent: {
     borderRadius: 35,
@@ -567,5 +645,11 @@ const styles = StyleSheet.create({
   genderBtnText: { color: '#888', fontWeight: 'bold' },
   maleActive: { backgroundColor: '#00BFFF', borderColor: '#00BFFF' },
   femaleActive: { backgroundColor: '#FFB6C1', borderColor: '#FFB6C1' },
-  otherActive: { backgroundColor: '#444', borderColor: '#666' }
+  otherActive: { backgroundColor: '#444', borderColor: '#666' },
+  blockedItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 0.5, borderBottomColor: 'rgba(255,255,255,0.05)', gap: 15 },
+  blockedName: { color: '#FFF', fontSize: 16, fontWeight: '700' },
+  blockedUser: { color: '#666', fontSize: 12 },
+  unblockBtn: { backgroundColor: 'rgba(255,182,193,0.1)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 10, borderWidth: 1, borderColor: 'rgba(255,182,193,0.2)' },
+  unblockText: { color: '#FFB6C1', fontSize: 11, fontWeight: '900' },
+  emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingBottom: 50 },
 });

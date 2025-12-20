@@ -10,33 +10,45 @@ import {
   Platform,
   StatusBar,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Modal,
+  Image as RNImage
 } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTheme } from '@/hooks/useTheme';
 import { useChat } from '@/hooks/useChat';
-import { useStatus } from '@/contexts/StatusContext';
-import { useCall } from '@/contexts/CallContext';
 import { useAuth } from '@/template';
 import { Avatar } from '@/components/ui/Avatar';
 import { GradientText } from '@/components/ui/GradientText';
+import { TypingIndicator } from '@/components/ui/TypingIndicator';
+import { BlurView } from 'expo-blur';
 import { theme } from '@/constants/theme';
+import { ChatService } from '@/services/ChatService';
+import { useCall } from '@/contexts/CallContext';
 
 export default function ChatDetailScreen() {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const { id } = useLocalSearchParams();
-  const { chats, messages, sendMessage, markAsRead, setTyping, blockUser, deleteGroup } = useChat();
-  const { initiateCall } = useCall();
+  const { chats, messages, sendMessage, markAsRead, setTyping, blockUser, deleteGroup, fetchMessages, updateGroup, getParticipants } = useChat();
   const { user } = useAuth();
+  const { initiateCall } = useCall();
   const router = useRouter();
   const [messageText, setMessageText] = useState('');
   const flatListRef = useRef<FlatList>(null);
   const typingTimeoutRef = useRef<any>(null);
   const [isBlocked, setIsBlocked] = useState(false);
   const [checkingBlock, setCheckingBlock] = useState(true);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showMembersModal, setShowMembersModal] = useState(false);
+  const [members, setMembers] = useState<any[]>([]);
+  const [newGroupName, setNewGroupName] = useState('');
+  const [newGroupDesc, setNewGroupDesc] = useState('');
+  const [newGroupAvatar, setNewGroupAvatar] = useState('');
+  const [updating, setUpdating] = useState(false);
 
   const chat = chats.find(c => c.id === id);
   const chatMessages = messages[id as string] || [];
@@ -44,6 +56,7 @@ export default function ChatDetailScreen() {
   useEffect(() => {
     if (id) {
       markAsRead(id as string);
+      fetchMessages(id as string);
       checkBlockStatus();
     }
   }, [id]);
@@ -55,6 +68,66 @@ export default function ChatDetailScreen() {
       setIsBlocked(blocked);
     }
     setCheckingBlock(false);
+  };
+
+  const handlePickGroupAvatar = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+    });
+
+    if (!result.canceled && result.assets[0].uri) {
+      try {
+        setUpdating(true);
+        const { data: publicUrl, error: uploadError } = await ChatService.uploadGroupAvatar(chat!.id, result.assets[0].uri);
+
+        if (uploadError) {
+          Alert.alert('Upload Error', uploadError);
+          return;
+        }
+
+        if (publicUrl) {
+          setNewGroupAvatar(publicUrl);
+        }
+      } catch (err: any) {
+        Alert.alert('Error', err.message);
+      } finally {
+        setUpdating(false);
+      }
+    }
+  };
+
+  const handleUpdateGroup = async () => {
+    if (!newGroupName.trim() || !chat) return;
+    try {
+      setUpdating(true);
+      await updateGroup(chat.id, {
+        name: newGroupName,
+        description: newGroupDesc,
+        avatar_url: newGroupAvatar || chat.userAvatar
+      });
+      setShowSettingsModal(false);
+    } catch (err: any) {
+      Alert.alert('Error', err.message);
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const loadMembers = async () => {
+    if (!chat) return;
+    try {
+      setUpdating(true);
+      const data = await getParticipants(chat.id);
+      setMembers(data);
+      setShowMembersModal(true);
+    } catch (err: any) {
+      Alert.alert('Error', err.message);
+    } finally {
+      setUpdating(false);
+    }
   };
 
   const handleTyping = (text: string) => {
@@ -97,22 +170,62 @@ export default function ChatDetailScreen() {
     );
   }
 
+  const getGenderColors = (gender?: string) => {
+    switch (gender?.toLowerCase()) {
+      case 'male': return ['#00BFFF', '#0097D7'];
+      case 'female': return ['#FFB6C1', '#FF9AA2'];
+      case 'other': return ['#FFD700', '#DAA520'];
+      default: return ['#00E5FF', '#FF4081']; // Default Gossip Gradient
+    }
+  };
+
   return (
-    <View style={[styles.container, { backgroundColor: '#000' }]}>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => {
+            if (router.canGoBack()) {
+              router.back();
+            } else {
+              router.replace('/(tabs)');
+            }
+          }}
+          style={styles.backButton}
+        >
           <Ionicons name="chevron-back" size={28} color="#FFF" />
         </TouchableOpacity>
 
         <View style={styles.headerTitleContainer}>
-          <Text style={styles.headerName}>
-            {chat.type === 'direct' ? `${chat.userName}${chat.age ? `, ${chat.age}` : ''}` : chat.userName}
-            {chat.online && <Text style={{ color: '#00FF00' }}> •</Text>}
-          </Text>
+          <GradientText
+            text={chat.userName.toUpperCase()}
+            style={styles.headerName}
+            colors={getGenderColors(chat.gender)}
+          />
+          {chat.type === 'direct' ? (
+            <>
+              {chat.online && <Text style={styles.onlineStatus}>Online</Text>}
+              {chat.typing && <Text style={styles.typingStatus}>typing...</Text>}
+            </>
+          ) : (
+            <Text style={styles.onlineStatus}>
+              {chat.onlineCount || 0} online • {chat.memberCount || 0} members
+            </Text>
+          )}
         </View>
+
+        {chat.type === 'direct' && (
+          <View style={{ flexDirection: 'row', gap: 18, marginRight: 15 }}>
+            <TouchableOpacity onPress={() => initiateCall(chat.userId, 'audio')}>
+              <Ionicons name="call-outline" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => initiateCall(chat.userId, 'video')}>
+              <Ionicons name="videocam-outline" size={24} color="#FFF" />
+            </TouchableOpacity>
+          </View>
+        )}
 
         <TouchableOpacity
           onPress={() => {
@@ -122,22 +235,22 @@ export default function ChatDetailScreen() {
                 { text: 'Cancel', style: 'cancel' }
               ]);
             } else {
-              Alert.alert('Group Settings', 'Options for this gossip group', [
-                { text: 'Delete Group', style: 'destructive', onPress: () => deleteGroup(chat.id).then(() => router.back()) },
-                { text: 'Cancel', style: 'cancel' }
-              ]);
+              setNewGroupName(chat.userName);
+              setNewGroupDesc(chat.description || '');
+              setNewGroupAvatar(chat.userAvatar);
+              setShowSettingsModal(true);
             }
           }}
           style={styles.headerAvatar}
         >
-          <Avatar uri={chat.userAvatar} size={42} />
+          <Avatar uri={chat.userAvatar} size={40} online={chat.online} />
         </TouchableOpacity>
       </View>
 
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.flex}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <FlatList
           ref={flatListRef}
@@ -145,24 +258,33 @@ export default function ChatDetailScreen() {
           keyExtractor={item => item.id}
           contentContainerStyle={[styles.messageList, { paddingBottom: 20 }]}
           ListHeaderComponent={<Text style={styles.dateSeparator}>Today</Text>}
+          ListFooterComponent={chat.typing ? <TypingIndicator /> : null}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
           renderItem={({ item }) => {
             const isSent = item.senderId === user?.id;
 
             return (
-              <View style={[styles.messageWrapper, isSent ? styles.sentWrapper : styles.receivedWrapper]}>
-                <View style={[
-                  styles.messageBubble,
-                  { backgroundColor: isSent ? '#7C3AED' : '#1C1C1E' }
-                ]}>
-                  <Text style={[styles.messageText, { color: '#FFF' }]}>
+              <View style={[
+                styles.messageWrapper,
+                isSent ? styles.sentWrapper : styles.receivedWrapper
+              ]}>
+                <View style={[styles.messageBubble, getBubbleStyle(isSent)]}>
+                  <Text style={[styles.messageText, { color: isSent ? '#000' : '#FFF' }]}>
                     {item.content}
                   </Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 }}>
-                  <Text style={[styles.timeText, { color: '#444' }]}>
-                    {isSent && item.status === 'read' ? 'Read ' : ''}{formatTime(item.timestamp)}
-                  </Text>
+                  <View style={styles.statusRow}>
+                    <Text style={[styles.timeText, { color: isSent ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)' }]}>
+                      {formatTime(item.timestamp)}
+                    </Text>
+                    {isSent && (
+                      <Ionicons
+                        name={item.status === 'read' || item.status === 'delivered' ? 'checkmark-done' : 'checkmark'}
+                        size={14}
+                        color={item.status === 'read' ? '#000' : 'rgba(0,0,0,0.3)'}
+                        style={{ marginLeft: 2 }}
+                      />
+                    )}
+                  </View>
                 </View>
               </View>
             );
@@ -170,38 +292,169 @@ export default function ChatDetailScreen() {
         />
 
         {/* Input Bar */}
-        <View style={[styles.inputContainer, { paddingBottom: Math.max(insets.bottom, 20) }]}>
+        <View style={[styles.inputContainer, { paddingBottom: Math.max(insets.bottom, 15) }]}>
           {isBlocked ? (
-            <View style={[styles.inputWrapper, { justifyContent: 'center' }]}>
-              <Text style={{ color: '#666', fontSize: 14 }}>You have blocked this user or they blocked you.</Text>
+            <View style={styles.blockedNotice}>
+              <Text style={{ color: '#666', fontSize: 13 }}>You cannot send messages to this user.</Text>
             </View>
           ) : (
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                placeholder="Message"
-                placeholderTextColor="#666"
-                value={messageText}
-                onChangeText={handleTyping}
-                onSubmitEditing={handleSend}
-              />
-              <View style={styles.inputIcons}>
-                <TouchableOpacity style={styles.iconBtn}>
-                  <Ionicons name="happy-outline" size={24} color="#666" />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.iconBtn}>
-                  <Ionicons name="attach" size={24} color="#666" />
-                </TouchableOpacity>
+            <>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Whisper something..."
+                  placeholderTextColor="#666"
+                  value={messageText}
+                  onChangeText={handleTyping}
+                  onSubmitEditing={handleSend}
+                />
+                <View style={styles.inputIcons}>
+                  <TouchableOpacity style={styles.iconBtn}>
+                    <Ionicons name="happy-outline" size={24} color="#888" />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.iconBtn}>
+                    <Ionicons name="attach" size={24} color="#888" />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          )}
-          {!isBlocked && messageText.length > 0 && (
-            <TouchableOpacity onPress={handleSend} style={styles.realSendBtn}>
-              <Ionicons name="send" size={22} color={colors.primary} />
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleSend}
+                style={[
+                  styles.sendBtn,
+                  { backgroundColor: messageText.length > 0 ? colors.primary : '#1A1A1A' }
+                ]}
+                disabled={messageText.length === 0}
+              >
+                <Ionicons
+                  name="send"
+                  size={20}
+                  color={messageText.length > 0 ? '#000' : '#444'}
+                />
+              </TouchableOpacity>
+            </>
           )}
         </View>
       </KeyboardAvoidingView>
+
+      {/* Group Settings Modal */}
+      <Modal
+        visible={showSettingsModal}
+        animationType="slide"
+        transparent
+      >
+        <View style={styles.modalOverlay}>
+          <BlurView intensity={80} tint="dark" style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <GradientText text="GROUP SETTINGS" style={styles.modalTitle} />
+              <TouchableOpacity onPress={() => setShowSettingsModal(false)}>
+                <Ionicons name="close" size={28} color="#FFF" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.avatarSection}>
+              <TouchableOpacity onPress={handlePickGroupAvatar} disabled={chat.createdBy !== user?.id}>
+                <View style={styles.avatarContainer}>
+                  <Avatar uri={newGroupAvatar || chat.userAvatar} size={100} />
+                  {chat.createdBy === user?.id && (
+                    <View style={styles.cameraBadge}>
+                      <Ionicons name="camera" size={16} color="#FFF" />
+                    </View>
+                  )}
+                </View>
+              </TouchableOpacity>
+              <Text style={styles.avatarHint}>
+                {chat.createdBy === user?.id ? 'Tap to change group photo' : 'Group Avatar'}
+              </Text>
+            </View>
+
+            <View style={styles.modalBody}>
+              <Text style={styles.label}>GROUP NAME</Text>
+              <TextInput
+                style={styles.modalInput}
+                value={newGroupName}
+                onChangeText={setNewGroupName}
+                placeholder="Name your gossip..."
+                placeholderTextColor="#666"
+                editable={chat.createdBy === user?.id}
+              />
+
+              <Text style={styles.label}>DESCRIPTION</Text>
+              <TextInput
+                style={[styles.modalInput, { height: 80, textAlignVertical: 'top' }]}
+                value={newGroupDesc}
+                onChangeText={setNewGroupDesc}
+                placeholder="What is this group about?"
+                placeholderTextColor="#666"
+                multiline
+                editable={chat.createdBy === user?.id}
+              />
+
+              <TouchableOpacity style={styles.memberBtn} onPress={loadMembers}>
+                <Ionicons name="people" size={20} color={colors.primary} />
+                <Text style={styles.memberBtnText}>View Members</Text>
+                {updating && <ActivityIndicator size="small" color={colors.primary} />}
+              </TouchableOpacity>
+
+              {chat.createdBy === user?.id && (
+                <>
+                  <TouchableOpacity
+                    style={[styles.saveBtn, { backgroundColor: colors.primary }]}
+                    onPress={handleUpdateGroup}
+                    disabled={updating}
+                  >
+                    <Text style={styles.saveBtnText}>{updating ? 'SAVING...' : 'UPDATE GOSSIP'}</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.deleteBtn}
+                    onPress={() => {
+                      Alert.alert('Delete Group', 'Are you sure? This whisper will be gone forever!', [
+                        { text: 'Cancel', style: 'cancel' },
+                        { text: 'Delete', style: 'destructive', onPress: () => deleteGroup(chat.id).then(() => router.back()) }
+                      ]);
+                    }}
+                  >
+                    <Text style={styles.deleteBtnText}>DELETE GROUP</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </View>
+          </BlurView>
+        </View>
+      </Modal>
+
+      {/* Members Modal */}
+      <Modal
+        visible={showMembersModal}
+        animationType="slide"
+        transparent
+      >
+        <View style={styles.modalOverlay}>
+          <BlurView intensity={80} tint="dark" style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <GradientText text="GOSSIPERS" style={styles.modalTitle} />
+              <TouchableOpacity onPress={() => setShowMembersModal(false)}>
+                <Ionicons name="close" size={28} color="#FFF" />
+              </TouchableOpacity>
+            </View>
+
+            <FlatList
+              data={members}
+              keyExtractor={item => item.id}
+              contentContainerStyle={{ padding: 20 }}
+              renderItem={({ item }) => (
+                <View style={styles.memberItem}>
+                  <Avatar uri={item.avatar_url} size={40} online={item.is_online} />
+                  <View style={{ marginLeft: 15 }}>
+                    <Text style={{ color: '#FFF', fontWeight: '800', fontSize: 14 }}>{item.username?.toUpperCase()}</Text>
+                    {item.id === chat.createdBy && <Text style={{ color: colors.primary, fontSize: 10 }}>CREATOR</Text>}
+                  </View>
+                </View>
+              )}
+            />
+          </BlurView>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -218,11 +471,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
     paddingBottom: 15,
     backgroundColor: '#000',
     borderBottomWidth: 0.3,
-    borderBottomColor: '#222',
+    borderBottomColor: '#333',
   },
   backButton: {
     width: 40,
@@ -234,70 +487,202 @@ const styles = StyleSheet.create({
   },
   headerName: {
     fontSize: 18,
+    fontWeight: '800',
+    letterSpacing: 1,
+  },
+  onlineStatus: {
+    fontSize: 10,
+    color: '#00B894',
+    fontWeight: '700',
+    marginTop: -2,
+  },
+  typingStatus: {
+    fontSize: 10,
+    color: '#888',
+    marginTop: -2,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingBottom: 40,
+    minHeight: '60%',
+    overflow: 'hidden',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 0.3,
+    borderBottomColor: '#222',
+  },
+  avatarSection: {
+    alignItems: 'center',
+    paddingVertical: 20,
+    gap: 10,
+  },
+  avatarContainer: {
+    position: 'relative',
+  },
+  cameraBadge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#00BFFF',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#000',
+  },
+  avatarHint: {
+    color: '#666',
+    fontSize: 12,
     fontWeight: '600',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '900',
+    letterSpacing: 2,
+  },
+  modalBody: {
+    padding: 25,
+  },
+  label: {
+    color: '#888',
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 1,
+    marginBottom: 8,
+    marginTop: 15,
+  },
+  modalInput: {
+    backgroundColor: '#111',
+    borderRadius: 15,
+    padding: 15,
     color: '#FFF',
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#222',
+  },
+  memberBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#111',
+    marginTop: 25,
+    padding: 15,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#222',
+  },
+  memberBtnText: {
+    flex: 1,
+    color: '#FFF',
+    fontSize: 15,
+    fontWeight: '600',
+    marginLeft: 12,
+  },
+  saveBtn: {
+    marginTop: 30,
+    padding: 18,
+    borderRadius: 18,
+    alignItems: 'center',
+  },
+  saveBtnText: {
+    color: '#000',
+    fontWeight: '900',
+    fontSize: 16,
+    letterSpacing: 1,
+  },
+  deleteBtn: {
+    marginTop: 15,
+    padding: 15,
+    alignItems: 'center',
+  },
+  deleteBtnText: {
+    color: '#FF4757',
+    fontWeight: '700',
+    fontSize: 14,
+    letterSpacing: 1,
+  },
+  memberItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    backgroundColor: '#111',
+    padding: 12,
+    borderRadius: 15,
   },
   headerAvatar: {
     width: 40,
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 15,
-  },
-  headerAction: {
-    padding: 5,
-  },
   dateSeparator: {
     textAlign: 'center',
-    color: '#444',
-    fontSize: 13,
+    color: '#333',
+    fontSize: 12,
     marginVertical: 20,
-    fontWeight: '500',
+    fontWeight: '700',
+    letterSpacing: 1,
   },
   messageList: {
     paddingHorizontal: 15,
+    paddingTop: 10,
   },
   messageWrapper: {
     marginBottom: 12,
-    maxWidth: '80%',
+    maxWidth: '85%',
   },
   sentWrapper: {
     alignSelf: 'flex-end',
-    alignItems: 'flex-end',
   },
   receivedWrapper: {
     alignSelf: 'flex-start',
-    alignItems: 'flex-start',
   },
   messageBubble: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
     borderRadius: 20,
   },
+  sentWrapper_bubble: { // Logic in component
+    backgroundColor: '#00BFFF',
+    borderBottomRightRadius: 4,
+  },
+  receivedWrapper_bubble: {
+    backgroundColor: '#1A1A1A',
+    borderBottomLeftRadius: 4,
+  },
   messageText: {
-    fontSize: 16,
-    lineHeight: 22,
-    fontWeight: '400',
+    fontSize: 15,
+    lineHeight: 20,
+    fontWeight: '500',
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginTop: 4,
   },
   timeText: {
-    fontSize: 12,
-    color: '#444',
-  },
-  readIndicator: {
-    fontSize: 11,
-    color: '#444',
-    marginTop: 4,
-    marginRight: 4,
+    fontSize: 10,
   },
   inputContainer: {
     flexDirection: 'row',
     paddingHorizontal: 15,
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
     backgroundColor: '#000',
+    paddingVertical: 12,
+    borderTopWidth: 0.3,
+    borderTopColor: '#333',
   },
   inputWrapper: {
     flex: 1,
@@ -311,7 +696,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 15,
     height: '100%',
     ...Platform.select({
       web: {
@@ -327,7 +712,28 @@ const styles = StyleSheet.create({
   iconBtn: {
     padding: 2,
   },
-  realSendBtn: {
-    padding: 5,
+  sendBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  blockedNotice: {
+    flex: 1,
+    height: 48,
+    backgroundColor: '#111',
+    borderRadius: 25,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
+});
+
+// Update bubble styles dynamically in renderItem
+const getBubbleStyle = (isSent: boolean) => ({
+  backgroundColor: isSent ? '#00BFFF' : '#1A1A1A',
+  borderTopLeftRadius: 20,
+  borderTopRightRadius: 20,
+  borderBottomLeftRadius: isSent ? 20 : 4,
+  borderBottomRightRadius: isSent ? 4 : 20,
 });

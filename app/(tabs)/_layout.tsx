@@ -42,16 +42,25 @@ export default function TabLayout() {
 function FloatingTabBar({ state, descriptors, navigation }: any) {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
+  const { chats, pendingRequests } = useChat();
 
   return (
     <View style={[styles.tabBarContainer, { bottom: insets.bottom + 10 }]}>
       <BlurView intensity={80} tint="dark" style={styles.tabBar}>
         {state.routes.filter((r: any) => descriptors[r.key].options.href !== null).map((route: any, index: number) => {
           const { options } = descriptors[route.key];
-          const isFocused = state.index === state.routes.findIndex((r: any) => r.key === route.key);
+          const isFocused = state.index === index;
 
           const onPress = () => {
-            navigation.navigate(route.name);
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate({ name: route.name, merge: true });
+            }
           };
 
           const iconName = () => {
@@ -64,13 +73,12 @@ function FloatingTabBar({ state, descriptors, navigation }: any) {
             }
           }
 
-          const { chats, pendingRequests } = useChat();
           const count = React.useMemo(() => {
             if (route.name === 'index') {
               return chats.reduce((acc, chat) => acc + (chat.unreadCount || 0), 0);
             }
             if (route.name === 'groups') {
-              return pendingRequests.length;
+              return 0; // Groups doesn't usually have a badge for pending requests unless specified
             }
             return 0;
           }, [route.name, chats, pendingRequests]);
@@ -100,7 +108,7 @@ function FloatingTabBar({ state, descriptors, navigation }: any) {
                   <View style={[styles.badge, { backgroundColor: '#FFB6C1' }]}>
                     <Text style={styles.badgeText}>{count}</Text>
                   </View>
-                )}
+                ) as any}
               </View>
               {isFocused && <View style={[styles.dot, { backgroundColor: colors.primary }]} />}
             </TouchableOpacity>

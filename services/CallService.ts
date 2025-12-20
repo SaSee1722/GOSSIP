@@ -15,22 +15,38 @@ export interface Call {
         full_name: string;
         avatar_url: string;
     };
+    offer_sdp?: any;
+    answer_sdp?: any;
+    receiver_id?: string;
 }
 
 export const CallService = {
-    async initiateCall(receiverId: string, type: 'audio' | 'video', roomId?: string): Promise<{ data: Call | null; error: string | null }> {
+    async initiateCall(receiverId: string, type: 'audio' | 'video', offerSdp: any, roomId?: string): Promise<{ data: Call | null; error: string | null }> {
         try {
             return await safeSupabaseOperation(async (client) => {
                 const { data: { user } } = await client.auth.getUser();
                 if (!user) throw new Error('Not authenticated');
 
+                // Check if blocked
+                const { data: blocked } = await client
+                    .from('blocked_users')
+                    .select('id')
+                    .or(`and(blocker_id.eq.${user.id},blocked_id.eq.${receiverId}),and(blocker_id.eq.${receiverId},blocked_id.eq.${user.id})`)
+                    .maybeSingle();
+
+                if (blocked) {
+                    throw new Error('User is blocked');
+                }
+
                 const { data, error } = await client
                     .from('calls')
                     .insert({
                         caller_id: user.id,
+                        receiver_id: receiverId || null,
                         room_id: roomId || null,
                         type,
-                        status: 'ringing'
+                        status: 'ringing',
+                        offer_sdp: offerSdp
                     })
                     .select()
                     .single();
@@ -43,10 +59,12 @@ export const CallService = {
         }
     },
 
-    async updateCallStatus(callId: string, status: Call['status']): Promise<{ error: string | null }> {
+    async updateCallStatus(callId: string, status: Call['status'], answerSdp?: any): Promise<{ error: string | null }> {
         try {
             return await safeSupabaseOperation(async (client) => {
                 const updateData: any = { status };
+                if (answerSdp) updateData.answer_sdp = answerSdp;
+
                 if (status === 'ended' || status === 'rejected' || status === 'missed') {
                     updateData.ended_at = new Date().toISOString();
 
@@ -77,17 +95,35 @@ export const CallService = {
         try {
             return await safeSupabaseOperation(async (client) => {
                 const { data: { user } } = await client.auth.getUser();
+                if (!user) return { error: 'Not authenticated' };
+
                 const { error } = await client
                     .from('ice_candidates')
                     .insert({
                         call_id: callId,
-                        sender_id: user?.id,
-                        candidate
+                        sender_id: user.id,
+                        candidate: candidate // Should be object
                     });
                 return { error: error?.message || null };
             });
         } catch (err: any) {
             return { error: err.message };
+        }
+    },
+
+    async getIceCandidates(callId: string): Promise<{ data: any[]; error: string | null }> {
+        try {
+            return await safeSupabaseOperation(async (client) => {
+                const { data, error } = await client
+                    .from('ice_candidates')
+                    .select('*')
+                    .eq('call_id', callId)
+                    .order('created_at', { ascending: true });
+
+                return { data: data || [], error: error?.message || null };
+            });
+        } catch (err: any) {
+            return { data: [], error: err.message };
         }
     },
 
@@ -97,13 +133,23 @@ export const CallService = {
                 const { data: { user } } = await client.auth.getUser();
                 if (!user) throw new Error('Not authenticated');
 
+                // Get user's room IDs first to build filter
+                const { data: myRooms } = await client
+                    .from('room_participants')
+                    .select('room_id')
+                    .eq('user_id', user.id);
+
+                const roomIds = myRooms?.map(r => r.room_id) || [];
+                // Only add room filter if there are rooms
+                const roomFilter = roomIds.length > 0 ? `,room_id.in.(${roomIds.join(',')})` : '';
+
                 const { data, error } = await client
                     .from('calls')
                     .select(`
                         *,
                         profiles:caller_id (id, username, full_name, avatar_url)
                     `)
-                    .or(`caller_id.eq.${user.id},room_id.in.(select room_id from room_participants where user_id = ${user.id})`)
+                    .or(`caller_id.eq.${user.id}${roomFilter}`)
                     .neq('status', 'ringing') // Only show completed/acted upon calls
                     .order('created_at', { ascending: false });
 

@@ -3,10 +3,11 @@ import { safeSupabaseOperation } from '@/template/core/client';
 export interface Room {
     id: string;
     name: string | null;
+    description: string | null;
     type: 'direct' | 'group';
     created_by: string;
     created_at: string;
-    participants?: any[];
+    avatar_url: string | null;
 }
 
 export interface MessageData {
@@ -31,21 +32,43 @@ export const ChatService = {
                     .from('room_participants')
                     .select(`
             room_id,
-            rooms (
-              id,
-              name,
-              type,
-              created_by,
-              created_at
-            )
+            rooms (*)
           `)
                     .eq('user_id', user.id);
 
                 if (error) return { data: [], error: error.message };
+                if (!data || data.length === 0) return { data: [], error: null };
 
-                // Extract room data and fetch other participants
-                const rooms = data.map((item: any) => item.rooms);
-                return { data: rooms, error: null };
+                // Get blocked users to filter them out
+                const { data: blockedData } = await client
+                    .from('blocked_users')
+                    .select('blocked_id')
+                    .eq('blocker_id', user.id);
+                const blockedIds = (blockedData || []).map((b: any) => b.blocked_id);
+
+                // Get rooms and filter out those with blocked participants (for direct chats)
+                const filteredRooms = [];
+                for (const item of data) {
+                    const room = item.rooms as any;
+                    if (!room) continue;
+
+                    if (room.type === 'direct') {
+                        // For direct chats, we need to check if the other person is blocked
+                        const { data: participants } = await client
+                            .from('room_participants')
+                            .select('user_id')
+                            .eq('room_id', room.id)
+                            .neq('user_id', user.id);
+
+                        const otherUserId = participants?.[0]?.user_id;
+                        if (otherUserId && blockedIds.includes(otherUserId)) {
+                            continue; // Skip this room
+                        }
+                    }
+                    filteredRooms.push(room);
+                }
+
+                return { data: filteredRooms, error: null };
             });
         } catch (err: any) {
             return { data: [], error: err.message };
@@ -65,7 +88,9 @@ export const ChatService = {
               full_name,
               avatar_url,
               is_online,
-              last_seen
+              last_seen,
+              gender,
+              age
             )
           `)
                     .eq('room_id', roomId);
@@ -78,14 +103,14 @@ export const ChatService = {
         }
     },
 
-    async getMessages(roomId: string, limit = 50): Promise<{ data: MessageData[]; error: string | null }> {
+    async getMessages(roomId: string, limit = 50, ascending = true): Promise<{ data: MessageData[]; error: string | null }> {
         try {
             return await safeSupabaseOperation(async (client) => {
                 const { data, error } = await client
                     .from('messages')
                     .select('*')
                     .eq('room_id', roomId)
-                    .order('created_at', { ascending: true })
+                    .order('created_at', { ascending })
                     .limit(limit);
 
                 if (error) return { data: [], error: error.message };
@@ -102,6 +127,26 @@ export const ChatService = {
                 const { data: { user } } = await client.auth.getUser();
                 if (!user) throw new Error('Not authenticated');
 
+                // Check if anyone in the room has blocked the sender
+                const { data: participants } = await client
+                    .from('room_participants')
+                    .select('user_id')
+                    .eq('room_id', roomId)
+                    .neq('user_id', user.id);
+
+                if (participants && participants.length > 0) {
+                    const participantIds = participants.map(p => p.user_id);
+                    const { data: blocks } = await client
+                        .from('blocked_users')
+                        .select('id')
+                        .or(`and(blocker_id.eq.${user.id},blocked_id.in.(${participantIds.join(',')})),and(blocker_id.in.(${participantIds.join(',')}),blocked_id.eq.${user.id})`)
+                        .maybeSingle();
+
+                    if (blocks) {
+                        throw new Error('Cannot send message: Blocked connection');
+                    }
+                }
+
                 const { data, error } = await client
                     .from('messages')
                     .insert({
@@ -114,7 +159,10 @@ export const ChatService = {
                     .select()
                     .single();
 
-                if (error) return { data: null, error: error.message };
+                if (error) {
+                    console.error('[ChatService] sendMessage error:', error);
+                    return { data: null, error: error.message };
+                }
                 return { data: data as MessageData, error: null };
             });
         } catch (err: any) {
@@ -193,6 +241,70 @@ export const ChatService = {
         }
     },
 
+    async updateRoom(roomId: string, updates: { name?: string; description?: string; avatar_url?: string }): Promise<{ error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { error } = await client
+                .from('rooms')
+                .update(updates)
+                .eq('id', roomId);
+            return { error: error?.message || null };
+        });
+    },
+
+    async uploadGroupAvatar(roomId: string, uri: string): Promise<{ data: string | null; error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            try {
+                const fileExt = uri.split('.').pop() || 'jpg';
+                const fileName = `group_${roomId}_${Date.now()}.${fileExt}`;
+                const filePath = `groups/${fileName}`;
+
+                const file = {
+                    uri: uri,
+                    name: fileName,
+                    type: 'image/jpeg',
+                };
+
+                const { error: uploadError } = await client.storage
+                    .from('gossip-avatars')
+                    .upload(filePath, file as any, {
+                        contentType: 'image/jpeg',
+                        upsert: false
+                    });
+
+                if (uploadError) throw uploadError;
+
+                const { data } = client.storage
+                    .from('gossip-avatars')
+                    .getPublicUrl(filePath);
+
+                return { data: data.publicUrl, error: null };
+            } catch (err: any) {
+                return { data: null, error: err.message };
+            }
+        });
+    },
+
+    async updateOnlineStatus(userId: string, isOnline: boolean): Promise<{ error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { error } = await client
+                .from('profiles')
+                .update({ is_online: isOnline, last_seen: new Date().toISOString() })
+                .eq('id', userId);
+            return { error: error?.message || null };
+        });
+    },
+
+    async getRoomParticipantsProfiles(roomId: string): Promise<{ data: any[]; error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { data, error } = await client
+                .from('room_participants')
+                .select('profiles (*)')
+                .eq('room_id', roomId);
+            if (error) return { data: [], error: error.message };
+            return { data: data.map((p: any) => p.profiles), error: null };
+        });
+    },
+
     async sendConnectionRequest(targetUserId: string): Promise<{ error: string | null }> {
         return await safeSupabaseOperation(async (client) => {
             const { data: { user } } = await client.auth.getUser();
@@ -250,8 +362,8 @@ export const ChatService = {
                     addressee_id,
                     status,
                     created_at,
-                    requester:requester_id (id, username, full_name, avatar_url, is_online, last_seen),
-                    addressee:addressee_id (id, username, full_name, avatar_url, is_online, last_seen)
+                    requester:requester_id (id, username, full_name, avatar_url, is_online, last_seen, gender, age),
+                    addressee:addressee_id (id, username, full_name, avatar_url, is_online, last_seen, gender, age)
                 `)
                 .or(`requester_id.eq.${user.id},addressee_id.eq.${user.id}`)
                 .eq('status', 'accepted');
@@ -322,7 +434,20 @@ export const ChatService = {
         });
     },
 
+    async markRoomAsRead(roomId: string, userId: string): Promise<{ error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { error } = await client
+                .from('messages')
+                .update({ status: 'read', read_at: new Date().toISOString() })
+                .eq('room_id', roomId)
+                .neq('user_id', userId)
+                .neq('status', 'read');
+            return { error: error?.message || null };
+        });
+    },
+
     async blockUser(targetUserId: string): Promise<{ error: string | null }> {
+        console.log('[ChatService] Blocking user:', targetUserId);
         return await safeSupabaseOperation(async (client) => {
             const { data: { user } } = await client.auth.getUser();
             if (!user) return { error: 'Not authenticated' };
@@ -330,7 +455,12 @@ export const ChatService = {
             const { error } = await client
                 .from('blocked_users')
                 .insert({ blocker_id: user.id, blocked_id: targetUserId });
-            return { error: error?.message || null };
+
+            if (error) {
+                console.error('[ChatService] blockUser error:', error);
+                return { error: error.message };
+            }
+            return { error: null };
         });
     },
 
@@ -357,8 +487,40 @@ export const ChatService = {
                 .from('blocked_users')
                 .select('id')
                 .or(`and(blocker_id.eq.${user.id},blocked_id.eq.${targetUserId}),and(blocker_id.eq.${targetUserId},blocked_id.eq.${user.id})`)
-                .single();
+                .maybeSingle();
         });
         return !!data;
+    },
+
+    async getBlockedUsers(): Promise<{ data: any[]; error: string | null }> {
+        console.log('[ChatService] Fetching blocked users...');
+        return await safeSupabaseOperation(async (client) => {
+            const { data: { user } } = await client.auth.getUser();
+            if (!user) return { data: [], error: 'Not authenticated' };
+
+            const { data, error } = await client
+                .from('blocked_users')
+                .select(`
+                    id,
+                    blocked_id,
+                    profiles:blocked_id (*)
+                `)
+                .eq('blocker_id', user.id);
+
+            if (error) {
+                console.error('[ChatService] getBlockedUsers error:', error);
+                return { data: [], error: error.message };
+            }
+
+            const blockedUsers = (data || []).map((item: any) => ({
+                id: item.blocked_id,
+                username: item.profiles?.username || 'Unknown',
+                full_name: item.profiles?.full_name || 'Unknown Gossiper',
+                avatar_url: item.profiles?.avatar_url
+            }));
+
+            console.log(`[ChatService] Found ${blockedUsers.length} blocked users`);
+            return { data: blockedUsers, error: null };
+        });
     }
 };
