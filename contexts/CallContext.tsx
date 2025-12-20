@@ -89,9 +89,13 @@ export function CallProvider({ children }: { children: ReactNode }) {
                     }
                 }).on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'calls' }, async (payload) => {
                     const updatedCall = payload.new as Call;
-                    if (currentCall?.id === updatedCall.id) {
+
+                    // Use activeCallId ref to avoid stale closure issues
+                    if (activeCallId.current === updatedCall.id || currentCall?.id === updatedCall.id) {
                         // Ensure profiles are preserved or fetched if missing
                         const mergedCall = { ...currentCall, ...updatedCall };
+
+                        // If we have an active call but no currentCall state (edge case), fetch profile
                         if (!mergedCall.profiles) {
                             const { data: profile } = await supabase
                                 .from('profiles')
@@ -102,36 +106,27 @@ export function CallProvider({ children }: { children: ReactNode }) {
                         }
                         setCurrentCall(mergedCall);
 
-                        // Handle Answer
-                        if (updatedCall.status === 'accepted' && updatedCall.answer_sdp && pc.current?.signalingState === 'have-local-offer') {
-                            try {
-                                console.log('[CallContext] Setting Remote Answer');
-                                await pc.current.setRemoteDescription(new RTCSessionDescription(updatedCall.answer_sdp));
+                        // Handle Answer - CLASSIC LOGIC RESTORED
+                        if (updatedCall.status === 'accepted' && updatedCall.answer_sdp && pc.current) {
+                            if (pc.current.signalingState === 'have-local-offer') {
+                                try {
+                                    console.log('[CallContext] Setting Remote Answer');
+                                    await pc.current.setRemoteDescription(new RTCSessionDescription(updatedCall.answer_sdp));
 
-                                // Add any buffered remote candidates
-                                if (pendingRemoteIceCandidates.current.length > 0) {
-                                    console.log('[CallContext] Draining buffered remote candidates');
-                                    for (const candidate of pendingRemoteIceCandidates.current) {
-                                        await pc.current.addIceCandidate(new RTCIceCandidate(candidate));
-                                    }
-                                    pendingRemoteIceCandidates.current = [];
-                                }
+                                    // LOGGING RESTORED: "stream: web" style
+                                    console.log(`[CallContext] Stream: ${localStream ? 'Active' : 'Inactive'}, Participants: 2`);
 
-                                // Fetch any ICE candidates we might have missed
-                                const { data: candidates } = await CallService.getIceCandidates(updatedCall.id);
-                                if (candidates) {
-                                    for (const cand of candidates) {
-                                        if (user && cand.sender_id !== user.id) {
-                                            try {
-                                                await pc.current.addIceCandidate(new RTCIceCandidate(cand.candidate));
-                                            } catch (err) {
-                                                console.warn('[CallContext] Failed to add late candidate', err);
-                                            }
+                                    // Drain buffered candidates
+                                    if (pendingRemoteIceCandidates.current.length > 0) {
+                                        console.log('[CallContext] Draining buffered remote candidates:', pendingRemoteIceCandidates.current.length);
+                                        for (const candidate of pendingRemoteIceCandidates.current) {
+                                            await pc.current.addIceCandidate(new RTCIceCandidate(candidate));
                                         }
+                                        pendingRemoteIceCandidates.current = [];
                                     }
+                                } catch (e) {
+                                    console.error('Error setting remote description:', e);
                                 }
-                            } catch (e) {
-                                console.error('Error setting remote description from answer', e);
                             }
                         }
 
