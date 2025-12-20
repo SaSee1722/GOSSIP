@@ -65,6 +65,8 @@ export default function ChatDetailScreen() {
   const [pinInput, setPinInput] = useState('');
   const [pinMode, setPinMode] = useState<'lock' | 'unlock'>('unlock'); // 'lock' = setting new pin, 'unlock' = verifying to unlock
   const [confirmPin, setConfirmPin] = useState(''); // For new pin confirmation
+  // Direct Chat Actions Modal
+  const [showUserActions, setShowUserActions] = useState(false);
 
   const chat = chats.find(c => c.id === id);
   const chatMessages = messages[id as string] || [];
@@ -324,21 +326,7 @@ export default function ChatDetailScreen() {
           <TouchableOpacity
             onPress={() => {
               if (chat.type === 'direct') {
-                Alert.alert('Gossip Settings', 'What do you want to do?', [
-                  { text: 'Voice Call', onPress: () => initiateCall(chat.userId, 'audio') },
-                  { text: 'Video Call', onPress: () => initiateCall(chat.userId, 'video') },
-                  { text: 'Block User', style: 'destructive', onPress: () => blockUser(chat.userId).then(() => router.back()) },
-                  {
-                    text: lockedChats[chat.id] ? 'Unlock Chat' : 'Lock Chat',
-                    onPress: () => {
-                      setPinMode(lockedChats[chat.id] ? 'unlock' : 'lock');
-                      setPinInput('');
-                      setConfirmPin('');
-                      setShowPinModal(true);
-                    }
-                  },
-                  { text: 'Cancel', style: 'cancel' }
-                ]);
+                setShowUserActions(true);
               } else {
                 setNewGroupName(chat.userName);
                 setNewGroupDesc(chat.description || '');
@@ -614,6 +602,80 @@ export default function ChatDetailScreen() {
           </View>
         </TouchableOpacity>
       </Modal >
+
+      {/* User Actions Modal (Replacement for Alert on Web/Mobile for consistency) */}
+      <Modal
+        visible={showUserActions}
+        transparent
+        animationType="fade"
+      >
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowUserActions(false)}
+        >
+          <BlurView intensity={80} tint="dark" style={[styles.modalContent, { height: 'auto', minHeight: 0 }]}>
+            <View style={styles.modalHeader}>
+              <GradientText text="GOSSIP ACTIONS" style={styles.modalTitle} />
+              <TouchableOpacity onPress={() => setShowUserActions(false)}>
+                <Ionicons name="close" size={28} color="#FFF" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={{ padding: 20, gap: 15 }}>
+              <TouchableOpacity
+                style={styles.actionBtn}
+                onPress={() => {
+                  setShowUserActions(false);
+                  initiateCall(chat.userId, 'audio');
+                }}
+              >
+                <Ionicons name="call" size={20} color="#00BFFF" />
+                <Text style={styles.actionBtnText}>Voice Call</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.actionBtn}
+                onPress={() => {
+                  setShowUserActions(false);
+                  initiateCall(chat.userId, 'video');
+                }}
+              >
+                <Ionicons name="videocam" size={20} color="#00BFFF" />
+                <Text style={styles.actionBtnText}>Video Call</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.actionBtn}
+                onPress={() => {
+                  setShowUserActions(false);
+                  setPinMode(lockedChats[chat.id] ? 'unlock' : 'lock');
+                  setPinInput('');
+                  setConfirmPin('');
+                  setShowPinModal(true);
+                }}
+              >
+                <Ionicons name={lockedChats[chat.id] ? "lock-open" : "lock-closed"} size={20} color="#FFD700" />
+                <Text style={styles.actionBtnText}>{lockedChats[chat.id] ? 'Unlock Chat' : 'Lock Chat'}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.actionBtn, { marginTop: 10, borderColor: '#FF4757' }]}
+                onPress={() => {
+                  setShowUserActions(false);
+                  Alert.alert('Block User', 'Are you sure?', [
+                    { text: 'Cancel', style: 'cancel' },
+                    { text: 'Block', style: 'destructive', onPress: () => blockUser(chat.userId).then(() => router.back()) }
+                  ]);
+                }}
+              >
+                <Ionicons name="ban" size={20} color="#FF4757" />
+                <Text style={[styles.actionBtnText, { color: '#FF4757' }]}>Block User</Text>
+              </TouchableOpacity>
+            </View>
+          </BlurView>
+        </TouchableOpacity>
+      </Modal>
 
       {/* PIN Entry Modal */}
       <Modal
@@ -1025,6 +1087,21 @@ const styles = StyleSheet.create({
   attachLabel: {
     color: '#CCC',
     fontSize: 12,
+    fontWeight: '600',
+  },
+  actionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#111',
+    padding: 16,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#333',
+    gap: 15,
+  },
+  actionBtnText: {
+    color: '#FFF',
+    fontSize: 16,
     fontWeight: '600',
   }
 });
