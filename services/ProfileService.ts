@@ -71,14 +71,10 @@ export const ProfileService = {
 
                 console.log('[ProfileService] File read successfully, converting to blob...');
 
-                // Convert base64 to blob
-                const byteCharacters = atob(base64);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
-                }
-                const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], { type: 'image/jpeg' });
+                // Convert base64 to blob using fetch data URI (works on React Native)
+                const dataUri = `data:image/jpeg;base64,${base64}`;
+                const response = await fetch(dataUri);
+                const blob = await response.blob();
 
                 console.log('[ProfileService] Blob created, size:', blob.size);
 
