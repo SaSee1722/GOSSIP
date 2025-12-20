@@ -64,6 +64,9 @@ interface ChatContextType {
   fetchMessages: (chatId: string) => Promise<void>;
   updateGroup: (roomId: string, updates: { name?: string; description?: string; avatar_url?: string }) => Promise<void>;
   getParticipants: (roomId: string) => Promise<any[]>;
+  lockedChats: Record<string, string>; // Map chatId -> PIN
+  lockChat: (chatId: string, pin: string) => Promise<void>;
+  unlockChat: (chatId: string) => Promise<void>;
 }
 
 export const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -73,6 +76,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [chats, setChats] = useState<Chat[]>([]);
   const [messages, setMessages] = useState<Record<string, Message[]>>({});
   const [pendingRequests, setPendingRequests] = useState<ConnectionRequest[]>([]);
+  const [lockedChats, setLockedChats] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const supabase = getSharedSupabaseClient();
   const channelRef = useRef<any>(null);
@@ -107,11 +111,22 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       setChats([]);
       setMessages({});
       setPendingRequests([]);
+      setLockedChats({});
       setLoading(false);
       hasInitialLoaded.current = false;
       cleanupRealtime();
     }
   }, [user?.id]);
+
+  // Load locked chats from storage
+  useEffect(() => {
+    (async () => {
+      try {
+        const stored = await import('@react-native-async-storage/async-storage').then(m => m.default.getItem('LOCKED_CHATS'));
+        if (stored) setLockedChats(JSON.parse(stored));
+      } catch (e) { }
+    })();
+  }, []);
 
   const cleanupRealtime = () => {
     if (channelRef.current) {
@@ -589,29 +604,33 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     return data || [];
   };
 
-  const contextValue = React.useMemo(() => ({
-    chats,
-    messages,
-    pendingRequests,
-    loading,
-    sendMessage,
-    markAsRead,
-    setTyping,
-    createChat,
-    sendRequest,
-    respondToRequest,
-    refreshChats,
-    blockUser,
-    unblockUser,
-    deleteGroup,
-    fetchMessages,
-    updateGroup,
-    getParticipants,
-  }), [chats, messages, pendingRequests, loading]);
+
+
+  const lockChat = async (chatId: string, pin: string) => {
+    const updated = { ...lockedChats, [chatId]: pin };
+    setLockedChats(updated);
+    await import('@react-native-async-storage/async-storage').then(m => m.default.setItem('LOCKED_CHATS', JSON.stringify(updated)));
+  };
+
+  const unlockChat = async (chatId: string) => {
+    const updated = { ...lockedChats };
+    delete updated[chatId];
+    setLockedChats(updated);
+    await import('@react-native-async-storage/async-storage').then(m => m.default.setItem('LOCKED_CHATS', JSON.stringify(updated)));
+  };
 
   return (
-    <ChatContext.Provider value={contextValue}>
+    <ChatContext.Provider value={{
+      chats, messages, pendingRequests, loading, sendMessage, markAsRead, setTyping, createChat, sendRequest, respondToRequest, refreshChats, blockUser, unblockUser, deleteGroup, fetchMessages, updateGroup, getParticipants,
+      lockedChats, lockChat, unlockChat
+    }}>
       {children}
     </ChatContext.Provider>
   );
+}
+
+export function useChat() {
+  const context = React.useContext(ChatContext);
+  if (!context) throw new Error('useChat must be used within ChatProvider');
+  return context;
 }
