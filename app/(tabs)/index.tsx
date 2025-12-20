@@ -13,7 +13,7 @@ import { GradientText } from '@/components/ui/GradientText';
 export default function ChatsScreen() {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
-  const { chats, loading: chatLoading, pendingRequests, sendRequest, respondToRequest, createChat, blockUser } = useChat();
+  const { chats, loading: chatLoading, pendingRequests, sendRequest, respondToRequest, createChat, blockUser, lockedChats, lockChat, unlockChat } = useChat();
   const { statuses, loading: statusLoading } = useStatus();
   const router = useRouter();
 
@@ -27,6 +27,13 @@ export default function ChatsScreen() {
   const [selectedChats, setSelectedChats] = useState<Set<string>>(new Set());
   const [showBlockConfirm, setShowBlockConfirm] = useState(false);
   const [isBlocking, setIsBlocking] = useState(false);
+
+  // Lock Logic State
+  const [showPinModal, setShowPinModal] = useState(false);
+  const [pinMode, setPinMode] = useState<'setup' | 'unlock'>('unlock');
+  const [pinInput, setPinInput] = useState('');
+  const [targetLockChatId, setTargetLockChatId] = useState<string | null>(null);
+  const [confirmPin, setConfirmPin] = useState(''); // For setup validation
 
   const existingUserIds = useRef<string[]>([]);
   useEffect(() => {
@@ -100,6 +107,14 @@ export default function ChatsScreen() {
       return;
     }
 
+    if (lockedChats[item.id]) {
+      setTargetLockChatId(item.id);
+      setPinMode('unlock');
+      setPinInput('');
+      setShowPinModal(true);
+      return;
+    }
+
     if (item.id.startsWith('temp_')) {
       const result = await createChat(item.userId, item.userName, item.userAvatar);
       if (result) router.push(`/chat/${result}`);
@@ -166,6 +181,69 @@ export default function ChatsScreen() {
     }
   };
 
+  const initLockProcess = () => {
+    if (selectedChats.size !== 1) {
+      Alert.alert('Notice', 'Please select exactly one chat to lock/unlock.');
+      return;
+    }
+    const chatId = Array.from(selectedChats)[0];
+
+    // Check if already locked
+    if (lockedChats[chatId]) {
+      Alert.alert('Unlock Chat', 'Do you want to remove the lock?', [
+        { text: 'Cancel' },
+        {
+          text: 'Unlock', onPress: async () => {
+            await unlockChat(chatId);
+            setSelectionMode(false);
+            setSelectedChats(new Set());
+            Alert.alert('Success', 'Chat unlocked!');
+          }
+        }
+      ]);
+    } else {
+      setTargetLockChatId(chatId);
+      setPinMode('setup');
+      setPinInput('');
+      setConfirmPin('');
+      setShowPinModal(true);
+    }
+  };
+
+  const handlePinSubmit = async () => {
+    if (pinInput.length !== 4) return;
+
+    if (pinMode === 'unlock') {
+      if (targetLockChatId && lockedChats[targetLockChatId] === pinInput) {
+        setShowPinModal(false);
+        setPinInput('');
+        router.push(`/chat/${targetLockChatId}`);
+      } else {
+        Alert.alert('Error', 'Incorrect PIN');
+        setPinInput('');
+      }
+    } else if (pinMode === 'setup') {
+      if (!confirmPin) {
+        setConfirmPin(pinInput);
+        setPinInput('');
+      } else {
+        if (pinInput === confirmPin && targetLockChatId) {
+          await lockChat(targetLockChatId, pinInput);
+          setShowPinModal(false);
+          setSelectionMode(false);
+          setSelectedChats(new Set());
+          setPinInput('');
+          setConfirmPin('');
+          Alert.alert('Success', 'Chat Locked! You will need this PIN to open it.');
+        } else {
+          Alert.alert('Error', 'PINs do not match. Try again.');
+          setConfirmPin('');
+          setPinInput('');
+        }
+      }
+    }
+  };
+
   const getNameColor = (gender?: string) => {
     switch (gender?.toLowerCase()) {
       case 'male': return '#00BFFF';
@@ -190,6 +268,14 @@ export default function ChatsScreen() {
                 <Text style={styles.blockActionText}>BLOCK</Text>
               </View>
             </TouchableOpacity>
+            {selectedChats.size === 1 && (
+              <TouchableOpacity onPress={initLockProcess}>
+                <View style={[styles.blockBtn, { backgroundColor: '#5F66CD', marginLeft: 10 }]}>
+                  <Ionicons name={lockedChats[Array.from(selectedChats)[0]] ? "lock-open" : "lock-closed"} size={18} color="#FFF" style={{ marginRight: 6 }} />
+                  <Text style={styles.blockActionText}>{lockedChats[Array.from(selectedChats)[0]] ? "UNLOCK" : "LOCK"}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
         ) : (
           <View style={styles.brandHeader}>
@@ -427,7 +513,81 @@ export default function ChatsScreen() {
           </BlurView>
         </View>
       </Modal>
-    </View>
+
+      {/* PIN Entry Modal */}
+      <Modal
+        visible={showPinModal}
+        transparent
+        animationType="slide"
+      >
+        <View style={styles.modalOverlay}>
+          <BlurView intensity={95} tint="dark" style={[styles.modalContent, { height: 'auto', paddingBottom: 50 }]}>
+            <View style={{ alignItems: 'center', gap: 20 }}>
+              <Ionicons name="lock-closed" size={40} color={colors.primary} />
+              <Text style={styles.modalTitle}>
+                {pinMode === 'setup'
+                  ? (confirmPin ? 'Confirm PIN' : 'Create 4-Digit PIN')
+                  : 'Enter PIN'}
+              </Text>
+
+              <View style={styles.pinContainer}>
+                {[0, 1, 2, 3].map(i => (
+                  <View key={i} style={[styles.pinDot, {
+                    backgroundColor: pinInput.length > i ? colors.primary : '#333'
+                  }]} />
+                ))}
+              </View>
+
+              <View style={styles.numberPad}>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 'C', 0, 'del'].map((item, idx) => (
+                  <TouchableOpacity
+                    key={idx}
+                    style={styles.padButton}
+                    onPress={() => {
+                      if (typeof item === 'number') {
+                        if (pinInput.length < 4) {
+                          const newVal = pinInput + item;
+                          setPinInput(newVal);
+                          // Auto accept on 4th digit if in unlock mode
+                          if (newVal.length === 4 && pinMode === 'unlock') {
+                            // Trigger submit after state update (handled by useEffect or explicitly call logic wrapper)
+                            // Since logic relies on current pinInput which is stale here, we won't call handlePinSubmit directly
+                            // instead we'll let a separate Effect or just require manual "OK" or auto-trigger?
+                            // Let's just update state, and use an Effect
+                          }
+                        }
+                      } else if (item === 'del') {
+                        setPinInput(prev => prev.slice(0, -1));
+                      } else if (item === 'C') {
+                        setShowPinModal(false);
+                        setPinInput('');
+                        setConfirmPin('');
+                      }
+                    }}
+                  >
+                    {item === 'del' ? (
+                      <Ionicons name="backspace" size={24} color="#FFF" />
+                    ) : (
+                      <Text style={styles.padText}>{item}</Text>
+                    )}
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <TouchableOpacity
+                style={[styles.confirmCancel, { width: '100%', backgroundColor: pinInput.length === 4 ? colors.primary : '#222' }]}
+                onPress={handlePinSubmit}
+                disabled={pinInput.length !== 4}
+              >
+                <Text style={{ color: pinInput.length === 4 ? '#000' : '#666', fontWeight: 'bold' }}>
+                  {pinMode === 'setup' ? (confirmPin ? 'CONFIRM' : 'NEXT') : 'UNLOCK'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </BlurView>
+        </View>
+      </Modal >
+    </View >
   );
 }
 
@@ -486,4 +646,9 @@ const styles = StyleSheet.create({
   confirmActions: { flexDirection: 'row', gap: 15, width: '100%' },
   confirmCancel: { flex: 1, height: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 15, backgroundColor: '#111' },
   confirmBlockBtn: { flex: 1, height: 50, justifyContent: 'center', alignItems: 'center', borderRadius: 15, backgroundColor: '#FF4757' },
+  pinContainer: { flexDirection: 'row', gap: 20, marginBottom: 20 },
+  pinDot: { width: 16, height: 16, borderRadius: 8, borderWidth: 1, borderColor: '#444' },
+  numberPad: { flexDirection: 'row', flexWrap: 'wrap', width: 280, justifyContent: 'center', gap: 20 },
+  padButton: { width: 70, height: 70, borderRadius: 35, backgroundColor: '#1A1A1A', justifyContent: 'center', alignItems: 'center' },
+  padText: { color: '#FFF', fontSize: 24, fontWeight: '700' },
 });
