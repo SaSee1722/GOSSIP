@@ -426,15 +426,13 @@ export default function ChatDetailScreen() {
                   onChangeText={handleTyping}
                   onFocus={handleInputFocus}
                   multiline
+                  textAlignVertical="center" // Android fix
                 />
 
                 <View style={styles.inputIcons}>
                   <TouchableOpacity style={styles.iconBtn} onPress={() => setShowAttachMenu(true)}>
                     <Ionicons name="attach" size={24} color="#666" />
                   </TouchableOpacity>
-                  {/* <TouchableOpacity style={styles.iconBtn}>
-                      <Ionicons name="camera-outline" size={24} color="#666" />
-                    </TouchableOpacity> */}
                 </View>
               </View>
 
@@ -957,20 +955,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#1A1A1A',
     borderRadius: 25,
-    height: 48,
-    alignItems: 'center',
+    minHeight: 48, // Allow growth
+    alignItems: 'center', // Center icons vertically
     paddingHorizontal: 15,
   },
   input: {
     flex: 1,
     color: '#FFF',
     fontSize: 15,
-    height: '100%',
+    maxHeight: 100, // Allow expansion
+    paddingTop: Platform.OS === 'ios' ? 12 : 5, // Center vertically roughly
+    paddingBottom: Platform.OS === 'ios' ? 12 : 5,
     ...Platform.select({
       web: {
-        outlineStyle: 'none'
-      },
-      default: {}
+        outlineStyle: 'none',
+        paddingTop: 14 // Web vertical center fix
+      }
     })
   } as any,
   inputIcons: {
