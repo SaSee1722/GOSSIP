@@ -104,45 +104,34 @@ export default function ChatDetailScreen() {
       {/* Header */}
       <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#FFF" />
+          <Ionicons name="chevron-back" size={28} color="#FFF" />
         </TouchableOpacity>
 
         <View style={styles.headerTitleContainer}>
-          <GradientText
-            text={chat.type === 'direct' ? `${chat.userName.split(' ')[0]}${chat.age ? `, ${chat.age}` : ''}` : chat.userName}
-            style={styles.headerName}
-          />
+          <Text style={styles.headerName}>
+            {chat.type === 'direct' ? `${chat.userName}${chat.age ? `, ${chat.age}` : ''}` : chat.userName}
+            {chat.online && <Text style={{ color: '#00FF00' }}> •</Text>}
+          </Text>
         </View>
 
-        <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => initiateCall(chat.id, 'audio', chat.type === 'group')} style={styles.headerAction}>
-            <Ionicons name="call-outline" size={22} color="#FFF" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => initiateCall(chat.id, 'video', chat.type === 'group')} style={styles.headerAction}>
-            <Ionicons name="videocam-outline" size={22} color="#FFF" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              if (chat.type === 'direct') {
-                Alert.alert('Gossip Settings', 'What do you want to do?', [
-                  { text: 'Block User', style: 'destructive', onPress: () => blockUser(chat.userId).then(() => router.back()) },
-                  { text: 'Cancel', style: 'cancel' }
-                ]);
-              } else {
-                Alert.alert('Group Settings', 'Options for this gossip group', [
-                  { text: 'Delete Group', style: 'destructive', onPress: () => deleteGroup(chat.id).then(() => router.back()) },
-                  { text: 'Cancel', style: 'cancel' }
-                ]);
-              }
-            }}
-            style={styles.headerAction}
-          >
-            <Ionicons name="ellipsis-vertical" size={22} color="#FFF" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.headerAvatar}>
-            <Avatar uri={chat.userAvatar} size={36} />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={() => {
+            if (chat.type === 'direct') {
+              Alert.alert('Gossip Settings', 'What do you want to do?', [
+                { text: 'Block User', style: 'destructive', onPress: () => blockUser(chat.userId).then(() => router.back()) },
+                { text: 'Cancel', style: 'cancel' }
+              ]);
+            } else {
+              Alert.alert('Group Settings', 'Options for this gossip group', [
+                { text: 'Delete Group', style: 'destructive', onPress: () => deleteGroup(chat.id).then(() => router.back()) },
+                { text: 'Cancel', style: 'cancel' }
+              ]);
+            }
+          }}
+          style={styles.headerAvatar}
+        >
+          <Avatar uri={chat.userAvatar} size={42} />
+        </TouchableOpacity>
       </View>
 
       <KeyboardAvoidingView
@@ -164,23 +153,16 @@ export default function ChatDetailScreen() {
               <View style={[styles.messageWrapper, isSent ? styles.sentWrapper : styles.receivedWrapper]}>
                 <View style={[
                   styles.messageBubble,
-                  { backgroundColor: isSent ? colors.primary : '#1C1C1E' }
+                  { backgroundColor: isSent ? '#7C3AED' : '#1C1C1E' }
                 ]}>
                   <Text style={[styles.messageText, { color: '#FFF' }]}>
                     {item.content}
                   </Text>
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 4 }}>
-                  <Text style={[styles.timeText, { color: isSent ? 'rgba(255,255,255,0.6)' : '#666' }]}>
-                    {formatTime(item.timestamp)}
+                  <Text style={[styles.timeText, { color: '#444' }]}>
+                    {isSent && item.status === 'read' ? 'Read ' : ''}{formatTime(item.timestamp)}
                   </Text>
-                  {isSent && (
-                    <Ionicons
-                      name={item.status === 'read' ? 'checkmark-done' : (item.status === 'delivered' ? 'checkmark-done' : 'checkmark')}
-                      size={16}
-                      color={item.status === 'read' ? '#00E5FF' : 'rgba(255,255,255,0.6)'}
-                    />
-                  )}
                 </View>
               </View>
             );
@@ -227,6 +209,7 @@ export default function ChatDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#000',
   },
   flex: {
     flex: 1,
@@ -235,12 +218,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     paddingBottom: 15,
     backgroundColor: '#000',
+    borderBottomWidth: 0.3,
+    borderBottomColor: '#222',
   },
   backButton: {
     width: 40,
+    justifyContent: 'center',
   },
   headerTitleContainer: {
     flex: 1,
@@ -248,11 +234,13 @@ const styles = StyleSheet.create({
   },
   headerName: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '600',
     color: '#FFF',
   },
   headerAvatar: {
-    paddingLeft: 5,
+    width: 40,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
   headerRight: {
     flexDirection: 'row',
@@ -264,7 +252,7 @@ const styles = StyleSheet.create({
   },
   dateSeparator: {
     textAlign: 'center',
-    color: '#666',
+    color: '#444',
     fontSize: 13,
     marginVertical: 20,
     fontWeight: '500',
@@ -273,8 +261,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   messageWrapper: {
-    marginBottom: 15,
-    maxWidth: '85%',
+    marginBottom: 12,
+    maxWidth: '80%',
   },
   sentWrapper: {
     alignSelf: 'flex-end',
@@ -287,7 +275,7 @@ const styles = StyleSheet.create({
   messageBubble: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    borderRadius: 22,
+    borderRadius: 20,
   },
   messageText: {
     fontSize: 16,
@@ -295,11 +283,12 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   timeText: {
-    fontSize: 11,
+    fontSize: 12,
+    color: '#444',
   },
   readIndicator: {
     fontSize: 11,
-    color: '#666',
+    color: '#444',
     marginTop: 4,
     marginRight: 4,
   },
@@ -308,13 +297,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     alignItems: 'center',
     gap: 10,
+    backgroundColor: '#000',
   },
   inputWrapper: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#1C1C1E',
+    backgroundColor: '#1A1A1A',
     borderRadius: 25,
-    height: 50,
+    height: 48,
     alignItems: 'center',
     paddingHorizontal: 15,
   },

@@ -223,26 +223,27 @@ export default function ChatsScreen() {
   const renderChatItem = ({ item }: { item: Chat }) => (
     <TouchableOpacity
       style={styles.chatItem}
+      activeOpacity={0.7}
       onPress={() => router.push(`/chat/${item.id}`)}
     >
-      <Avatar uri={item.userAvatar} size={64} online={item.online} />
+      <Avatar uri={item.userAvatar} size={58} online={item.online} />
 
       <View style={styles.chatContent}>
         <View style={styles.chatHeader}>
-          <Text style={[styles.chatName, { color: '#00E5FF' }]} numberOfLines={1}>
-            {item.userName.split(' ')[0]}{item.age ? `, ${item.age}` : ''}
-            {item.online && <Text style={{ color: colors.success }}> •</Text>}
+          <Text style={styles.chatName} numberOfLines={1}>
+            {item.userName}{item.age ? `, ${item.age}` : ''}
+            {item.online && <Text style={{ color: '#00FF00' }}> •</Text>}
           </Text>
-          <Text style={[styles.chatTime, { color: '#666' }]}>
+          <Text style={styles.chatTime}>
             {formatTime(item.lastMessageTime || new Date())}
           </Text>
         </View>
 
         <Text
-          style={[styles.chatMessage, { color: '#CCC' }]}
+          style={styles.chatMessage}
           numberOfLines={1}
         >
-          {item.typing ? 'typing...' : item.lastMessage}
+          {item.typing ? 'typing...' : (item.lastMessage || 'Started a gossip...')}
         </Text>
       </View>
     </TouchableOpacity>
@@ -332,6 +333,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     paddingBottom: 10,
+    backgroundColor: '#000',
   },
   brandingSection: {
     paddingHorizontal: 20,
@@ -346,7 +348,7 @@ const styles = StyleSheet.create({
   },
   brandTitle: {
     fontFamily: 'Poppins_700Bold',
-    fontSize: 36,
+    fontSize: 28,
     letterSpacing: 0.5,
   },
   searchIcon: {
@@ -355,106 +357,89 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   brandQuote: {
-    fontSize: 13,
-    color: '#CCC',
+    fontSize: 12,
+    color: '#888',
     fontWeight: '600',
     marginTop: -2,
     letterSpacing: 0.2,
   },
   header: {
     paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   sectionTitle: {
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 12,
+    fontWeight: '800',
     letterSpacing: 1.5,
+    color: '#444',
   },
   storiesContent: {
     paddingHorizontal: 15,
-    paddingBottom: 20,
+    paddingBottom: 15,
   },
   storyItem: {
     alignItems: 'center',
     marginHorizontal: 8,
-    width: 80,
+    width: 65,
   },
   storyAvatarContainer: {
-    padding: 3,
-    borderWidth: 2,
-    borderRadius: 40,
-    marginBottom: 8,
+    padding: 2,
+    borderWidth: 1.5,
+    borderRadius: 35,
+    marginBottom: 6,
   },
   storyAvatarInner: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
   storyName: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  storyAge: {
     fontSize: 12,
-    marginTop: 2,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 20,
-    marginVertical: 15,
-    paddingHorizontal: 15,
-    height: 50,
-    borderRadius: 25,
-    gap: 10,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
     fontWeight: '500',
-    color: '#FFF',
-    height: '100%',
-    ...Platform.select({
-      web: {
-        // @ts-ignore
-        outlineStyle: 'none',
-      }
-    })
+    color: '#666',
   },
   searchCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#111',
+    backgroundColor: '#1A1A1A',
     marginHorizontal: 20,
-    marginTop: 10,
-    marginBottom: 5,
+    marginTop: 5,
+    marginBottom: 10,
     paddingHorizontal: 15,
-    height: 50,
-    borderRadius: 16,
+    height: 48,
+    borderRadius: 24,
     gap: 12,
-    borderWidth: 1,
-    borderColor: '#222',
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#FFF',
+    height: '100%',
+    ...Platform.select({
+      web: {
+        outlineStyle: 'none',
+      }
+    })
   },
   listContent: {
     paddingBottom: 120,
+    backgroundColor: '#000',
   },
   chatItem: {
     flexDirection: 'row',
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingVertical: 14,
     alignItems: 'center',
     gap: 15,
   },
   chatContent: {
     flex: 1,
-    borderBottomWidth: 0.5,
+    paddingBottom: 14,
+    borderBottomWidth: 0.3,
     borderBottomColor: '#222',
-    paddingBottom: 12,
-    height: '100%',
-    justifyContent: 'center',
   },
   chatHeader: {
     flexDirection: 'row',
@@ -464,13 +449,16 @@ const styles = StyleSheet.create({
   },
   chatName: {
     fontSize: 17,
-    fontWeight: '700',
+    fontWeight: '600',
+    color: '#FFF',
   },
   chatTime: {
-    fontSize: 13,
+    fontSize: 14,
+    color: '#444',
   },
   chatMessage: {
-    fontSize: 14,
+    fontSize: 15,
+    color: '#666',
     lineHeight: 20,
   },
   searchResultSection: {
@@ -479,7 +467,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   searchResultTitle: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '800',
     color: '#333',
     letterSpacing: 2,
@@ -488,11 +476,11 @@ const styles = StyleSheet.create({
   searchResultItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#080808',
+    backgroundColor: '#0A0A0A',
     padding: 12,
     borderRadius: 16,
     gap: 15,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: '#111',
   },
   searchResultName: {
@@ -546,17 +534,17 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.8)',
+    backgroundColor: 'rgba(0,0,0,0.95)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    height: '60%',
-    backgroundColor: '#050505',
+    height: '70%',
+    backgroundColor: '#000',
     borderTopLeftRadius: 35,
     borderTopRightRadius: 35,
     padding: 30,
-    borderTopWidth: 1,
-    borderColor: '#111',
+    borderTopWidth: 0.3,
+    borderColor: '#333',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -581,8 +569,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#111',
+    borderBottomWidth: 0.3,
+    borderBottomColor: '#222',
     gap: 15,
   },
   requestName: {
@@ -607,7 +595,7 @@ const styles = StyleSheet.create({
   },
   modalLoading: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 35,
