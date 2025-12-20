@@ -81,15 +81,18 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           hasInitialLoaded.current = true;
         });
       }
-      setupRealtime();
 
+      // REALTIME DISABLED - Using polling instead
+      // setupRealtime();
+
+      // Polling every 10 seconds (faster than before)
       const pollInterval = setInterval(() => {
         refreshChats();
-      }, 15000); // Increased to 15s to reduce load
+      }, 10000);
 
       return () => {
         clearInterval(pollInterval);
-        cleanupRealtime();
+        // cleanupRealtime(); // Not needed without Realtime
       };
     } else {
       setChats([]);
@@ -97,7 +100,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       setPendingRequests([]);
       setLoading(false);
       hasInitialLoaded.current = false;
-      cleanupRealtime();
+      // cleanupRealtime(); // Not needed without Realtime
     }
   }, [user?.id]);
 
