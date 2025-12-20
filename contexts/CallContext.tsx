@@ -11,7 +11,13 @@ import {
     mediaDevices,
     MediaStream
 } from '@/utils/webrtc';
+import { Audio } from 'expo-av';
 
+const SOUNDS = {
+    ringback: 'https://www.soundjay.com/phone/telephone-ring-03a.mp3', // Sound heard by caller/receiver
+    connected: 'https://www.soundjay.com/button/button-3.mp3', // Short beep
+    ended: 'https://www.soundjay.com/button/button-10.mp3' // End tone
+};
 const ICE_SERVERS = {
     iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
@@ -52,6 +58,7 @@ export function CallProvider({ children }: { children: ReactNode }) {
     const pendingIceCandidates = useRef<any[]>([]);
     const pendingRemoteIceCandidates = useRef<any[]>([]);
     const activeCallId = useRef<string | null>(null);
+    const ringSound = useRef<Audio.Sound | null>(null);
     const { user } = useAuth();
     const supabase = getSharedSupabaseClient();
     const router = useRouter();
@@ -81,9 +88,21 @@ export function CallProvider({ children }: { children: ReactNode }) {
                     const isForMe = newCall.receiver_id === user.id || (newCall.room_id && !newCall.receiver_id);
 
                     if (newCall.caller_id !== user.id && newCall.status === 'ringing' && isForMe) {
-                        supabase.from('profiles').select('*').eq('id', newCall.caller_id).single().then(({ data }) => {
+                        supabase.from('profiles').select('*').eq('id', newCall.caller_id).single().then(async ({ data }) => {
                             activeCallId.current = newCall.id; // Set ID immediately to catch ICE candidates
                             setCurrentCall({ ...newCall, profiles: data || undefined });
+
+                            // Play ringing sound for receiver
+                            try {
+                                const { sound } = await Audio.Sound.createAsync(
+                                    { uri: SOUNDS.ringback },
+                                    { shouldPlay: true, isLooping: true }
+                                );
+                                ringSound.current = sound;
+                            } catch (e) {
+                                console.log('Error playing incoming ring sound', e);
+                            }
+
                             router.push('/call/incoming');
                         });
                     }
@@ -115,6 +134,25 @@ export function CallProvider({ children }: { children: ReactNode }) {
 
                                     // LOGGING RESTORED: "stream: web" style
                                     console.log(`[CallContext] Stream: ${localStream ? 'Active' : 'Inactive'}, Participants: 2`);
+
+                                    // Stop ringing and play connected sound
+                                    if (ringSound.current) {
+                                        await ringSound.current.stopAsync();
+                                        await ringSound.current.unloadAsync();
+                                        ringSound.current = null;
+                                    }
+                                    try {
+                                        const { sound } = await Audio.Sound.createAsync(
+                                            { uri: SOUNDS.connected },
+                                            { shouldPlay: true }
+                                        );
+                                        // Auto unload after playing
+                                        sound.setOnPlaybackStatusUpdate(status => {
+                                            if (status.isLoaded && status.didJustFinish) {
+                                                sound.unloadAsync();
+                                            }
+                                        });
+                                    } catch (e) { console.log('Error playing connect sound'); }
 
                                     // Drain buffered candidates
                                     if (pendingRemoteIceCandidates.current.length > 0) {
@@ -220,7 +258,28 @@ export function CallProvider({ children }: { children: ReactNode }) {
         return peerConnection;
     };
 
-    const cleanupCall = () => {
+    const cleanupCall = async () => {
+        // Play end sound
+        try {
+            const { sound } = await Audio.Sound.createAsync(
+                { uri: SOUNDS.ended },
+                { shouldPlay: true }
+            );
+            sound.setOnPlaybackStatusUpdate(status => {
+                if (status.isLoaded && status.didJustFinish) {
+                    sound.unloadAsync();
+                }
+            });
+        } catch (e) { }
+
+        if (ringSound.current) {
+            try {
+                await ringSound.current.stopAsync();
+                await ringSound.current.unloadAsync();
+            } catch (e) { }
+            ringSound.current = null;
+        }
+
         if (localStream) {
             console.log('[CallContext] Stopping local tracks');
             localStream.getTracks().forEach((track: any) => track.stop());
@@ -283,6 +342,17 @@ export function CallProvider({ children }: { children: ReactNode }) {
                         CallService.sendIceCandidate(data.id, candidate);
                     });
                     pendingIceCandidates.current = [];
+                }
+
+                // Play ringing sound
+                try {
+                    const { sound } = await Audio.Sound.createAsync(
+                        { uri: SOUNDS.ringback },
+                        { shouldPlay: true, isLooping: true }
+                    );
+                    ringSound.current = sound;
+                } catch (e) {
+                    console.log('Error playing ring sound', e);
                 }
 
                 router.push(`/call/${type}`);
