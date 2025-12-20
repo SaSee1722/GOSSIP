@@ -191,5 +191,74 @@ export const ChatService = {
         } catch (err: any) {
             return { data: null, error: err.message };
         }
+    },
+
+    async sendConnectionRequest(targetUserId: string): Promise<{ error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { data: { user } } = await client.auth.getUser();
+            if (!user) return { error: 'Not authenticated' };
+
+            const { error } = await client
+                .from('connections')
+                .insert({
+                    requester_id: user.id,
+                    addressee_id: targetUserId,
+                    status: 'pending'
+                });
+
+            return { error: error?.message || null };
+        });
+    },
+
+    async getPendingRequests(): Promise<{ data: any[]; error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { data: { user } } = await client.auth.getUser();
+            if (!user) return { data: [], error: 'Not authenticated' };
+
+            const { data, error } = await client
+                .from('connections')
+                .select(`
+                    id,
+                    requester_id,
+                    created_at,
+                    profiles:requester_id (
+                        id,
+                        username,
+                        full_name,
+                        avatar_url
+                    )
+                `)
+                .eq('addressee_id', user.id)
+                .eq('status', 'pending');
+
+            if (error) return { data: [], error: error.message };
+            return { data: data || [], error: null };
+        });
+    },
+
+    async respondToConnection(connectionId: string, status: 'accepted' | 'rejected'): Promise<{ error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            const { error } = await client
+                .from('connections')
+                .update({ status })
+                .eq('id', connectionId);
+
+            if (error) return { error: error.message };
+
+            // If accepted, create a direct chat room
+            if (status === 'accepted') {
+                const { data: connection } = await client
+                    .from('connections')
+                    .select('requester_id, addressee_id')
+                    .eq('id', connectionId)
+                    .single();
+
+                if (connection) {
+                    await this.createDirectChat(connection.requester_id);
+                }
+            }
+
+            return { error: null };
+        });
     }
 };

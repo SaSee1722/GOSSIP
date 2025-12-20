@@ -1,9 +1,10 @@
 import { useRef, useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ScrollView, ActivityIndicator, Alert, Image as RNImage, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet, ScrollView, ActivityIndicator, Alert, Image as RNImage, Platform, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
+import { BlurView } from 'expo-blur';
 import { useTheme } from '@/hooks/useTheme';
 import { useChat } from '@/hooks/useChat';
 import { useStatus } from '@/contexts/StatusContext';
@@ -20,10 +21,71 @@ export default function ChatsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [showRequestsModal, setShowRequestsModal] = useState(false);
+  const [pendingRequests, setPendingRequests] = useState<any[]>([]);
+  const [requestLoading, setRequestLoading] = useState(false);
+  const [isSendingRequest, setIsSendingRequest] = useState<string | null>(null);
 
   const filteredChats = chats.filter(chat =>
     chat.userName.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  useEffect(() => {
+    fetchRequests();
+
+    // Refresh requests every 30 seconds
+    const interval = setInterval(fetchRequests, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const fetchRequests = async () => {
+    try {
+      const { ChatService } = await import('@/services/ChatService');
+      const { data, error } = await ChatService.getPendingRequests();
+      if (!error && data) setPendingRequests(data);
+    } catch (err) {
+      console.error('Error fetching requests:', err);
+    }
+  };
+
+  const handleSendRequest = async (userId: string) => {
+    try {
+      setIsSendingRequest(userId);
+      const { ChatService } = await import('@/services/ChatService');
+      const { error } = await ChatService.sendConnectionRequest(userId);
+      if (error) {
+        Alert.alert('Error', error);
+      } else {
+        Alert.alert('Success', 'Chat request sent!');
+        setSearchResults(prev => prev.filter(p => p.id !== userId));
+      }
+    } catch (err: any) {
+      Alert.alert('Error', err.message);
+    } finally {
+      setIsSendingRequest(null);
+    }
+  };
+
+  const handleRespondToRequest = async (requestId: string, status: 'accepted' | 'rejected') => {
+    try {
+      setRequestLoading(true);
+      const { ChatService } = await import('@/services/ChatService');
+      const { error } = await ChatService.respondToConnection(requestId, status);
+      if (error) {
+        Alert.alert('Error', error);
+      } else {
+        setPendingRequests(prev => prev.filter(r => r.id !== requestId));
+        if (status === 'accepted') {
+          Alert.alert('Success', 'You are now connected!');
+          setShowRequestsModal(false);
+        }
+      }
+    } catch (err: any) {
+      Alert.alert('Error', err.message);
+    } finally {
+      setRequestLoading(false);
+    }
+  };
 
   useEffect(() => {
     const searchTimer = setTimeout(async () => {
@@ -45,21 +107,6 @@ export default function ChatsScreen() {
 
     return () => clearTimeout(searchTimer);
   }, [searchQuery, chats]);
-
-  const startNewChat = async (userId: string) => {
-    try {
-      const { ChatService } = await import('@/services/ChatService');
-      const { data: roomId, error } = await ChatService.createDirectChat(userId);
-      if (error) {
-        Alert.alert('Error', error);
-      } else if (roomId) {
-        setSearchQuery('');
-        router.push(`/chat/${roomId}`);
-      }
-    } catch (err: any) {
-      Alert.alert('Error', err.message);
-    }
-  };
 
   // Mocking ages for now as they aren't in the data model yet
   const getAge = (id: string) => {
@@ -99,6 +146,17 @@ export default function ChatsScreen() {
               contentFit="contain"
             />
           </View>
+          <TouchableOpacity
+            style={styles.requestBadgeBtn}
+            onPress={() => setShowRequestsModal(true)}
+          >
+            <Ionicons name="people-outline" size={26} color={colors.primary} />
+            {pendingRequests.length > 0 && (
+              <View style={[styles.badgeContainer, { backgroundColor: colors.error }]}>
+                <Text style={styles.badgeText}>{pendingRequests.length}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
         </View>
 
         <GradientText
@@ -166,14 +224,20 @@ export default function ChatsScreen() {
             <TouchableOpacity
               key={profile.id}
               style={styles.searchResultItem}
-              onPress={() => startNewChat(profile.id)}
+              onPress={() => handleSendRequest(profile.id)}
             >
               <Avatar uri={profile.avatar_url} size={48} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.searchResultName}>{profile.full_name || profile.username}</Text>
                 <Text style={styles.searchResultUser}>@{profile.username}</Text>
               </View>
-              <Ionicons name="chatbubble-ellipses-outline" size={22} color={colors.primary} />
+              {isSendingRequest === profile.id ? (
+                <ActivityIndicator size="small" color={colors.primary} />
+              ) : (
+                <View style={[styles.sendRequestBtn, { backgroundColor: colors.primary + '20' }]}>
+                  <Text style={[styles.sendRequestText, { color: colors.primary }]}>Request</Text>
+                </View>
+              )}
             </TouchableOpacity>
           ))}
           <View style={styles.divider} />
@@ -232,6 +296,62 @@ export default function ChatsScreen() {
           </TouchableOpacity>
         )}
       />
+      {/* Requests Modal */}
+      <Modal
+        visible={showRequestsModal}
+        animationType="slide"
+        transparent
+      >
+        <View style={styles.modalOverlay}>
+          <BlurView intensity={80} tint="dark" style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <GradientText text="Chat Requests" style={styles.modalTitle} />
+              <TouchableOpacity onPress={() => setShowRequestsModal(false)}>
+                <Ionicons name="close-circle" size={32} color="#444" />
+              </TouchableOpacity>
+            </View>
+
+            {pendingRequests.length === 0 ? (
+              <View style={styles.emptyRequests}>
+                <Ionicons name="mail-unread-outline" size={60} color="#333" />
+                <Text style={{ color: '#666', marginTop: 15 }}>No pending gossip requests</Text>
+              </View>
+            ) : (
+              <ScrollView style={styles.requestsList}>
+                {pendingRequests.map(request => (
+                  <View key={request.id} style={styles.requestItem}>
+                    <Avatar uri={request.profiles.avatar_url} size={50} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.requestName}>{request.profiles.full_name || request.profiles.username}</Text>
+                      <Text style={styles.requestUser}>@{request.profiles.username}</Text>
+                    </View>
+                    <View style={styles.requestActions}>
+                      <TouchableOpacity
+                        style={[styles.actionBtn, { backgroundColor: '#111' }]}
+                        onPress={() => handleRespondToRequest(request.id, 'rejected')}
+                      >
+                        <Ionicons name="close" size={20} color="#666" />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.actionBtn, { backgroundColor: colors.primary }]}
+                        onPress={() => handleRespondToRequest(request.id, 'accepted')}
+                      >
+                        <Ionicons name="checkmark" size={20} color="#000" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ))}
+              </ScrollView>
+            )}
+
+            {requestLoading && (
+              <View style={styles.modalLoading}>
+                <ActivityIndicator color={colors.primary} />
+              </View>
+            )}
+          </BlurView>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -422,5 +542,104 @@ const styles = StyleSheet.create({
   noResults: {
     padding: 40,
     alignItems: 'center',
+  },
+  requestBadgeBtn: {
+    position: 'relative',
+    padding: 5,
+  },
+  badgeContainer: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+    borderWidth: 2,
+    borderColor: '#000',
+  },
+  badgeText: {
+    color: '#FFF',
+    fontSize: 10,
+    fontWeight: '900',
+  },
+  sendRequestBtn: {
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    borderRadius: 12,
+  },
+  sendRequestText: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    height: '60%',
+    backgroundColor: '#050505',
+    borderTopLeftRadius: 35,
+    borderTopRightRadius: 35,
+    padding: 30,
+    borderTopWidth: 1,
+    borderColor: '#111',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 25,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: '900',
+  },
+  emptyRequests: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 50,
+  },
+  requestsList: {
+    flex: 1,
+  },
+  requestItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#111',
+    gap: 15,
+  },
+  requestName: {
+    color: '#FFF',
+    fontSize: 17,
+    fontWeight: '700',
+  },
+  requestUser: {
+    color: '#666',
+    fontSize: 13,
+  },
+  requestActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  actionBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalLoading: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 35,
   },
 });
