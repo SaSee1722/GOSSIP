@@ -37,7 +37,7 @@ export default function ChatDetailScreen() {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const { id } = useLocalSearchParams();
-  const { chats, messages, sendMessage, markAsRead, setTyping, blockUser, deleteGroup, fetchMessages, updateGroup, getParticipants } = useChat();
+  const { chats, messages, sendMessage, markAsRead, setTyping, blockUser, deleteGroup, fetchMessages, updateGroup, getParticipants, lockedChats, lockChat, unlockChat } = useChat();
   const { user } = useAuth();
   const { initiateCall } = useCall();
   const router = useRouter();
@@ -56,6 +56,12 @@ export default function ChatDetailScreen() {
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showStickerPicker, setShowStickerPicker] = useState(false);
   const inputRef = useRef<TextInput>(null);
+
+  // Lock Chat State
+  const [showPinModal, setShowPinModal] = useState(false);
+  const [pinInput, setPinInput] = useState('');
+  const [pinMode, setPinMode] = useState<'lock' | 'unlock'>('unlock'); // 'lock' = setting new pin, 'unlock' = verifying to unlock
+  const [confirmPin, setConfirmPin] = useState(''); // For new pin confirmation
 
   const chat = chats.find(c => c.id === id);
   const chatMessages = messages[id as string] || [];
@@ -324,6 +330,15 @@ export default function ChatDetailScreen() {
             if (chat.type === 'direct') {
               Alert.alert('Gossip Settings', 'What do you want to do?', [
                 { text: 'Block User', style: 'destructive', onPress: () => blockUser(chat.userId).then(() => router.back()) },
+                {
+                  text: lockedChats[chat.id] ? 'Unlock Chat' : 'Lock Chat',
+                  onPress: () => {
+                    setPinMode(lockedChats[chat.id] ? 'unlock' : 'lock');
+                    setPinInput('');
+                    setConfirmPin('');
+                    setShowPinModal(true);
+                  }
+                },
                 { text: 'Cancel', style: 'cancel' }
               ]);
             } else {
@@ -348,7 +363,7 @@ export default function ChatDetailScreen() {
           ref={flatListRef}
           data={chatMessages}
           keyExtractor={item => item.id}
-          contentContainerStyle={[styles.messageList, { paddingBottom: 20 }]}
+          contentContainerStyle={[styles.messageList, { paddingBottom: 120 }]}
           ListHeaderComponent={<Text style={styles.dateSeparator}>Today</Text>}
           ListFooterComponent={chat.typing ? <TypingIndicator /> : null}
           onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
@@ -391,51 +406,48 @@ export default function ChatDetailScreen() {
             </View>
           ) : (
             <>
-              <View style={styles.inputContainer}>
-                <View style={styles.inputWrapper}>
-                  <TouchableOpacity style={styles.iconBtn} onPress={toggleStickerPicker}>
-                    <Ionicons name={showStickerPicker ? "keypad-outline" : "happy-outline"} size={24} color="#666" />
+              <View style={styles.inputWrapper}>
+                <TouchableOpacity style={styles.iconBtn} onPress={toggleStickerPicker}>
+                  <Ionicons name={showStickerPicker ? "keypad-outline" : "happy-outline"} size={24} color="#666" />
+                </TouchableOpacity>
+
+                <TextInput
+                  ref={inputRef}
+                  style={styles.input}
+                  placeholder="Message..."
+                  placeholderTextColor="#666"
+                  value={messageText}
+                  onChangeText={handleTyping}
+                  onFocus={handleInputFocus}
+                  multiline
+                />
+
+                <View style={styles.inputIcons}>
+                  <TouchableOpacity style={styles.iconBtn} onPress={() => setShowAttachMenu(true)}>
+                    <Ionicons name="attach" size={24} color="#666" />
                   </TouchableOpacity>
-
-                  <TextInput
-                    ref={inputRef}
-                    style={styles.input}
-                    placeholder="Message..."
-                    placeholderTextColor="#666"
-                    value={messageText}
-                    onChangeText={handleTyping}
-                    onFocus={handleInputFocus}
-                    multiline
-                  />
-
-                  <View style={styles.inputIcons}>
-                    <TouchableOpacity style={styles.iconBtn} onPress={() => setShowAttachMenu(true)}>
-                      <Ionicons name="attach" size={24} color="#666" />
-                    </TouchableOpacity>
-                    {/* <TouchableOpacity style={styles.iconBtn}>
+                  {/* <TouchableOpacity style={styles.iconBtn}>
                       <Ionicons name="camera-outline" size={24} color="#666" />
                     </TouchableOpacity> */}
-                  </View>
                 </View>
-
-                <TouchableOpacity
-                  style={[styles.sendBtn, { backgroundColor: (messageText.trim() || showStickerPicker) ? colors.primary : '#1A1A1A' }]}
-                  onPress={handleSend}
-                  disabled={!messageText.trim() && !showStickerPicker}
-                >
-                  <Ionicons name={messageText.trim() ? "send" : "mic"} size={24} color={messageText.trim() ? "#000" : "#666"} />
-                </TouchableOpacity>
               </View>
 
-              <StickerPicker
-                visible={showStickerPicker}
-                onEmojiSelect={handleEmojiSelect}
-                onStickerSelect={handleStickerSelect}
-                onClose={() => setShowStickerPicker(false)}
-              />
+              <TouchableOpacity
+                style={[styles.sendBtn, { backgroundColor: (messageText.trim() || showStickerPicker) ? colors.primary : '#1A1A1A' }]}
+                onPress={handleSend}
+                disabled={!messageText.trim() && !showStickerPicker}
+              >
+                <Ionicons name={messageText.trim() ? "send" : "mic"} size={24} color={messageText.trim() ? "#000" : "#666"} />
+              </TouchableOpacity>
             </>
           )}
         </View>
+        <StickerPicker
+          visible={showStickerPicker}
+          onEmojiSelect={handleEmojiSelect}
+          onStickerSelect={handleStickerSelect}
+          onClose={() => setShowStickerPicker(false)}
+        />
       </KeyboardAvoidingView>
 
       {/* Group Settings Modal */}
@@ -598,6 +610,106 @@ export default function ChatDetailScreen() {
           </View>
         </TouchableOpacity>
       </Modal >
+
+      {/* PIN Entry Modal */}
+      <Modal
+        visible={showPinModal}
+        transparent
+        animationType="fade"
+      >
+        <BlurView intensity={95} tint="dark" style={[styles.modalOverlay, { justifyContent: 'center', alignItems: 'center' }]}>
+          <View style={{ width: '80%', alignItems: 'center', gap: 20 }}>
+            <Text style={{ color: '#FFF', fontSize: 20, fontWeight: 'bold' }}>
+              {pinMode === 'lock'
+                ? (confirmPin ? 'Confirm PIN' : 'Create a PIN')
+                : 'Enter PIN to Unlock'}
+            </Text>
+
+            <View style={{ flexDirection: 'row', gap: 15, marginBottom: 20 }}>
+              {[...Array(4)].map((_, i) => (
+                <View
+                  key={i}
+                  style={{
+                    width: 15, height: 15, borderRadius: 8,
+                    backgroundColor: i < pinInput.length ? colors.primary : '#333',
+                    borderWidth: 1, borderColor: '#555'
+                  }}
+                />
+              ))}
+            </View>
+
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 15, width: 220 }}>
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, -1, 0, -2].map((num) => {
+                if (num === -1) return <View key="empty" style={{ width: 60, height: 60 }} />;
+                if (num === -2) return (
+                  <TouchableOpacity
+                    key="back"
+                    style={{ width: 60, height: 60, justifyContent: 'center', alignItems: 'center' }}
+                    onPress={() => setPinInput(prev => prev.slice(0, -1))}
+                  >
+                    <Ionicons name="backspace" size={24} color="#FFF" />
+                  </TouchableOpacity>
+                );
+
+                return (
+                  <TouchableOpacity
+                    key={num}
+                    style={{
+                      width: 60, height: 60, borderRadius: 30,
+                      backgroundColor: '#333', justifyContent: 'center', alignItems: 'center'
+                    }}
+                    onPress={() => {
+                      if (pinInput.length < 4) {
+                        const newPin = pinInput + num;
+                        setPinInput(newPin);
+
+                        if (newPin.length === 4) {
+                          // Handle completion
+                          setTimeout(async () => {
+                            if (pinMode === 'unlock') {
+                              // Verifying to unlock
+                              if (newPin === lockedChats[chat?.id!]) {
+                                await unlockChat(chat?.id!);
+                                setShowPinModal(false);
+                                Alert.alert('Unlocked', 'This chat is now unlocked.');
+                              } else {
+                                Alert.alert('Error', 'Incorrect PIN');
+                                setPinInput('');
+                              }
+                            } else {
+                              // Setting up lock
+                              if (!confirmPin) {
+                                setConfirmPin(newPin);
+                                setPinInput('');
+                              } else {
+                                if (newPin === confirmPin) {
+                                  await lockChat(chat?.id!, newPin);
+                                  setShowPinModal(false);
+                                  Alert.alert('Locked', 'This chat is now locked.');
+                                } else {
+                                  Alert.alert('Error', 'PINs do not match. Try again.');
+                                  setConfirmPin('');
+                                  setPinInput('');
+                                }
+                              }
+                            }
+                          }, 100);
+                        }
+                      }
+                    }}
+                  >
+                    <Text style={{ color: '#FFF', fontSize: 24, fontWeight: '500' }}>{num}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <TouchableOpacity onPress={() => setShowPinModal(false)}>
+              <Text style={{ color: '#888', marginTop: 20 }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </BlurView>
+      </Modal>
     </View >
   );
 }
