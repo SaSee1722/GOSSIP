@@ -4,6 +4,7 @@ import { useAuth } from '@/template';
 import { getSharedSupabaseClient } from '@/template/core/client';
 import { Call, CallService } from '@/services/CallService';
 import { useRouter } from 'expo-router';
+import { sendPushNotification } from '@/services/NotificationService';
 import {
     RTCPeerConnection,
     RTCIceCandidate,
@@ -353,6 +354,17 @@ export function CallProvider({ children }: { children: ReactNode }) {
                     ringSound.current = sound;
                 } catch (e) {
                     console.log('Error playing ring sound', e);
+                }
+
+                // Send push notification for incoming call
+                if (receiverProfile?.push_token) {
+                    const senderName = (user as any).user_metadata?.username || 'Gossiper';
+                    sendPushNotification(
+                        receiverProfile.push_token,
+                        'Incoming Call',
+                        `${senderName} is calling you...`,
+                        { callId: data.id, type: 'call' }
+                    );
                 }
 
                 router.push(`/call/${type}`);
