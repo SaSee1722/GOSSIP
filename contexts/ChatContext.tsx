@@ -329,16 +329,27 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   };
 
   const respondToRequest = async (requestId: string, status: 'accepted' | 'rejected'): Promise<string | null> => {
-    const { data: roomId, error } = await ChatService.respondToConnection(requestId, status);
-    if (error) throw new Error(error);
+    try {
+      setLoading(true);
+      const { data: roomId, error } = await ChatService.respondToConnection(requestId, status);
+      if (error) throw new Error(error);
 
-    // Optimistic UI or wait for reload
-    setPendingRequests(prev => prev.filter(r => r.id !== requestId));
-    if (status === 'accepted') {
-      await loadInitialData();
-      return roomId;
+      // Remove from pending
+      setPendingRequests(prev => prev.filter(r => r.id !== requestId));
+
+      if (status === 'accepted' && roomId) {
+        // Force a refresh of rooms to ensure we have the new one
+        await loadInitialData();
+
+        // Brief delay to ensure state updates have propagated if needed
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        return roomId;
+      }
+      return null;
+    } finally {
+      setLoading(false);
     }
-    return null;
   };
 
   const refreshChats = async () => {

@@ -56,5 +56,31 @@ export const ProfileService = {
             if (error) return { data: [], error: error.message };
             return { data: data as Profile[], error: null };
         });
+    },
+
+    async uploadAvatar(userId: string, uri: string): Promise<{ data: string | null; error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            try {
+                const response = await fetch(uri);
+                const blob = await response.blob();
+                const fileExt = uri.split('.').pop();
+                const fileName = `${userId}_${Math.random()}.${fileExt}`;
+                const filePath = `avatars/${fileName}`;
+
+                const { error: uploadError } = await client.storage
+                    .from('gossip-avatars') // Using a specific bucket name
+                    .upload(filePath, blob);
+
+                if (uploadError) throw uploadError;
+
+                const { data } = client.storage
+                    .from('gossip-avatars')
+                    .getPublicUrl(filePath);
+
+                return { data: data.publicUrl, error: null };
+            } catch (err: any) {
+                return { data: null, error: err.message };
+            }
+        });
     }
 };

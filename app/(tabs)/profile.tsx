@@ -131,9 +131,27 @@ export default function ProfileScreen() {
     });
 
     if (!result.canceled && result.assets[0].uri) {
-      setProfileData(prev => ({ ...prev, avatar_url: result.assets[0].uri }));
-      if (!isEditing) {
-        await ProfileService.updateProfile(user!.id, { avatar_url: result.assets[0].uri });
+      setLoading(true);
+      try {
+        const { data: publicUrl, error: uploadError } = await ProfileService.uploadAvatar(user!.id, result.assets[0].uri);
+
+        if (uploadError) {
+          showAlert('Upload Error', uploadError);
+          setLoading(false);
+          return;
+        }
+
+        if (publicUrl) {
+          setProfileData(prev => ({ ...prev, avatar_url: publicUrl }));
+          if (!isEditing) {
+            await ProfileService.updateProfile(user!.id, { avatar_url: publicUrl });
+            await refreshUser();
+          }
+        }
+      } catch (err: any) {
+        showAlert('Error', err.message);
+      } finally {
+        setLoading(false);
       }
     }
   };
