@@ -135,18 +135,24 @@ export default function ProfileScreen() {
   const handleUpdateProfile = async () => {
     if (!user) return;
     setLoading(true);
-    const { error } = await ProfileService.updateProfile(user.id, {
-      ...profileData,
-      age: parseInt(profileData.age) || undefined
-    });
-    setLoading(false);
+    try {
+      const { error } = await ProfileService.updateProfile(user.id, {
+        ...profileData,
+        age: parseInt(profileData.age) || undefined
+      });
 
-    if (error) {
-      showAlert('Error', error);
-    } else {
-      await refreshUser();
-      setIsEditing(false);
-      showAlert('Success', 'Profile updated successfully');
+      if (error) {
+        setLoading(false);
+        showAlert('Error', error);
+      } else {
+        await refreshUser();
+        setLoading(false);
+        setIsEditing(false);
+        showAlert('Success', 'Profile updated successfully');
+      }
+    } catch (err: any) {
+      setLoading(false);
+      showAlert('Error', err.message || 'Failed to update profile');
     }
   };
 
