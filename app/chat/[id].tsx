@@ -264,59 +264,53 @@ export default function ChatDetailScreen() {
     );
   }
 
-  const getBubbleStyle = (isSent: boolean) => {
-    if (isSent) {
-      return {
-        backgroundColor: colors.primary,
-        borderBottomRightRadius: 5,
-      };
-    } else {
-      return {
-        backgroundColor: '#333',
-        borderBottomLeftRadius: 5,
-      };
-    }
-  };
-
   const getGenderColors = (gender?: string) => {
     switch (gender?.toLowerCase()) {
       case 'male': return ['#00BFFF', '#0097D7'];
       case 'female': return ['#FFB6C1', '#FF9AA2'];
       case 'other': return ['#FFD700', '#DAA520'];
-      default: return ['#00E5FF', '#FF4081']; // Default Gossip Gradient
+      default: return ['#00E5FF', '#FF4081'];
     }
   };
+
+  const getBubbleStyle = (isSent: boolean) => ({
+    backgroundColor: isSent ? colors.primary : '#1A1A1A',
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    borderBottomLeftRadius: isSent ? 18 : 6,
+    borderBottomRightRadius: isSent ? 6 : 18,
+  });
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
-      <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
-        <TouchableOpacity
-          onPress={() => {
-            if (router.canGoBack()) {
-              router.back();
-            } else {
-              router.replace('/(tabs)');
-            }
-          }}
-          style={styles.backButton}
-        >
-          <Ionicons name="chevron-back" size={28} color="#FFF" />
-        </TouchableOpacity>
+      {/* Header */}
+      <View style={[styles.header, { paddingTop: insets.top + 5 }]}>
+        <View style={styles.headerLeft}>
+          <TouchableOpacity
+            onPress={() => {
+              if (router.canGoBack()) {
+                router.back();
+              } else {
+                router.replace('/(tabs)');
+              }
+            }}
+            style={styles.backButton}
+          >
+            <Ionicons name="chevron-back" size={28} color="#FFF" />
+          </TouchableOpacity>
+        </View>
 
-        <View style={styles.headerTitleContainer}>
+        <View style={styles.headerCenter}>
           <GradientText
             text={chat.userName.toUpperCase()}
             style={styles.headerName}
             colors={getGenderColors(chat.gender)}
           />
           {chat.type === 'direct' ? (
-            <>
-              {chat.online && <Text style={styles.onlineStatus}>Online</Text>}
-              {chat.typing && <Text style={styles.typingStatus}>typing...</Text>}
-            </>
+            chat.online && <Text style={styles.onlineStatus}>Online</Text>
           ) : (
             <Text style={styles.onlineStatus}>
               {chat.onlineCount || 0} online • {chat.memberCount || 0} members
@@ -324,44 +318,46 @@ export default function ChatDetailScreen() {
           )}
         </View>
 
-        {chat.type === 'direct' && (
-          <View style={{ flexDirection: 'row', gap: 18, marginRight: 15 }}>
-            <TouchableOpacity onPress={() => initiateCall(chat.userId, 'audio')}>
-              <Ionicons name="call-outline" size={24} color="#FFF" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => initiateCall(chat.userId, 'video')}>
-              <Ionicons name="videocam-outline" size={24} color="#FFF" />
-            </TouchableOpacity>
-          </View>
-        )}
+        <View style={styles.headerRight}>
+          {chat.type === 'direct' && (
+            <View style={{ flexDirection: 'row', gap: 15 }}>
+              <TouchableOpacity onPress={() => initiateCall(chat.userId, 'audio')}>
+                <Ionicons name="call-outline" size={24} color="#FFF" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => initiateCall(chat.userId, 'video')}>
+                <Ionicons name="videocam-outline" size={24} color="#FFF" />
+              </TouchableOpacity>
+            </View>
+          )}
 
-        <TouchableOpacity
-          onPress={() => {
-            if (chat.type === 'direct') {
-              Alert.alert('Gossip Settings', 'What do you want to do?', [
-                { text: 'Block User', style: 'destructive', onPress: () => blockUser(chat.userId).then(() => router.back()) },
-                {
-                  text: lockedChats[chat.id] ? 'Unlock Chat' : 'Lock Chat',
-                  onPress: () => {
-                    setPinMode(lockedChats[chat.id] ? 'unlock' : 'lock');
-                    setPinInput('');
-                    setConfirmPin('');
-                    setShowPinModal(true);
-                  }
-                },
-                { text: 'Cancel', style: 'cancel' }
-              ]);
-            } else {
-              setNewGroupName(chat.userName);
-              setNewGroupDesc(chat.description || '');
-              setNewGroupAvatar(chat.userAvatar);
-              setShowSettingsModal(true);
-            }
-          }}
-          style={styles.headerAvatar}
-        >
-          <Avatar uri={chat.userAvatar} size={40} online={chat.online} />
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              if (chat.type === 'direct') {
+                Alert.alert('Gossip Settings', 'What do you want to do?', [
+                  { text: 'Block User', style: 'destructive', onPress: () => blockUser(chat.userId).then(() => router.back()) },
+                  {
+                    text: lockedChats[chat.id] ? 'Unlock Chat' : 'Lock Chat',
+                    onPress: () => {
+                      setPinMode(lockedChats[chat.id] ? 'unlock' : 'lock');
+                      setPinInput('');
+                      setConfirmPin('');
+                      setShowPinModal(true);
+                    }
+                  },
+                  { text: 'Cancel', style: 'cancel' }
+                ]);
+              } else {
+                setNewGroupName(chat.userName);
+                setNewGroupDesc(chat.description || '');
+                setNewGroupAvatar(chat.userAvatar);
+                setShowSettingsModal(true);
+              }
+            }}
+            style={styles.headerAvatar}
+          >
+            <Avatar uri={chat.userAvatar} size={38} online={chat.online} />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <KeyboardAvoidingView
@@ -736,30 +732,45 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingBottom: 15,
+    paddingHorizontal: 15,
+    paddingBottom: 12,
     backgroundColor: '#000',
-    borderBottomWidth: 0.3,
-    borderBottomColor: '#333',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#222',
   },
-  backButton: {
-    width: 40,
-    justifyContent: 'center',
+  headerLeft: {
+    width: 100,
+    alignItems: 'flex-start',
+    zIndex: 1,
   },
-  headerTitleContainer: {
+  headerCenter: {
     flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
+  headerRight: {
+    width: 100, // Fixed width to balance header
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 15,
+    zIndex: 1,
+  },
+  backButton: {
+    padding: 5,
+  },
+  // headerTitleContainer removed in favor of absolute positioning logic or flex balance
   headerName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '800',
-    letterSpacing: 1,
+    letterSpacing: 0.5,
+    textAlign: 'center',
   },
   onlineStatus: {
-    fontSize: 10,
+    fontSize: 11,
     color: '#00B894',
-    fontWeight: '700',
-    marginTop: -2,
+    fontWeight: '600',
+    marginTop: 2,
   },
   typingStatus: {
     fontSize: 10,
@@ -917,14 +928,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 20,
   },
-  sentWrapper_bubble: { // Logic in component
-    backgroundColor: '#00BFFF',
-    borderBottomRightRadius: 4,
-  },
-  receivedWrapper_bubble: {
-    backgroundColor: '#1A1A1A',
-    borderBottomLeftRadius: 4,
-  },
   messageText: {
     fontSize: 15,
     lineHeight: 20,
@@ -1024,13 +1027,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   }
-});
-
-// Update bubble styles dynamically in renderItem
-const getBubbleStyle = (isSent: boolean) => ({
-  backgroundColor: isSent ? '#00BFFF' : '#1A1A1A',
-  borderTopLeftRadius: 20,
-  borderTopRightRadius: 20,
-  borderBottomLeftRadius: isSent ? 20 : 4,
-  borderBottomRightRadius: isSent ? 4 : 20,
 });
