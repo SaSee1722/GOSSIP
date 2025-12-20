@@ -1,5 +1,4 @@
 import { safeSupabaseOperation } from '@/template/core/client';
-import * as FileSystem from 'expo-file-system';
 
 export interface Profile {
     id: string;
@@ -64,21 +63,14 @@ export const ProfileService = {
             try {
                 console.log('[ProfileService] Starting upload for URI:', uri);
 
-                // Read file as base64
-                const base64 = await FileSystem.readAsStringAsync(uri, {
-                    encoding: 'base64',
-                });
-
-                console.log('[ProfileService] File read successfully, size:', base64.length);
-
-                // Convert base64 to blob
-                const byteCharacters = atob(base64);
-                const byteNumbers = new Array(byteCharacters.length);
-                for (let i = 0; i < byteCharacters.length; i++) {
-                    byteNumbers[i] = byteCharacters.charCodeAt(i);
+                // Fetch the file as a blob (works on both web and mobile)
+                const response = await fetch(uri);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch file: ${response.statusText}`);
                 }
-                const byteArray = new Uint8Array(byteNumbers);
-                const blob = new Blob([byteArray], { type: 'image/jpeg' });
+
+                const blob = await response.blob();
+                console.log('[ProfileService] File fetched successfully, size:', blob.size);
 
                 const fileExt = uri.split('.').pop() || 'jpg';
                 const fileName = `${userId}_${Date.now()}.${fileExt}`;
@@ -89,7 +81,7 @@ export const ProfileService = {
                 const { error: uploadError } = await client.storage
                     .from('gossip-avatars')
                     .upload(filePath, blob, {
-                        contentType: 'image/jpeg',
+                        contentType: blob.type || 'image/jpeg',
                         upsert: false
                     });
 
