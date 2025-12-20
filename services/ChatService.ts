@@ -1,0 +1,195 @@
+import { safeSupabaseOperation } from '@/template/core/client';
+
+export interface Room {
+    id: string;
+    name: string | null;
+    type: 'direct' | 'group';
+    created_by: string;
+    created_at: string;
+    participants?: any[];
+}
+
+export interface MessageData {
+    id: string;
+    room_id: string;
+    user_id: string;
+    content: string;
+    message_type: 'text' | 'image' | 'video' | 'audio' | 'document';
+    media_url?: string;
+    status: 'sent' | 'delivered' | 'read';
+    created_at: string;
+}
+
+export const ChatService = {
+    async getMyRooms(): Promise<{ data: any[]; error: string | null }> {
+        try {
+            return await safeSupabaseOperation(async (client) => {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
+
+                const { data, error } = await client
+                    .from('room_participants')
+                    .select(`
+            room_id,
+            rooms (
+              id,
+              name,
+              type,
+              created_by,
+              created_at
+            )
+          `)
+                    .eq('user_id', user.id);
+
+                if (error) return { data: [], error: error.message };
+
+                // Extract room data and fetch other participants
+                const rooms = data.map((item: any) => item.rooms);
+                return { data: rooms, error: null };
+            });
+        } catch (err: any) {
+            return { data: [], error: err.message };
+        }
+    },
+
+    async getRoomParticipants(roomId: string): Promise<{ data: any[]; error: string | null }> {
+        try {
+            return await safeSupabaseOperation(async (client) => {
+                const { data, error } = await client
+                    .from('room_participants')
+                    .select(`
+            user_id,
+            profiles (
+              id,
+              username,
+              full_name,
+              avatar_url,
+              is_online,
+              last_seen
+            )
+          `)
+                    .eq('room_id', roomId);
+
+                if (error) return { data: [], error: error.message };
+                return { data: data.map((p: any) => p.profiles), error: null };
+            });
+        } catch (err: any) {
+            return { data: [], error: err.message };
+        }
+    },
+
+    async getMessages(roomId: string, limit = 50): Promise<{ data: MessageData[]; error: string | null }> {
+        try {
+            return await safeSupabaseOperation(async (client) => {
+                const { data, error } = await client
+                    .from('messages')
+                    .select('*')
+                    .eq('room_id', roomId)
+                    .order('created_at', { ascending: true })
+                    .limit(limit);
+
+                if (error) return { data: [], error: error.message };
+                return { data: (data as MessageData[]) || [], error: null };
+            });
+        } catch (err: any) {
+            return { data: [], error: err.message };
+        }
+    },
+
+    async sendMessage(roomId: string, content: string, type: string = 'text'): Promise<{ data: MessageData | null; error: string | null }> {
+        try {
+            return await safeSupabaseOperation(async (client) => {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
+
+                const { data, error } = await client
+                    .from('messages')
+                    .insert({
+                        room_id: roomId,
+                        user_id: user.id,
+                        content,
+                        message_type: type,
+                        status: 'sent'
+                    })
+                    .select()
+                    .single();
+
+                if (error) return { data: null, error: error.message };
+                return { data: data as MessageData, error: null };
+            });
+        } catch (err: any) {
+            return { data: null, error: err.message };
+        }
+    },
+
+    async createDirectChat(otherUserId: string): Promise<{ data: string | null; error: string | null }> {
+        try {
+            return await safeSupabaseOperation(async (client) => {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
+
+                const { data: existing } = await client.rpc('get_direct_room', {
+                    user1: user.id,
+                    user2: otherUserId
+                });
+
+                if (existing) return { data: existing, error: null };
+
+                const { data: room, error: roomError } = await client
+                    .from('rooms')
+                    .insert({ type: 'direct', created_by: user.id })
+                    .select()
+                    .single();
+
+                if (roomError) return { data: null, error: roomError.message };
+
+                const participants = [
+                    { room_id: room.id, user_id: user.id, role: 'owner' },
+                    { room_id: room.id, user_id: otherUserId, role: 'member' }
+                ];
+
+                const { error: partError } = await client
+                    .from('room_participants')
+                    .insert(participants);
+
+                if (partError) return { data: null, error: partError.message };
+
+                return { data: room.id, error: null };
+            });
+        } catch (err: any) {
+            return { data: null, error: err.message };
+        }
+    },
+
+    async createGroupChat(name: string, participantIds: string[]): Promise<{ data: string | null; error: string | null }> {
+        try {
+            return await safeSupabaseOperation(async (client) => {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
+
+                const { data: room, error: roomError } = await client
+                    .from('rooms')
+                    .insert({ name, type: 'group', created_by: user.id })
+                    .select()
+                    .single();
+
+                if (roomError) return { data: null, error: roomError.message };
+
+                const participants = [
+                    { room_id: room.id, user_id: user.id, role: 'owner' },
+                    ...participantIds.map(id => ({ room_id: room.id, user_id: id, role: 'member' }))
+                ];
+
+                const { error: partError } = await client
+                    .from('room_participants')
+                    .insert(participants);
+
+                if (partError) return { data: null, error: partError.message };
+
+                return { data: room.id, error: null };
+            });
+        } catch (err: any) {
+            return { data: null, error: err.message };
+        }
+    }
+};

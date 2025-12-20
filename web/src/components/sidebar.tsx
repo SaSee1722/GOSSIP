@@ -143,137 +143,144 @@ export function Sidebar({ user }: { user: any }) {
 
     return (
         <>
-            <aside className="w-full h-full bg-black text-white flex flex-col font-sans border-r border-white/10">
+            <aside className="w-full h-full bg-background text-foreground flex flex-col font-sans border-r border-divider">
                 {/* Header */}
                 <div className="p-6 pb-2 flex justify-between items-center">
-                    <h2 className="text-2xl font-bold tracking-tight">GOSSIP</h2>
+                    <h1 className="text-foreground">Chats</h1>
                     <div className="flex gap-4">
-                        <button onClick={() => setShowRequests(true)} className="relative p-2 rounded-full hover:bg-white/10 transition-colors">
-                            <UserPlus className="w-5 h-5 text-gray-400" />
+                        <button onClick={() => setShowRequests(true)} className="relative p-2 rounded-full hover:bg-surface transition-colors">
+                            <UserPlus className="w-6 h-6 text-text-secondary hover:text-primary" />
                             {pendingCount > 0 && (
-                                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border border-black"></span>
+                                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border border-background"></span>
                             )}
                         </button>
-                        <button onClick={handleCreateRoom} className="p-2 rounded-full hover:bg-white/10 transition-colors">
-                            <Plus className="w-5 h-5 text-gray-400" />
+                        <button onClick={handleCreateRoom} className="p-2 rounded-full hover:bg-surface transition-colors">
+                            <Plus className="w-6 h-6 text-text-secondary hover:text-primary" />
                         </button>
                     </div>
                 </div>
 
-                {/* Matches Rail */}
+                {/* Search Bar - Glass Effect */}
                 <div className="px-6 py-4">
-                    <h3 className="text-xs font-semibold text-gray-500 mb-4 tracking-wider uppercase">Matches</h3>
+                    <div className="bg-surface-glass-light rounded-md flex items-center px-4 py-2 gap-3 border border-transparent focus-within:border-primary/50 transition-all">
+                        <Search className="w-5 h-5 text-text-secondary" />
+                        <input
+                            placeholder="Search chats..."
+                            className="bg-transparent border-none outline-none text-body w-full placeholder:text-text-tertiary text-foreground"
+                            onClick={() => setShowSearch(true)}
+                        />
+                    </div>
+                </div>
+
+                {/* Matches Rail (Connections) */}
+                <div className="px-6 pb-4">
+                    <h3 className="text-small font-semibold text-text-tertiary mb-4 tracking-wider uppercase">Matches</h3>
                     <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                        {/* Search Button styled as avatar circle */}
                         <button onClick={() => setShowSearch(true)} className="flex flex-col items-center gap-2 min-w-[60px]">
-                            <div className="w-[60px] h-[60px] rounded-full border-2 border-white/20 flex items-center justify-center text-white/50 hover:border-primary hover:text-primary transition-colors">
+                            <div className="w-[60px] h-[60px] rounded-full border-2 border-dashed border-divider hover:border-primary flex items-center justify-center text-text-tertiary hover:text-primary transition-colors bg-surface/50">
                                 <Search className="w-6 h-6" />
                             </div>
-                            <span className="text-xs font-medium text-white/70">Search</span>
+                            <span className="text-small font-medium text-text-secondary">Search</span>
                         </button>
 
                         {matches.map((match) => {
                             const isRequester = match.requester_id === user.id;
                             const profile = isRequester ? match.addressee : match.requester;
-                            // Only show if profile exists
                             if (!profile) return null;
 
                             return (
                                 <div key={match.id} className="flex flex-col items-center gap-2 min-w-[60px]">
                                     <div className="relative">
-                                        <Avatar src={profile.avatar_url || ''} fallback={profile.username?.[0] || "?"} className="w-[60px] h-[60px] border-2 border-primary/50 p-0.5" />
-                                        <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-black rounded-full"></span>
+                                        <Avatar src={profile.avatar_url || ''} fallback={profile.username?.[0] || "?"} className="w-[60px] h-[60px] border-2 border-primary-dark p-0.5" />
+                                        <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-online border-2 border-background rounded-full"></span>
                                     </div>
-                                    <span className="text-xs font-medium text-center truncate w-full">{profile.username}</span>
+                                    <span className="text-small font-medium text-center truncate w-full text-foreground">{profile.username}</span>
                                 </div>
                             );
                         })}
                     </div>
                 </div>
 
-                {/* Search Bar */}
-                <div className="px-6 mb-2">
-                    <div className="bg-[#1F2125] rounded-full flex items-center px-4 py-3 gap-3">
-                        <Search className="w-5 h-5 text-gray-500" />
-                        <input
-                            placeholder="Search"
-                            className="bg-transparent border-none outline-none text-sm w-full placeholder:text-gray-500 text-white"
-                            onClick={() => setShowSearch(true)}
-                        />
+                {/* Chat List */}
+                <div className="flex-1 overflow-y-auto custom-scrollbar">
+                    <div className="space-y-0">
+                        {rooms.filter(room => {
+                            const other = room.room_participants?.find(p => p.user_id !== user?.id);
+                            if (other && blockedIds.has(other.user_id)) return false;
+                            return true;
+                        }).map((room) => {
+                            let displayName = room.name || "Unnamed Chat";
+                            let displayAvatar = undefined;
+                            let isOnline = false;
+
+                            if (room.room_participants) {
+                                const other = room.room_participants.find(p => p.user_id !== user?.id);
+                                if (other && other.profiles) {
+                                    displayName = other.profiles.full_name || other.profiles.username || "Unknown User";
+                                    displayAvatar = other.profiles.avatar_url;
+                                    // Mocking online status for UI alignment
+                                    isOnline = true;
+                                }
+                            }
+
+                            const isActive = pathname === `/chat/${room.id}`;
+
+                            return (
+                                <Link href={`/chat/${room.id}`} key={room.id} className="block">
+                                    <div className={cn(
+                                        "px-6 py-4 transition-all cursor-pointer flex items-center gap-4 border-b border-divider",
+                                        isActive ? "bg-primary/10" : "hover:bg-surface/30"
+                                    )}>
+                                        <div className="relative">
+                                            <Avatar
+                                                src={displayAvatar}
+                                                fallback={displayName[0] || "?"}
+                                                className="w-[56px] h-[56px] rounded-full"
+                                            />
+                                            {isOnline && (
+                                                <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-online border-[2px] border-surface rounded-full"></span>
+                                            )}
+                                        </div>
+                                        <div className="overflow-hidden flex-1">
+                                            <div className="flex justify-between items-center mb-0.5">
+                                                <p className={cn("text-body-bold truncate", isActive ? "text-primary" : "text-foreground")}>
+                                                    {displayName}
+                                                </p>
+                                                <p className="text-small text-text-secondary">
+                                                    {room.updated_at ? new Date(room.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}
+                                                </p>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <p className={cn("text-caption truncate flex-1 pr-2", isActive ? "text-primary/70" : "text-text-secondary")}>
+                                                    Tap to chat
+                                                </p>
+                                                {/* Unread badge logic removed for simplicity in UI alignment */}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Link>
+                            )
+                        })}
+                        {rooms.length === 0 && (
+                            <p className="text-caption text-text-tertiary px-6 py-4 italic">No messages yet</p>
+                        )}
                     </div>
                 </div>
 
-                {/* Chat List */}
-                <div className="flex-1 overflow-y-auto px-4 py-2 space-y-1">
-                    {rooms.filter(room => {
-                        if (room.is_group) return true;
-                        // Filter out DMs with blocked users
-                        const other = room.room_participants?.find(p => p.user_id !== user?.id);
-                        if (other && blockedIds.has(other.user_id)) return false;
-                        return true;
-                    }).map((room) => {
-                        // Determine display name and avatar
-                        let displayName = room.name || "Unnamed Room";
-                        let displayAvatar = undefined; // Default room avatar
-
-                        if (!room.is_group && room.room_participants) {
-                            const other = room.room_participants.find(p => p.user_id !== user?.id);
-                            if (other && other.profiles) {
-                                displayName = other.profiles.full_name || other.profiles.username || "Unknown User";
-                                displayAvatar = other.profiles.avatar_url;
-                            }
-                        }
-
-                        return (
-                            <Link href={`/chat/${room.id}`} key={room.id}>
-                                <div className={cn(
-                                    "p-3 rounded-2xl transition-all cursor-pointer flex items-center gap-4",
-                                    pathname === `/chat/${room.id}`
-                                        ? "bg-[#1F2125]" // Active Item Background
-                                        : "hover:bg-white/5"
-                                )}>
-                                    <div className="relative">
-                                        <Avatar src={displayAvatar} fallback={displayName[0] || "?"} className="w-12 h-12" />
-                                        {/* Assuming online status for demo, normally fetched from presence */}
-                                        <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-black rounded-full"></span>
-                                    </div>
-                                    <div className="overflow-hidden flex-1">
-                                        <div className="flex justify-between items-center mb-0.5">
-                                            <p className="font-semibold text-sm text-white">{displayName}</p>
-                                            <span className="text-xs text-gray-500">
-                                                {new Date(room.updated_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            </span>
-                                        </div>
-                                        <p className="text-xs text-gray-400 truncate font-light">
-                                            {room.is_group ? "Group Chat" : "Tap to chat"}
-                                        </p>
-                                    </div>
-                                </div>
-                            </Link>
-                        )
-                    })}
-
-                    {rooms.length === 0 && (
-                        <div className="text-center text-muted-foreground text-sm py-8">
-                            No conversations yet. <br /> Find people to start gossiping!
-                        </div>
-                    )}
-                </div>
-
                 {/* Footer User Info */}
-                <div className="p-4 border-t border-white/5 bg-black">
+                <div className="p-4 border-t border-divider glass-header sticky bottom-0">
                     <div className="flex items-center gap-3">
-                        <Avatar src={user?.user_metadata?.avatar_url} fallback={user?.email || "?"} className="w-10 h-10" />
+                        <Avatar src={user?.user_metadata?.avatar_url} fallback={user?.email || "?"} className="w-10 h-10 ring-2 ring-divider shadow-reference-sm" />
                         <div className="flex-1 overflow-hidden">
-                            <p className="text-sm font-semibold truncate text-white">{user?.email}</p>
-                            <p className="text-xs text-green-500 flex items-center gap-1">
+                            <p className="text-caption font-semibold truncate text-foreground">{user?.email}</p>
+                            <p className="text-small text-primary flex items-center gap-1">
                                 My Profile
                             </p>
                         </div>
-                        <button onClick={() => setShowSettings(true)} className="text-gray-500 hover:text-white transition-colors" title="Settings">
+                        <button onClick={() => setShowSettings(true)} className="text-text-secondary hover:text-foreground transition-colors p-2 hover:bg-surface rounded-full" title="Settings">
                             <Settings className="w-5 h-5" />
                         </button>
-                        <button onClick={handleLogout} className="text-gray-500 hover:text-red-400 transition-colors" title="Logout">
+                        <button onClick={handleLogout} className="text-text-secondary hover:text-red-400 transition-colors p-2 hover:bg-surface rounded-full" title="Logout">
                             <LogOut className="w-5 h-5" />
                         </button>
                     </div>

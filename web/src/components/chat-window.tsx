@@ -45,14 +45,16 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                 .select(`*, room_participants(user_id, profiles(username, full_name, avatar_url))`)
                 .eq("id", roomId)
                 .single();
+            console.log("ChatWindow roomData:", roomData);
             setRoom(roomData);
 
             if (roomData) {
                 if (roomData.is_group === false && roomData.room_participants) {
                     const other = roomData.room_participants.find((p: any) => p.user_id !== user.id);
-                    if (other) {
-                        setHeaderName(other.profiles?.full_name || other.profiles?.username || "Chat");
-                        setHeaderAvatar(other.profiles?.avatar_url);
+                    if (other && other.profiles) {
+                        const name = other.profiles.full_name || other.profiles.username || "Chat";
+                        setHeaderName(name);
+                        setHeaderAvatar(other.profiles.avatar_url);
 
                         // Check if blocked
                         const { data: blockData } = await supabase
@@ -63,6 +65,9 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                             .maybeSingle();
 
                         setIsBlocked(!!blockData);
+                    } else {
+                        // Fallback but allow retries or just show generic
+                        setHeaderName("Chat");
                     }
                 } else {
                     setHeaderName(roomData.name || "Group Chat");
@@ -290,19 +295,21 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
     }
 
     return (
-        <div className="flex flex-col h-full bg-black">
-            {/* Chat Header */}
-            <div className="px-6 py-4 flex items-center justify-between border-b border-white/5">
+        <div className="flex flex-col h-full bg-background">
+            {/* Chat Header - Exact Glass Effect from Ref */}
+            <div className="px-6 py-4 flex items-center justify-between glass-header">
                 <div className="flex items-center gap-4">
-                    <button onClick={() => router.back()} className="p-2 hover:bg-white/10 rounded-full text-muted-foreground hover:text-primary transition-colors">
+                    <button onClick={() => router.back()} className="p-2 hover:bg-surface rounded-full text-text-secondary hover:text-primary transition-colors">
                         <ArrowLeft className="w-5 h-5" />
                     </button>
-                    <Avatar src={headerAvatar} fallback={headerName[0] || "R"} className="w-10 h-10 border border-white/10" />
+                    <div className="relative">
+                        <Avatar src={headerAvatar} fallback={headerName[0] || "R"} className="w-10 h-10 ring-2 ring-primary/20" />
+                        <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-online border-2 border-surface rounded-full"></div>
+                    </div>
                     <div>
-                        <h3 className="font-bold text-white text-lg">{headerName}</h3>
-                        <p className="text-xs text-gray-400 flex items-center gap-1.5">
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                            Active now
+                        <h3 className="text-foreground">{headerName}</h3>
+                        <p className="text-small text-text-secondary flex items-center gap-1.5 font-normal">
+                            {loading ? "Connecting..." : "Active now"}
                         </p>
                     </div>
                 </div>
@@ -312,58 +319,59 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                     {!room?.is_group && (
                         <button
                             onClick={handleBlockUser}
-                            className={`p-2 rounded-full transition-colors ${isBlocked ? 'bg-red-500/10 text-red-400' : 'hover:bg-white/5 text-gray-400'}`}
+                            className={`p-2 rounded-full transition-colors ${isBlocked ? 'bg-red-500/10 text-red-400' : 'hover:bg-surface text-text-secondary'}`}
                             title={isBlocked ? "Unblock User" : "Block User"}
                         >
                             <Ban className="w-5 h-5" />
                         </button>
                     )}
-                    <button onClick={() => startCall(roomId, false)} className="p-2 hover:bg-white/10 rounded-full text-muted-foreground hover:text-primary transition-colors">
+                    <button onClick={() => startCall(roomId, false)} className="p-2 hover:bg-surface rounded-full text-text-secondary hover:text-primary transition-colors">
                         <Phone className="w-5 h-5" />
                     </button>
-                    <button onClick={() => startCall(roomId, true)} className="p-2 hover:bg-white/10 rounded-full text-muted-foreground hover:text-primary transition-colors">
+                    <button onClick={() => startCall(roomId, true)} className="p-2 hover:bg-surface rounded-full text-text-secondary hover:text-primary transition-colors">
                         <Video className="w-5 h-5" />
                     </button>
-                    <button onClick={() => setShowGroupInfo(true)} className="p-2 hover:bg-white/10 rounded-full text-muted-foreground hover:text-foreground transition-colors">
-                        <MoreVertical className="w-5 h-5" />
-                    </button>
+                    {room?.is_group && (
+                        <button onClick={() => setShowGroupInfo(true)} className="p-2 hover:bg-surface rounded-full text-text-secondary hover:text-foreground transition-colors">
+                            <MoreVertical className="w-5 h-5" />
+                        </button>
+                    )}
                 </div>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4" ref={scrollRef}>
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar" ref={scrollRef}>
                 {messages.map((msg) => {
                     const isMe = msg.user_id === user.id;
                     return (
                         <div key={msg.id} className={cn("flex gap-3", isMe ? "flex-row-reverse" : "")}>
-                            {!isMe && <Avatar src={msg.profiles?.avatar_url || ''} fallback={msg.profiles?.username || "?"} className="w-8 h-8 mt-1" />}
+                            {!isMe && <Avatar src={msg.profiles?.avatar_url || ''} fallback={msg.profiles?.username || "?"} className="w-8 h-8 mt-auto mb-1" />}
                             <div className={cn(
-                                "max-w-[75%] rounded-2xl p-4 text-[15px] leading-relaxed relative group transition-all font-sans",
+                                "max-w-[75%] p-4 text-body leading-relaxed relative group transition-all shadow-sm",
                                 isMe
-                                    ? "bg-[#6B4EFF] text-white rounded-tr-md" // Premium Purple
-                                    : "bg-[#1F2125] text-gray-100 rounded-tl-md" // Dark Gray
+                                    ? "bg-message-sent text-white rounded-2xl rounded-br-sm"
+                                    : "bg-message-received text-white rounded-2xl rounded-bl-sm"
                             )}>
                                 {msg.deleted_for_all ? (
-                                    <p className="italic text-xs opacity-70 flex items-center gap-1">
+                                    <p className="italic text-small opacity-70 flex items-center gap-1">
                                         <X className="w-3 h-3" /> Message deleted
                                     </p>
                                 ) : (
                                     <>
-                                        {/* Reply preview removed */}
                                         {msg.message_type === 'text' && <p>{msg.content}</p>}
 
                                         {msg.message_type === 'image' && (
-                                            <div className="rounded-lg overflow-hidden my-1">
+                                            <div className="rounded-md overflow-hidden my-1">
                                                 <img
                                                     src={msg.media_url || ''}
                                                     alt="Shared image"
-                                                    className="max-w-full max-h-[300px] w-auto h-auto object-cover border border-white/10"
+                                                    className="max-w-full max-h-[300px] w-auto h-auto object-cover border border-divider"
                                                 />
                                             </div>
                                         )}
 
                                         {msg.message_type === 'video' && (
-                                            <div className="rounded-lg overflow-hidden my-1">
+                                            <div className="rounded-md overflow-hidden my-1">
                                                 <video src={msg.media_url || ''} controls className="max-w-full h-auto" />
                                             </div>
                                         )}
@@ -374,18 +382,19 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                                     </>
                                 )}
 
-                                <div className="flex items-center justify-between gap-2 mt-1">
-                                    <span className="text-[10px] opacity-70 flex items-center gap-1">
+                                <div className="flex items-center justify-between gap-2 mt-1 min-w-[60px]">
+                                    <span className="text-small opacity-70 flex items-center gap-1 ml-auto font-normal">
                                         {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         {isMe && (
-                                            msg.read_at ? <CheckCheck className="w-3 h-3 text-blue-300" /> : <Check className="w-3 h-3 text-white/50" />
+                                            msg.read_at ? <CheckCheck className="w-3 h-3 text-white/90" /> : <Check className="w-3 h-3 text-white/50" />
                                         )}
                                     </span>
+
                                     {!msg.deleted_for_all && (
-                                        <div className="flex gap-1">
+                                        <div className={cn("flex gap-1 absolute top-2", isMe ? "-left-14" : "-right-14")}>
                                             <button
                                                 onClick={() => setReplyingTo(msg)}
-                                                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-white/10 rounded-full"
+                                                className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 bg-surface/50 hover:bg-surface rounded-full text-foreground backdrop-blur-sm"
                                                 title="Reply"
                                             >
                                                 <ReplyIcon className="w-3 h-3" />
@@ -393,7 +402,7 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                                             {isMe && (
                                                 <button
                                                     onClick={() => handleDeleteMessage(msg.id)}
-                                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:bg-red-500/20 text-red-400 rounded-full"
+                                                    className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 bg-surface/50 hover:bg-red-500/20 text-red-400 rounded-full backdrop-blur-sm"
                                                     title="Delete"
                                                 >
                                                     <Trash2 className="w-3 h-3" />
@@ -410,29 +419,29 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                     <div className="flex justify-end pr-4">
                         <div className="bg-primary/20 p-2 rounded-xl flex items-center gap-2">
                             <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                            <span className="text-xs text-primary">Sending...</span>
+                            <span className="text-small text-primary">Sending...</span>
                         </div>
                     </div>
                 )}
             </div>
 
             {/* Input Area */}
-            <form onSubmit={(e) => handleSendMessage(e, 'text')} className="p-4 bg-black">
+            <form onSubmit={(e) => handleSendMessage(e, 'text')} className="p-4 bg-background border-t border-divider">
                 {replyingTo && (
-                    <div className="flex items-center justify-between bg-primary/10 p-2 rounded-t-xl border-b border-primary/20 mb-2">
+                    <div className="flex items-center justify-between bg-surface/50 p-2 rounded-t-xl border border-primary/20 mb-2 backdrop-blur-sm">
                         <div className="flex items-center gap-2 overflow-hidden">
                             <div className="w-1 h-8 bg-primary rounded-full"></div>
                             <div className="flex flex-col">
-                                <span className="text-xs font-bold text-primary">
+                                <span className="text-small font-bold text-primary">
                                     Replying to {
                                         replyingTo.profiles?.username || 'user'
                                     }
                                 </span>
-                                <span className="text-xs text-muted-foreground truncate max-w-[200px]">{replyingTo.content || 'Media message'}</span>
+                                <span className="text-small text-text-secondary truncate max-w-[200px]">{replyingTo.content || 'Media message'}</span>
                             </div>
                         </div>
-                        <button type="button" onClick={() => setReplyingTo(null)} className="p-1 hover:bg-black/10 rounded-full">
-                            <X className="w-4 h-4 text-muted-foreground" />
+                        <button type="button" onClick={() => setReplyingTo(null)} className="p-1 hover:bg-surface rounded-full">
+                            <X className="w-4 h-4 text-text-secondary" />
                         </button>
                     </div>
                 )}
@@ -443,15 +452,15 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                     onChange={handleFileUpload}
                     accept="image/*,video/*,audio/*"
                 />
-                <div className="flex gap-3 items-center bg-[#1F2125] p-2 pl-4 rounded-full border border-transparent focus-within:border-[#6B4EFF]/50 transition-all">
+                <div className="flex gap-3 items-center bg-surface p-2 pl-4 rounded-xl shadow-reference-sm border border-divider focus-within:border-primary/50 transition-all">
                     {recording ? (
                         <div className="flex-1 flex items-center gap-3 animate-pulse">
-                            <span className="text-red-500 text-xs font-bold uppercase tracking-wider">Recording...</span>
+                            <span className="text-red-500 text-small font-bold uppercase tracking-wider">Recording...</span>
                             <div className="w-2 h-2 rounded-full bg-red-500 animate-ping"></div>
                         </div>
                     ) : audioBlob ? (
                         <div className="flex-1 flex items-center gap-3">
-                            <span className="text-xs text-primary font-bold">Voice Note Recorded</span>
+                            <span className="text-small text-primary font-bold">Voice Note</span>
                             <audio src={URL.createObjectURL(audioBlob)} controls className="h-8 w-40" />
                         </div>
                     ) : (
@@ -459,17 +468,17 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                             <button
                                 type="button"
                                 onClick={() => fileInputRef.current?.click()}
-                                className="p-2 text-muted-foreground hover:text-white transition-colors"
+                                className="p-2 text-text-secondary hover:text-primary transition-colors"
                                 disabled={uploading}
                             >
-                                <Paperclip className="w-4 h-4" />
+                                <Paperclip className="w-5 h-5" />
                             </button>
 
                             <input
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 placeholder="Type a message..."
-                                className="flex-1 bg-transparent border-none outline-none px-2 text-sm"
+                                className="flex-1 bg-transparent border-none outline-none px-2 text-body text-foreground placeholder:text-text-tertiary h-10"
                                 disabled={uploading}
                             />
                         </>
@@ -481,11 +490,11 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                         </button>
                     ) : audioBlob ? (
                         <>
-                            <button type="button" onClick={cancelRecording} className="p-2 text-muted-foreground hover:text-red-400">
+                            <button type="button" onClick={cancelRecording} className="p-2 text-text-secondary hover:text-red-400">
                                 <Trash2 className="w-4 h-4" />
                             </button>
-                            <button type="button" onClick={sendVoiceNote} className="p-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90">
-                                <Send className="w-4 h-4" />
+                            <button type="button" onClick={sendVoiceNote} className="p-2 bg-primary-dark text-white rounded-full h-10 w-10 flex items-center justify-center hover:bg-primary/90 shadow-md">
+                                <Send className="w-4 h-4 ml-0.5" />
                             </button>
                         </>
                     ) : (
@@ -493,18 +502,18 @@ export default function ChatWindow({ roomId, user }: { roomId: string; user: any
                             <button
                                 type="submit"
                                 disabled={uploading}
-                                className="p-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                className="p-2 bg-primary-dark text-white rounded-full h-10 w-10 flex items-center justify-center hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md"
                             >
-                                <Send className="w-4 h-4" />
+                                <Send className="w-4 h-4 ml-0.5" />
                             </button>
                         ) : (
                             <button
                                 type="button"
                                 onClick={startRecording}
                                 disabled={uploading}
-                                className="p-2 text-muted-foreground hover:text-white transition-all"
+                                className="p-2 text-text-secondary hover:text-primary transition-all"
                             >
-                                <Mic className="w-4 h-4" />
+                                <Mic className="w-5 h-5" />
                             </button>
                         )
                     )}
