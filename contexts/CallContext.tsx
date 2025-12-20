@@ -50,6 +50,7 @@ export function CallProvider({ children }: { children: ReactNode }) {
 
     const pc = useRef<RTCPeerConnection | null>(null);
     const pendingIceCandidates = useRef<any[]>([]);
+    const pendingRemoteIceCandidates = useRef<any[]>([]);
     const activeCallId = useRef<string | null>(null);
     const { user } = useAuth();
     const supabase = getSharedSupabaseClient();
@@ -80,14 +81,13 @@ export function CallProvider({ children }: { children: ReactNode }) {
                     const isForMe = newCall.receiver_id === user.id || (newCall.room_id && !newCall.receiver_id);
 
                     if (newCall.caller_id !== user.id && newCall.status === 'ringing' && isForMe) {
-                        // Fetch caller details
                         supabase.from('profiles').select('*').eq('id', newCall.caller_id).single().then(({ data }) => {
+                            activeCallId.current = newCall.id; // Set ID immediately to catch ICE candidates
                             setCurrentCall({ ...newCall, profiles: data || undefined });
                             router.push('/call/incoming');
                         });
                     }
-                })
-                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'calls' }, async (payload) => {
+                }).on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'calls' }, async (payload) => {
                     const updatedCall = payload.new as Call;
                     if (currentCall?.id === updatedCall.id) {
                         // Ensure profiles are preserved or fetched if missing
@@ -108,12 +108,25 @@ export function CallProvider({ children }: { children: ReactNode }) {
                                 console.log('[CallContext] Setting Remote Answer');
                                 await pc.current.setRemoteDescription(new RTCSessionDescription(updatedCall.answer_sdp));
 
+                                // Add any buffered remote candidates
+                                if (pendingRemoteIceCandidates.current.length > 0) {
+                                    console.log('[CallContext] Draining buffered remote candidates');
+                                    for (const candidate of pendingRemoteIceCandidates.current) {
+                                        await pc.current.addIceCandidate(new RTCIceCandidate(candidate));
+                                    }
+                                    pendingRemoteIceCandidates.current = [];
+                                }
+
                                 // Fetch any ICE candidates we might have missed
                                 const { data: candidates } = await CallService.getIceCandidates(updatedCall.id);
                                 if (candidates) {
                                     for (const cand of candidates) {
                                         if (user && cand.sender_id !== user.id) {
-                                            await pc.current.addIceCandidate(new RTCIceCandidate(cand.candidate));
+                                            try {
+                                                await pc.current.addIceCandidate(new RTCIceCandidate(cand.candidate));
+                                            } catch (err) {
+                                                console.warn('[CallContext] Failed to add late candidate', err);
+                                            }
                                         }
                                     }
                                 }
@@ -135,14 +148,25 @@ export function CallProvider({ children }: { children: ReactNode }) {
                 .channel('public-ice')
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'ice_candidates' }, async (payload) => {
                     const newCandidate = payload.new;
-                    if (user && newCandidate.call_id === activeCallId.current && newCandidate.sender_id !== user.id) {
+                    const callId = activeCallId.current || currentCall?.id;
+
+                    if (user && newCandidate.call_id === callId && newCandidate.sender_id !== user.id) {
                         if (pc.current && newCandidate.candidate) {
                             try {
-                                console.log('[CallContext] Adding Remote ICE Candidate');
-                                await pc.current.addIceCandidate(new RTCIceCandidate(newCandidate.candidate));
+                                if (pc.current.remoteDescription) {
+                                    console.log('[CallContext] Adding Remote ICE Candidate');
+                                    await pc.current.addIceCandidate(new RTCIceCandidate(newCandidate.candidate));
+                                } else {
+                                    console.log('[CallContext] Buffering remote ICE candidate');
+                                    pendingRemoteIceCandidates.current.push(newCandidate.candidate);
+                                }
                             } catch (e) {
-                                console.error('Error adding ICE candidate', e);
+                                console.error('[CallContext] Error adding ICE candidate', e);
                             }
+                        } else {
+                            // Buffer even if peer connection isn't ready yet (receiver side before setupPC)
+                            console.log('[CallContext] Buffering remote ICE candidate (PC not ready)');
+                            pendingRemoteIceCandidates.current.push(newCandidate.candidate);
                         }
                     }
                 })
@@ -211,6 +235,8 @@ export function CallProvider({ children }: { children: ReactNode }) {
             pc.current.close();
         }
         activeCallId.current = null;
+        pendingIceCandidates.current = [];
+        pendingRemoteIceCandidates.current = [];
         setLocalStream(null);
         setRemoteStream(null);
         setCurrentCall(null);
@@ -308,12 +334,29 @@ export function CallProvider({ children }: { children: ReactNode }) {
 
                 await peerConnection.setRemoteDescription(new RTCSessionDescription(currentCall.offer_sdp));
 
+                // Add any buffered remote candidates
+                if (pendingRemoteIceCandidates.current.length > 0) {
+                    console.log('[CallContext] Draining buffered remote candidates');
+                    for (const candidate of pendingRemoteIceCandidates.current) {
+                        try {
+                            await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+                        } catch (err) {
+                            console.warn('[CallContext] Failed to add buffered remote candidate', err);
+                        }
+                    }
+                    pendingRemoteIceCandidates.current = [];
+                }
+
                 // Fetch existing ICE candidates
                 const { data: existingCandidates } = await CallService.getIceCandidates(currentCall.id);
                 if (existingCandidates) {
                     for (const cand of existingCandidates) {
                         if (user && cand.sender_id !== user.id) {
-                            await peerConnection.addIceCandidate(new RTCIceCandidate(cand.candidate));
+                            try {
+                                await peerConnection.addIceCandidate(new RTCIceCandidate(cand.candidate));
+                            } catch (err) {
+                                console.warn('[CallContext] Failed to add existing candidate', err);
+                            }
                         }
                     }
                 }
