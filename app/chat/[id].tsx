@@ -382,9 +382,16 @@ export default function ChatDetailScreen() {
                 isSent ? styles.sentWrapper : styles.receivedWrapper
               ]}>
                 <View style={[styles.messageBubble, getBubbleStyle(isSent)]}>
-                  <Text style={[styles.messageText, { color: isSent ? '#000' : '#FFF' }]}>
-                    {item.content}
-                  </Text>
+                  {item.type === 'image' && item.mediaUrl ? (
+                    <RNImage
+                      source={{ uri: item.mediaUrl }}
+                      style={{ width: 200, height: 200, borderRadius: 10, resizeMode: 'cover' }}
+                    />
+                  ) : (
+                    <Text style={[styles.messageText, { color: isSent ? '#000' : '#FFF' }]}>
+                      {item.content}
+                    </Text>
+                  )}
                   <View style={styles.statusRow}>
                     <Text style={[styles.timeText, { color: isSent ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.5)' }]}>
                       {formatTime(item.timestamp)}

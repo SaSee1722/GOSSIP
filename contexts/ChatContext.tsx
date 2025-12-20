@@ -13,6 +13,7 @@ export interface Message {
   timestamp: Date;
   status: 'sent' | 'delivered' | 'read';
   reactions?: string[];
+  mediaUrl?: string;
 }
 
 export interface Chat {
@@ -312,6 +313,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           type: newMessage.message_type as any,
           timestamp: new Date(newMessage.created_at),
           status: newMessage.status,
+          mediaUrl: newMessage.media_url,
         };
 
         // If message is for me, mark as delivered
@@ -427,6 +429,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         type: sentMsg.message_type as any,
         timestamp: new Date(sentMsg.created_at),
         status: sentMsg.status,
+        mediaUrl: sentMsg.media_url,
       };
 
       setMessages(prev => {
@@ -561,6 +564,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         type: m.message_type as any,
         timestamp: new Date(m.created_at),
         status: m.status,
+        mediaUrl: m.media_url,
       }));
 
       setMessages(prev => ({
