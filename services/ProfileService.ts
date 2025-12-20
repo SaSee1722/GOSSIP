@@ -1,5 +1,4 @@
 import { safeSupabaseOperation } from '@/template/core/client';
-import { readAsStringAsync, EncodingType } from 'expo-file-system/legacy';
 
 export interface Profile {
     id: string;
@@ -64,29 +63,24 @@ export const ProfileService = {
             try {
                 console.log('[ProfileService] Starting upload for URI:', uri);
 
-                // Use legacy API for React Native file handling
-                const base64 = await readAsStringAsync(uri, {
-                    encoding: EncodingType.Base64,
-                });
-
-                console.log('[ProfileService] File read successfully, converting to blob...');
-
-                // Convert base64 to blob using fetch data URI (works on React Native)
-                const dataUri = `data:image/jpeg;base64,${base64}`;
-                const response = await fetch(dataUri);
-                const blob = await response.blob();
-
-                console.log('[ProfileService] Blob created, size:', blob.size);
-
                 const fileExt = uri.split('.').pop() || 'jpg';
                 const fileName = `${userId}_${Date.now()}.${fileExt}`;
                 const filePath = `avatars/${fileName}`;
 
-                console.log('[ProfileService] Uploading to:', filePath);
+                // Create a file object that React Native's FormData understands
+                // Supabase-js uses FormData internally for uploads
+                const file = {
+                    uri: uri,
+                    name: fileName,
+                    type: 'image/jpeg',
+                };
 
+                console.log('[ProfileService] Uploading file object to:', filePath);
+
+                // We cast 'file' to any because Supabase types expect web File/Blob
                 const { error: uploadError } = await client.storage
                     .from('gossip-avatars')
-                    .upload(filePath, blob, {
+                    .upload(filePath, file as any, {
                         contentType: 'image/jpeg',
                         upsert: false
                     });
