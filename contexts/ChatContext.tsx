@@ -72,6 +72,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const isFetchingRef = useRef(false);
   const hasInitialLoaded = useRef(false);
 
+
   useEffect(() => {
     if (user?.id) {
       if (!hasInitialLoaded.current) {
@@ -82,17 +83,17 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         });
       }
 
-      // REALTIME DISABLED - Using polling instead
-      // setupRealtime();
+      // REALTIME RE-ENABLED with new Supabase project
+      setupRealtime();
 
-      // Polling every 10 seconds (faster than before)
+      // Keep polling as backup (every 30 seconds)
       const pollInterval = setInterval(() => {
         refreshChats();
-      }, 10000);
+      }, 30000);
 
       return () => {
         clearInterval(pollInterval);
-        // cleanupRealtime(); // Not needed without Realtime
+        cleanupRealtime();
       };
     } else {
       setChats([]);
@@ -100,7 +101,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       setPendingRequests([]);
       setLoading(false);
       hasInitialLoaded.current = false;
-      // cleanupRealtime(); // Not needed without Realtime
+      cleanupRealtime();
     }
   }, [user?.id]);
 
