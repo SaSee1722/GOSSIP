@@ -22,6 +22,8 @@ export function StatusProvider({ children }: { children: ReactNode }) {
         if (user) {
             loadStatuses();
 
+            // REALTIME DISABLED - Statuses will use manual refresh
+            /*
             const channel = supabase
                 .channel('public-statuses')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'statuses' }, () => {
@@ -32,6 +34,7 @@ export function StatusProvider({ children }: { children: ReactNode }) {
             return () => {
                 supabase.removeChannel(channel);
             };
+            */
         }
     }, [user?.id]);
 

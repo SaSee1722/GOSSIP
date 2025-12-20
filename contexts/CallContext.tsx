@@ -43,6 +43,8 @@ export function CallProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         if (user) {
+            // REALTIME DISABLED - Calls will use manual refresh
+            /*
             const channel = supabase
                 .channel('public-calls')
                 .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'calls' }, (payload) => {
@@ -71,6 +73,7 @@ export function CallProvider({ children }: { children: ReactNode }) {
             return () => {
                 supabase.removeChannel(channel);
             };
+            */
         }
     }, [user?.id, currentCall?.id]);
 
