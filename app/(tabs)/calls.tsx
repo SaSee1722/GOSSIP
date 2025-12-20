@@ -222,7 +222,18 @@ const styles = StyleSheet.create({
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25 },
   modalTitle: { fontSize: 24, fontWeight: '900', color: '#FFF', letterSpacing: -0.5 },
   searchBar: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#111', borderRadius: 18, paddingHorizontal: 18, height: 55, gap: 12, marginBottom: 25, borderWidth: 1, borderColor: '#222' },
-  searchInput: { flex: 1, color: '#FFF', fontSize: 17, fontWeight: '500' },
+  searchInput: {
+    flex: 1,
+    color: '#FFF',
+    fontSize: 17,
+    fontWeight: '500',
+    ...Platform.select({
+      web: {
+        outlineStyle: 'none'
+      },
+      default: {}
+    })
+  } as any,
   modalSubtitle: { fontSize: 12, color: '#444', fontWeight: '900', letterSpacing: 2, marginBottom: 15 },
   contactItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, gap: 18 },
   contactName: { flex: 1, color: '#FFF', fontSize: 18, fontWeight: '600' },

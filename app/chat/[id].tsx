@@ -275,7 +275,13 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
     height: '100%',
-  },
+    ...Platform.select({
+      web: {
+        outlineStyle: 'none'
+      },
+      default: {}
+    })
+  } as any,
   inputIcons: {
     flexDirection: 'row',
     gap: 10,
