@@ -1,0 +1,8 @@
+{
+  "/chat/calls/page": "app/chat/calls/page.js",
+  "/chat/groups/page": "app/chat/groups/page.js",
+  "/chat/page": "app/chat/page.js",
+  "/chat/profile/page": "app/chat/profile/page.js",
+  "/chat/status/page": "app/chat/status/page.js",
+  "/page": "app/page.js"
+}

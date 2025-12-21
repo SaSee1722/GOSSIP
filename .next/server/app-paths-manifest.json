@@ -1,0 +1,14 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/chat/calls/page": "app/chat/calls/page.js",
+  "/chat/groups/page": "app/chat/groups/page.js",
+  "/chat/page": "app/chat/page.js",
+  "/chat/profile/page": "app/chat/profile/page.js",
+  "/chat/status/page": "app/chat/status/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/login/page": "app/login/page.js",
+  "/onboarding/page": "app/onboarding/page.js",
+  "/page": "app/page.js",
+  "/welcome/page": "app/welcome/page.js"
+}

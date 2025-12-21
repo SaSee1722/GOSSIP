@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">GOSSIP</string>
+    <string name="title_activity_main">GOSSIP</string>
+    <string name="package_name">com.sasee1722.gossip</string>
+    <string name="custom_url_scheme">com.sasee1722.gossip</string>
+</resources>

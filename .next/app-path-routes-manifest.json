@@ -1,0 +1,14 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/chat/calls/page": "/chat/calls",
+  "/chat/groups/page": "/chat/groups",
+  "/chat/page": "/chat",
+  "/chat/profile/page": "/chat/profile",
+  "/chat/status/page": "/chat/status",
+  "/favicon.ico/route": "/favicon.ico",
+  "/login/page": "/login",
+  "/onboarding/page": "/onboarding",
+  "/page": "/",
+  "/welcome/page": "/welcome"
+}

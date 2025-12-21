@@ -1,0 +1,85 @@
+[00:00:00.994] Server  LOG      ✓ Ready in 746ms
+[00:00:08.000] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:08.911] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:00:09.982] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:01:46.290] Server  LOG      ✓ Compiled in 392ms
+[00:02:11.270] Server  LOG      ✓ Compiled in 190ms
+[00:02:22.795] Server  LOG      ✓ Compiled in 162ms
+[00:02:32.883] Server  LOG      ✓ Compiled in 352ms
+[00:06:33.326] Server  LOG      ✓ Compiled in 426ms
+[00:08:07.893] Server  LOG      ✓ Compiled in 175ms
+[00:08:08.477] Browser ERROR   ./Desktop/GOSSIP/src/components/sidebar.tsx:235:18
+Parsing ecmascript source code failed
+  233 |                     </div>
+  234 |                 </div>
+> 235 |                 )}
+      |                  ^
+  236 |
+  237 |                 {/* Recent Gossips Section Header */}
+  238 |                 {/* Recent Gossips Section Header */}
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Desktop/GOSSIP/src/components/sidebar.tsx [Client Component Browser]
+    ./Desktop/GOSSIP/src/app/chat/page.tsx [Client Component Browser]
+    ./Desktop/GOSSIP/src/app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Desktop/GOSSIP/src/components/sidebar.tsx [Client Component SSR]
+    ./Desktop/GOSSIP/src/app/chat/page.tsx [Client Component SSR]
+    ./Desktop/GOSSIP/src/app/chat/page.tsx [Server Component]
+[00:08:10.476] Browser ERROR   {}
+[00:09:08.467] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:08.752] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:09:09.833] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:09:29.311] Server  LOG      ✓ Compiled in 210ms
+[00:09:56.495] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:57.006] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:09:58.313] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:11:09.196] Server  LOG      ✓ Compiled in 407ms
+[00:11:17.632] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:11:17.986] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:11:19.135] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:13:50.681] Server  LOG      ✓ Compiled in 503ms
+[00:14:00.491] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:14:01.088] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:14:02.881] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:16:48.155] Server  LOG      ✓ Compiled in 361ms
+[00:16:59.570] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:16:59.854] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:17:00.859] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
+[00:17:15.200] Server  LOG      ✓ Compiled in 395ms
+[00:19:00.237] Server  LOG      ✓ Compiled in 207ms
+[00:19:00.354] Browser ERROR   ./Desktop/GOSSIP/src/components/sidebar.tsx:350:29
+Parsing ecmascript source code failed
+  348 |                             </div>
+  349 |                         </div>
+> 350 |                     </aside>
+      |                             ^
+> 351 |                     {showSearch && <UserSearch onClose={() => setShowSearch(false)} currentUserId={user?.id} />}
+      | ^^^^^^^^^^^^^^^^^^^^^
+  352 |                     {showRequests && <ConnectionRequests onClose={() => setShowRequests(false)} currentUserId={user?.id} />}
+  353 |                     {showSettings && <SettingsModal onClose={() => setShowSettings(false)} user={user} />}
+  354 |                 </>
+
+Expected '</', got 'jsx text (
+                    )'
+
+Import traces:
+  Client Component Browser:
+    ./Desktop/GOSSIP/src/components/sidebar.tsx [Client Component Browser]
+    ./Desktop/GOSSIP/src/app/chat/page.tsx [Client Component Browser]
+    ./Desktop/GOSSIP/src/app/chat/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./Desktop/GOSSIP/src/components/sidebar.tsx [Client Component SSR]
+    ./Desktop/GOSSIP/src/app/chat/page.tsx [Client Component SSR]
+    ./Desktop/GOSSIP/src/app/chat/page.tsx [Server Component]
+[00:21:35.787] Server  LOG      ✓ Compiled in 243ms
+[00:21:50.448] Server  LOG      ✓ Compiled in 301ms
+[00:22:58.761] Server  LOG      ✓ Compiled in 301ms
+[00:25:28.283] Server  LOG      ✓ Compiled in 746ms
+[00:25:49.771] Server  LOG      ✓ Compiled in 217ms
+[00:26:05.681] Server  LOG      ✓ Compiled in 288ms
