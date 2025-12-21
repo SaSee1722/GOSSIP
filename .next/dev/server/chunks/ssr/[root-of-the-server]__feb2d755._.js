@@ -35,7 +35,6 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_mo
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$lock$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Lock$3e$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/lucide-react/dist/esm/icons/lock.js [app-ssr] (ecmascript) <export default as Lock>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/lucide-react/dist/esm/icons/user.js [app-ssr] (ecmascript) <export default as User>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$shield$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Shield$3e$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/lucide-react/dist/esm/icons/shield.js [app-ssr] (ecmascript) <export default as Shield>");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$right$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowRight$3e$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/lucide-react/dist/esm/icons/arrow-right.js [app-ssr] (ecmascript) <export default as ArrowRight>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/framer-motion/dist/es/render/components/motion/proxy.mjs [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/framer-motion/dist/es/components/AnimatePresence/index.mjs [app-ssr] (ecmascript)");
 "use client";
@@ -120,13 +119,13 @@ function LoginPage() {
                     opacity: 1,
                     y: 0
                 },
-                className: "w-full max-w-md z-10",
+                className: "w-full max-w-sm z-10",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "mb-8 space-y-2",
+                        className: "mb-10",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                className: "text-4xl font-black tracking-tight",
+                                className: "text-3xl font-black text-white tracking-tight mb-2",
                                 children: isLogin ? "Welcome Back" : "Create Account"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
@@ -134,7 +133,7 @@ function LoginPage() {
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                className: "text-text-secondary font-medium",
+                                className: "text-[#888] font-medium text-sm",
                                 children: isLogin ? "Sign in to continue chatting" : "Join the conversation today"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
@@ -148,14 +147,14 @@ function LoginPage() {
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "glass-card border border-white/10 rounded-[32px] p-8 backdrop-blur-2xl bg-white/5 shadow-2xl",
+                        className: "bg-[#111] border border-[#222] rounded-[30px] p-6 shadow-2xl",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "flex bg-white/5 p-1.5 rounded-2xl mb-8",
+                                className: "flex bg-[#222] p-1.5 rounded-xl mb-6",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                         onClick: ()=>setIsLogin(true),
-                                        className: `flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-300 ${isLogin ? "bg-white text-black shadow-lg" : "text-white hover:bg-white/5"}`,
+                                        className: `flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-300 ${isLogin ? "bg-white text-black shadow-md" : "text-[#888] hover:text-white"}`,
                                         children: "Login"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
@@ -164,7 +163,7 @@ function LoginPage() {
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                         onClick: ()=>setIsLogin(false),
-                                        className: `flex-1 py-3 px-4 rounded-xl text-sm font-bold transition-all duration-300 ${!isLogin ? "bg-white text-black shadow-lg" : "text-white hover:bg-white/5"}`,
+                                        className: `flex-1 py-2.5 rounded-lg text-sm font-bold transition-all duration-300 ${!isLogin ? "bg-white text-black shadow-md" : "text-[#888] hover:text-white"}`,
                                         children: "Signup"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
@@ -185,13 +184,13 @@ function LoginPage() {
                                         className: "space-y-4",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: `relative group transition-all duration-300 rounded-2xl border ${focusedInput === 'email' ? 'border-primary bg-primary/5' : 'border-white/10 bg-white/5'}`,
+                                                className: `relative group transition-all duration-300 rounded-[18px] border ${focusedInput === 'email' ? 'border-[#00BFFF] bg-[#00BFFF]/5' : 'border-[#222] bg-[#1A1A1A]'}`,
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         className: "absolute left-4 top-1/2 -translate-y-1/2",
                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$mail$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Mail$3e$__["Mail"], {
-                                                            size: 20,
-                                                            className: focusedInput === 'email' ? 'text-primary' : 'text-text-secondary'
+                                                            size: 18,
+                                                            className: focusedInput === 'email' ? 'text-[#00BFFF]' : 'text-[#666]'
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
                                                             lineNumber: 107,
@@ -209,7 +208,7 @@ function LoginPage() {
                                                         onChange: (e)=>setEmail(e.target.value),
                                                         onFocus: ()=>setFocusedInput('email'),
                                                         onBlur: ()=>setFocusedInput(null),
-                                                        className: "w-full h-14 bg-transparent pl-12 pr-4 outline-none text-white font-medium placeholder:text-white/30"
+                                                        className: "w-full h-[52px] bg-transparent pl-12 pr-4 outline-none text-white text-[15px] font-medium placeholder:text-[#444]"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
                                                         lineNumber: 109,
@@ -235,36 +234,45 @@ function LoginPage() {
                                                         opacity: 0,
                                                         height: 0
                                                     },
-                                                    className: "relative group transition-all duration-300 rounded-2xl border border-white/10 bg-white/5",
-                                                    children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                            className: "absolute left-4 top-1/2 -translate-y-1/2",
-                                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"], {
-                                                                size: 20,
-                                                                className: "text-text-secondary"
+                                                    className: "overflow-hidden",
+                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: `relative group transition-all duration-300 rounded-[18px] border ${focusedInput === 'username' ? 'border-[#00BFFF] bg-[#00BFFF]/5' : 'border-[#222] bg-[#1A1A1A]'}`,
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                className: "absolute left-4 top-1/2 -translate-y-1/2",
+                                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"], {
+                                                                    size: 18,
+                                                                    className: focusedInput === 'username' ? 'text-[#00BFFF]' : 'text-[#666]'
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
+                                                                    lineNumber: 132,
+                                                                    columnNumber: 49
+                                                                }, this)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                                lineNumber: 130,
+                                                                lineNumber: 131,
+                                                                columnNumber: 45
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                type: "text",
+                                                                placeholder: "Username",
+                                                                value: username,
+                                                                onChange: (e)=>setUsername(e.target.value),
+                                                                onFocus: ()=>setFocusedInput('username'),
+                                                                onBlur: ()=>setFocusedInput(null),
+                                                                className: "w-full h-[52px] bg-transparent pl-12 pr-4 outline-none text-white text-[15px] font-medium placeholder:text-[#444]"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
+                                                                lineNumber: 134,
                                                                 columnNumber: 45
                                                             }, this)
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                            lineNumber: 129,
-                                                            columnNumber: 41
-                                                        }, this),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                            type: "text",
-                                                            placeholder: "Username",
-                                                            value: username,
-                                                            onChange: (e)=>setUsername(e.target.value),
-                                                            className: "w-full h-14 bg-transparent pl-12 pr-4 outline-none text-white font-medium placeholder:text-white/30"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                            lineNumber: 132,
-                                                            columnNumber: 41
-                                                        }, this)
-                                                    ]
-                                                }, void 0, true, {
+                                                        ]
+                                                    }, void 0, true, {
+                                                        fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
+                                                        lineNumber: 129,
+                                                        columnNumber: 41
+                                                    }, this)
+                                                }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
                                                     lineNumber: 123,
                                                     columnNumber: 37
@@ -275,21 +283,21 @@ function LoginPage() {
                                                 columnNumber: 29
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: `relative group transition-all duration-300 rounded-2xl border ${focusedInput === 'pass' ? 'border-primary bg-primary/5' : 'border-white/10 bg-white/5'}`,
+                                                className: `relative group transition-all duration-300 rounded-[18px] border ${focusedInput === 'pass' ? 'border-[#00BFFF] bg-[#00BFFF]/5' : 'border-[#222] bg-[#1A1A1A]'}`,
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         className: "absolute left-4 top-1/2 -translate-y-1/2",
                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$lock$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Lock$3e$__["Lock"], {
-                                                            size: 20,
-                                                            className: focusedInput === 'pass' ? 'text-primary' : 'text-text-secondary'
+                                                            size: 18,
+                                                            className: focusedInput === 'pass' ? 'text-[#00BFFF]' : 'text-[#666]'
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                            lineNumber: 147,
+                                                            lineNumber: 152,
                                                             columnNumber: 37
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                        lineNumber: 146,
+                                                        lineNumber: 151,
                                                         columnNumber: 33
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -299,74 +307,101 @@ function LoginPage() {
                                                         onChange: (e)=>setPassword(e.target.value),
                                                         onFocus: ()=>setFocusedInput('pass'),
                                                         onBlur: ()=>setFocusedInput(null),
-                                                        className: "w-full h-14 bg-transparent pl-12 pr-12 outline-none text-white font-medium placeholder:text-white/30"
+                                                        className: "w-full h-[52px] bg-transparent pl-12 pr-12 outline-none text-white text-[15px] font-medium placeholder:text-[#444]"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                        lineNumber: 149,
+                                                        lineNumber: 154,
                                                         columnNumber: 33
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                         type: "button",
                                                         onClick: ()=>setShowPassword(!showPassword),
-                                                        className: "absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-white transition-colors",
+                                                        className: "absolute right-4 top-1/2 -translate-y-1/2 text-[#666] hover:text-white transition-colors",
                                                         children: showPassword ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$eye$2d$off$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__EyeOff$3e$__["EyeOff"], {
                                                             size: 18
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                            lineNumber: 163,
+                                                            lineNumber: 168,
                                                             columnNumber: 53
                                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$eye$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Eye$3e$__["Eye"], {
                                                             size: 18
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                            lineNumber: 163,
+                                                            lineNumber: 168,
                                                             columnNumber: 76
                                                         }, this)
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                        lineNumber: 158,
+                                                        lineNumber: 163,
                                                         columnNumber: 33
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                lineNumber: 144,
+                                                lineNumber: 149,
                                                 columnNumber: 29
                                             }, this),
-                                            !isLogin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "relative group transition-all duration-300 rounded-2xl border border-white/10 bg-white/5",
-                                                children: [
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        className: "absolute left-4 top-1/2 -translate-y-1/2",
-                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$shield$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Shield$3e$__["Shield"], {
-                                                            size: 20,
-                                                            className: "text-text-secondary"
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                            lineNumber: 171,
-                                                            columnNumber: 41
-                                                        }, this)
-                                                    }, void 0, false, {
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$components$2f$AnimatePresence$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["AnimatePresence"], {
+                                                children: !isLogin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$framer$2d$motion$2f$dist$2f$es$2f$render$2f$components$2f$motion$2f$proxy$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["motion"].div, {
+                                                    initial: {
+                                                        opacity: 0,
+                                                        height: 0
+                                                    },
+                                                    animate: {
+                                                        opacity: 1,
+                                                        height: "auto"
+                                                    },
+                                                    exit: {
+                                                        opacity: 0,
+                                                        height: 0
+                                                    },
+                                                    className: "overflow-hidden pt-4",
+                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: `relative group transition-all duration-300 rounded-[18px] border ${focusedInput === 'confirm' ? 'border-[#00BFFF] bg-[#00BFFF]/5' : 'border-[#222] bg-[#1A1A1A]'}`,
+                                                        children: [
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                                className: "absolute left-4 top-1/2 -translate-y-1/2",
+                                                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$shield$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Shield$3e$__["Shield"], {
+                                                                    size: 18,
+                                                                    className: focusedInput === 'confirm' ? 'text-[#00BFFF]' : 'text-[#666]'
+                                                                }, void 0, false, {
+                                                                    fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
+                                                                    lineNumber: 184,
+                                                                    columnNumber: 49
+                                                                }, this)
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
+                                                                lineNumber: 183,
+                                                                columnNumber: 45
+                                                            }, this),
+                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                                type: showPassword ? "text" : "password",
+                                                                placeholder: "Confirm Password",
+                                                                value: confirmPassword,
+                                                                onChange: (e)=>setConfirmPassword(e.target.value),
+                                                                onFocus: ()=>setFocusedInput('confirm'),
+                                                                onBlur: ()=>setFocusedInput(null),
+                                                                className: "w-full h-[52px] bg-transparent pl-12 pr-4 outline-none text-white text-[15px] font-medium placeholder:text-[#444]"
+                                                            }, void 0, false, {
+                                                                fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
+                                                                lineNumber: 186,
+                                                                columnNumber: 45
+                                                            }, this)
+                                                        ]
+                                                    }, void 0, true, {
                                                         fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                        lineNumber: 170,
-                                                        columnNumber: 37
-                                                    }, this),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                                        type: showPassword ? "text" : "password",
-                                                        placeholder: "Confirm Password",
-                                                        value: confirmPassword,
-                                                        onChange: (e)=>setConfirmPassword(e.target.value),
-                                                        className: "w-full h-14 bg-transparent pl-12 pr-4 outline-none text-white font-medium placeholder:text-white/30"
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                        lineNumber: 173,
-                                                        columnNumber: 37
+                                                        lineNumber: 181,
+                                                        columnNumber: 41
                                                     }, this)
-                                                ]
-                                            }, void 0, true, {
+                                                }, void 0, false, {
+                                                    fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
+                                                    lineNumber: 175,
+                                                    columnNumber: 37
+                                                }, this)
+                                            }, void 0, false, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                lineNumber: 169,
-                                                columnNumber: 33
+                                                lineNumber: 173,
+                                                columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
@@ -377,44 +412,35 @@ function LoginPage() {
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                         type: "submit",
                                         disabled: operationLoading,
-                                        className: "w-full mt-6 h-14 rounded-2xl font-bold text-lg relative overflow-hidden group disabled:opacity-50",
+                                        className: "w-full mt-6 h-[56px] rounded-[18px] font-bold text-[16px] relative overflow-hidden group disabled:opacity-50 shadow-lg shadow-[#00BFFF]/20",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "absolute inset-0 bg-gradient-to-r from-primary to-blue-600 transition-transform duration-300 group-hover:scale-105"
+                                                className: "absolute inset-0 bg-gradient-to-r from-[#00BFFF] to-[#FFB6C1] transition-transform duration-300 group-hover:scale-105"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                lineNumber: 190,
+                                                lineNumber: 207,
                                                 columnNumber: 29
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                className: "relative flex items-center justify-center gap-2",
+                                                className: "relative flex items-center justify-center gap-2 text-white",
                                                 children: operationLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                    lineNumber: 193,
+                                                    lineNumber: 210,
                                                     columnNumber: 37
                                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
-                                                    children: [
-                                                        isLogin ? "Sign In" : "Create Account",
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$right$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowRight$3e$__["ArrowRight"], {
-                                                            size: 20
-                                                        }, void 0, false, {
-                                                            fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                            lineNumber: 197,
-                                                            columnNumber: 41
-                                                        }, this)
-                                                    ]
-                                                }, void 0, true)
+                                                    children: isLogin ? "Sign In" : "Create Account"
+                                                }, void 0, false)
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                                lineNumber: 191,
+                                                lineNumber: 208,
                                                 columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                        lineNumber: 185,
+                                        lineNumber: 202,
                                         columnNumber: 25
                                     }, this)
                                 ]
@@ -424,11 +450,11 @@ function LoginPage() {
                                 columnNumber: 21
                             }, this),
                             isLogin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                className: "w-full mt-6 text-primary text-sm font-bold hover:underline transition-all",
+                                className: "w-full mt-6 text-[#00BFFF] text-xs font-bold hover:underline transition-all",
                                 children: "Forgot Password?"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                lineNumber: 205,
+                                lineNumber: 221,
                                 columnNumber: 25
                             }, this)
                         ]
@@ -438,22 +464,22 @@ function LoginPage() {
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                        className: "mt-8 text-center text-text-tertiary",
+                        className: "mt-8 text-center text-[#666] text-xs",
                         children: [
                             isLogin ? "Don't have an account? " : "Already have an account? ",
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 onClick: ()=>setIsLogin(!isLogin),
-                                className: "text-primary font-black hover:underline ml-1",
+                                className: "text-[#00BFFF] font-bold hover:underline ml-1",
                                 children: isLogin ? "Sign Up" : "Log In"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                                lineNumber: 214,
+                                lineNumber: 230,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/GOSSIP/src/app/login/page.tsx",
-                        lineNumber: 212,
+                        lineNumber: 228,
                         columnNumber: 17
                     }, this)
                 ]

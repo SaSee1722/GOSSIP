@@ -12,6 +12,7 @@ import { UserSearch } from "./user-search";
 import { ConnectionRequests } from "./connection-requests";
 import { SettingsModal } from "./settings-modal";
 import { Settings } from "lucide-react";
+import { ChatService } from "@/services/chat-service";
 import { useStatus } from "@/contexts/status-context";
 import { GradientText } from "./ui/gradient-text";
 
@@ -58,18 +59,12 @@ export function Sidebar({ user }: { user: any }) {
 
     useEffect(() => {
         const fetchRooms = async () => {
-            const { data } = await supabase
-                .from("rooms")
-                .select(`
-                    *,
-                    room_participants(
-                        user_id,
-                        profiles(username, full_name, avatar_url, gender)
-                    )
-                `)
-                .order("updated_at", { ascending: false });
-
-            if (data) setRooms(data as any);
+            const { data, error } = await ChatService.getMyRooms();
+            if (data) {
+                setRooms(data as any);
+            } else if (error) {
+                console.error("fetchRooms error:", error);
+            }
         };
 
         const fetchPendingCount = async () => {
@@ -182,7 +177,6 @@ export function Sidebar({ user }: { user: any }) {
                             className="relative p-1"
                         >
                             <div className="w-[28px] h-[28px]">
-                                <img src="data:image/svg+xml;base64,..." alt="" className="hidden" />
                                 {/* Using Lucide icon to match Expo Ionicons name="notifications-outline" */}
                                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
                             </div>
@@ -214,15 +208,47 @@ export function Sidebar({ user }: { user: any }) {
                     <div className="bg-[#111] border border-[#222] rounded-[35px] p-5">
                         <h3 className="text-[11px] font-[800] tracking-[1.5px] text-[#444] mb-4 uppercase ml-1">VIBES</h3>
                         <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
-                            <button onClick={() => router.push('/chat/status')} className="flex flex-col items-center gap-3 min-w-[58px]">
-                                <div className="relative">
-                                    <Avatar src={user?.user_metadata?.avatar_url} fallback={user?.email?.[0] || "?"} className="w-[58px] h-[58px] rounded-full border-2 border-[#333] opacity-50" />
-                                    <div className="absolute bottom-0 right-0 w-[20px] h-[20px] bg-[#00BFFF] rounded-full flex items-center justify-center border-2 border-black">
-                                        <Plus className="w-[12px] h-[12px] text-black" strokeWidth={3} />
-                                    </div>
-                                </div>
-                                <span className="text-[11px] font-bold text-white/60">Your Vibe</span>
-                            </button>
+                            {(() => {
+                                const myStatus = statuses.find((s: any) => s.user_id === user?.id);
+                                const isVideo = (url: string) => ['mp4', 'webm', 'mov', 'ogg'].includes(url.split('.').pop()?.toLowerCase() || '');
+
+                                return (
+                                    <button onClick={() => router.push('/chat/status')} className="flex flex-col items-center gap-3 min-w-[58px]">
+                                        {myStatus ? (
+                                            <div className="relative p-[2px] rounded-full bg-gradient-to-tr from-[#00BFFF] to-[#FFB6C1] animate-in zoom-in duration-300">
+                                                <div className="p-[2px] bg-black rounded-full">
+                                                    <div className="w-[50px] h-[50px] rounded-full overflow-hidden relative bg-zinc-900 border border-white/10">
+                                                        {isVideo(myStatus.media_url) ? (
+                                                            <video
+                                                                src={myStatus.media_url}
+                                                                className="w-full h-full object-cover"
+                                                                muted
+                                                                loop
+                                                                autoPlay
+                                                                playsInline
+                                                            />
+                                                        ) : (
+                                                            <img
+                                                                src={myStatus.media_url}
+                                                                alt="My Vibe"
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="relative">
+                                                <Avatar src={user?.user_metadata?.avatar_url} fallback={user?.email?.[0] || "?"} className="w-[58px] h-[58px] rounded-full border-2 border-[#333] opacity-50" />
+                                                <div className="absolute bottom-0 right-0 w-[20px] h-[20px] bg-[#00BFFF] rounded-full flex items-center justify-center border-2 border-black">
+                                                    <Plus className="w-[12px] h-[12px] text-black" strokeWidth={3} />
+                                                </div>
+                                            </div>
+                                        )}
+                                        <span className={cn("text-[11px] font-bold", myStatus ? "text-white" : "text-white/60")}>Your Vibe</span>
+                                    </button>
+                                );
+                            })()}
 
                             {/* Active Statuses List */}
                             {Array.from(new Set(statuses.filter((s: any) => s.user_id !== user.id).map((s: any) => s.user_id))).map((userId: any) => {
@@ -329,26 +355,7 @@ export function Sidebar({ user }: { user: any }) {
                     </div>
                 </div>
 
-                {/* Footer User Info */}
-                <div className="p-4 border-t border-white/5 bg-black/80 backdrop-blur-md">
-                    <div className="flex items-center gap-3">
-                        <Avatar src={user?.user_metadata?.avatar_url} fallback={user?.email || "?"} className="w-10 h-10 ring-2 ring-white/10 shadow-lg" />
-                        <div className="flex-1 overflow-hidden">
-                            <p className="text-[13px] font-black truncate text-white uppercase tracking-tight">{user?.user_metadata?.username || user?.email?.split('@')[0]}</p>
-                            <p className="text-[11px] font-bold text-primary flex items-center gap-1 uppercase tracking-widest">
-                                Online
-                            </p>
-                        </div>
-                        <div className="flex gap-1">
-                            <button onClick={() => setShowSettings(true)} className="text-white/40 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-xl">
-                                <Settings className="w-5 h-5" />
-                            </button>
-                            <button onClick={handleLogout} className="text-white/40 hover:text-secondary transition-colors p-2 hover:bg-white/5 rounded-xl">
-                                <LogOut className="w-5 h-5" />
-                            </button>
-                        </div>
-                    </div>
-                </div>
+
             </aside>
             {showSearch && <UserSearch onClose={() => setShowSearch(false)} currentUserId={user?.id} />}
             {showRequests && <ConnectionRequests onClose={() => setShowRequests(false)} currentUserId={user?.id} />}

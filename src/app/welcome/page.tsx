@@ -14,12 +14,12 @@ export default function WelcomePage() {
             <div className="absolute top-[-100px] right-[-100px] w-[300px] h-[300px] bg-primary rounded-full blur-[100px] opacity-20 animate-pulse" />
             <div className="absolute bottom-[-150px] left-[-150px] w-[400px] h-[400px] bg-secondary rounded-full blur-[120px] opacity-15 animate-pulse" style={{ animationDelay: '1s' }} />
 
-            <div className="z-10 w-full max-w-md flex flex-col h-full items-center justify-between py-8">
+            <div className="z-10 w-full max-w-md flex flex-col items-center justify-center min-h-[80vh] gap-8">
                 {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col items-center text-center mt-20"
+                    className="flex flex-col items-center text-center mb-12"
                 >
                     <div className="relative w-[100px] h-[100px] rounded-[30px] border border-[#00BFFF]/30 flex items-center justify-center mb-6 bg-[#00BFFF]/10 backdrop-blur-sm shadow-xl shadow-[#00BFFF]/10">
                         <MessageSquare size={50} className="text-[#00BFFF] fill-[#00BFFF]/20" />

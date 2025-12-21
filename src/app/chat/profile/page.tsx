@@ -9,6 +9,8 @@ import { useAuth } from "@/contexts/auth-context";
 import { ProfileService, Profile, UpdateProfileData } from "@/services/profile-service";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/contexts/toast-context";
+import { useRouter } from "next/navigation";
+import { useStatus } from "@/contexts/status-context";
 
 export default function ProfilePage() {
     const { user, logout } = useAuth();
@@ -23,16 +25,17 @@ export default function ProfilePage() {
 
     const currentGender = isEditing ? formData.gender : profile?.gender;
 
-    const getGenderColor = (g?: string) => {
-        switch (g) {
-            case 'Male': return '#00BFFF';
-            case 'Female': return '#FFB6C1';
-            case 'Other': return '#FFD700';
-            default: return undefined;
-        }
-    };
+    // const getGenderColor = (g?: string) => {
+    //     switch (g) {
+    //         case 'Male': return '#00BFFF';
+    //         case 'Female': return '#FFB6C1';
+    //         case 'Other': return '#FFD700';
+    //         default: return undefined;
+    //     }
+    // };
 
-    const genderColor = getGenderColor(currentGender);
+    // Use static color to prevent theme changes
+    const genderColor = '#00BFFF';
 
     useEffect(() => {
         if (user) {
@@ -98,6 +101,17 @@ export default function ProfilePage() {
         );
     }
 
+    const router = useRouter();
+    const { statuses } = useStatus();
+
+    // Find my active status
+    const myStatus = statuses.find(s => s.user_id === user?.id);
+
+    const isVideo = (url: string) => {
+        const ext = url.split('.').pop()?.toLowerCase();
+        return ['mp4', 'webm', 'mov', 'ogg'].includes(ext || '');
+    };
+
     return (
         <div className="flex-1 flex flex-col bg-black h-full overflow-hidden relative">
             {/* Dynamic Gender Background */}
@@ -110,50 +124,55 @@ export default function ProfilePage() {
             <div className="flex-1 overflow-y-auto custom-scrollbar relative z-10">
                 {/* Header Section */}
                 <div className="pt-8 pb-8 flex flex-col items-center relative z-10">
-                    <div className="relative w-[140px] h-[140px] flex items-center justify-center">
-                        <div className={cn("absolute inset-0 rounded-full opacity-60 bg-gradient-to-br",
-                            currentGender === 'Male' ? 'from-[#00BFFF] to-transparent' :
-                                currentGender === 'Female' ? 'from-[#FFB6C1] to-transparent' :
-                                    currentGender === 'Other' ? 'from-[#FFD700] to-transparent' :
-                                        'from-white/20 to-transparent'
+                    <div className="relative w-[140px] h-[140px] flex items-center justify-center cursor-pointer group" onClick={() => router.push('/chat/status')}>
+                        {/* Status Indicator / Ring */}
+                        <div className={cn("absolute inset-0 rounded-full opacity-60 bg-gradient-to-br from-[#00BFFF] to-transparent",
+                            myStatus ? "opacity-100 from-[#00BFFF] via-[#FFB6C1] to-[#00BFFF] animate-spin-slow p-[3px]" : ""
                         )} />
-                        <div className="p-1 bg-black rounded-full relative">
+
+                        <div className="p-1 bg-black rounded-full relative w-full h-full flex items-center justify-center overflow-hidden">
                             <Avatar
                                 src={profile?.avatar_url}
                                 fallback={profile?.username?.[0] || "?"}
-                                className="w-[120px] h-[120px] rounded-full border-0"
+                                className="w-[124px] h-[124px] rounded-full border-4 border-black"
                             />
+
+                            {/* Camera Icon Button - Click to Change Profile Picture */}
                             <button
-                                onClick={() => fileInputRef.current?.click()}
-                                className="absolute bottom-0 right-2 w-9 h-9 bg-black rounded-full flex items-center justify-center border-[4px] border-black hover:scale-110 transition-transform"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    fileInputRef.current?.click();
+                                }}
+                                className="absolute bottom-1 right-2 w-9 h-9 bg-black rounded-full flex items-center justify-center border-[4px] border-black hover:scale-110 transition-transform z-20 cursor-pointer"
                             >
                                 <div className="w-full h-full rounded-full flex items-center justify-center" style={{ backgroundColor: genderColor || '#00BFFF' }}>
                                     <Camera className="w-4 h-4 text-white" />
                                 </div>
                             </button>
                         </div>
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            className="hidden"
-                            accept="image/*"
-                            onChange={handleAvatarUpload}
-                        />
                     </div>
+                    {/* Re-adding the hidden input for Profile Pic Upload */}
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleAvatarUpload}
+                    />
+
 
                     <div className="mt-5 text-center">
-                        <GradientText
-                            text={profile?.full_name || profile?.username || 'User'}
-                            className="text-[34px] font-bold tracking-[0.5px]"
-                        />
+                        <h1 className="text-[34px] font-bold tracking-[0.5px] text-[#00BFFF]">
+                            {profile?.full_name || profile?.username || 'User'}
+                        </h1>
                         <p className="text-[14px] text-white/60 mt-2 font-medium">{user?.email}</p>
                     </div>
-                </div>
+                </div >
 
                 {/* Content Section */}
-                <div className="px-5 space-y-8 pb-32">
+                < div className="px-5 space-y-8 pb-32" >
                     {/* Personal Info */}
-                    <div className="mb-[30px]">
+                    < div className="mb-[30px]" >
                         <div className="flex items-center justify-between mb-[15px] px-1">
                             <div className="flex items-center gap-2.5">
                                 <GradientText text="PERSONAL INFO" className="text-[15px] font-[800] tracking-[1.5px]" />
@@ -276,10 +295,10 @@ export default function ProfilePage() {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </div >
 
                     {/* Settings Section */}
-                    <div className="mb-[30px]">
+                    < div className="mb-[30px]" >
                         <GradientText text="SETTINGS" className="text-[15px] font-[800] tracking-[1.5px] mb-[15px]" />
                         <div className="rounded-[30px] p-[25px] flex flex-col gap-[15px] bg-[rgba(30,30,30,0.4)] border border-[rgba(255,255,255,0.08)] backdrop-blur-md">
                             <SettingItem
@@ -309,52 +328,54 @@ export default function ProfilePage() {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </div >
 
                     {/* Logout Button */}
-                    <button
+                    < button
                         onClick={logout}
                         className="mx-5 mb-5 flex items-center justify-center gap-2.5 p-[18px] bg-[rgba(255,182,193,0.05)] rounded-[25px] group hover:bg-[rgba(255,182,193,0.1)] transition-colors"
                     >
                         <LogOut className="w-5 h-5 text-[#FFB6C1]" />
                         <span className="text-[#FFB6C1] text-[16px] font-[800]">Logout</span>
-                    </button>
+                    </button >
 
                     <p className="text-center text-[10px] font-black text-white/20 uppercase tracking-widest pb-12">
                         GOSSIP v1.2.0 • English
                     </p>
-                </div>
-            </div>
+                </div >
+            </div >
 
             {/* Blocked Users Modal */}
-            {showBlocked && (
-                <div className="fixed inset-0 z-[100] flex items-end justify-center bg-[rgba(0,0,0,0.85)] p-[25px] backdrop-blur-sm sm:items-center">
-                    <div
-                        className="w-full max-w-md bg-[rgba(30,30,30,0.95)] h-[80%] rounded-[35px] border border-[rgba(255,255,255,0.1)] p-[30px] flex flex-col backdrop-blur-xl animate-in slide-in-from-bottom duration-300"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <div className="flex items-center justify-between mb-[25px]">
-                            <GradientText text="Blocked Users" className="text-[24px] font-[800]" />
-                            <button onClick={() => setShowBlocked(false)}>
-                                <X className="w-8 h-8 text-[#444]" />
+            {
+                showBlocked && (
+                    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-[rgba(0,0,0,0.85)] p-[25px] backdrop-blur-sm sm:items-center">
+                        <div
+                            className="w-full max-w-md bg-[rgba(30,30,30,0.95)] h-[80%] rounded-[35px] border border-[rgba(255,255,255,0.1)] p-[30px] flex flex-col backdrop-blur-xl animate-in slide-in-from-bottom duration-300"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="flex items-center justify-between mb-[25px]">
+                                <GradientText text="Blocked Users" className="text-[24px] font-[800]" />
+                                <button onClick={() => setShowBlocked(false)}>
+                                    <X className="w-8 h-8 text-[#444]" />
+                                </button>
+                            </div>
+
+                            {/* Content */}
+                            <div className="flex-1 flex flex-col items-center justify-center pb-12">
+                                <div className="w-[90px] h-[90px] rounded-[30px] bg-[#111] flex items-center justify-center mb-5">
+                                    <Ban className="w-[40px] h-[40px] text-[#333]" />
+                                </div>
+                                <p className="text-[#666] text-[16px]">No one is blocked.</p>
+                            </div>
+
+                            <button onClick={() => setShowBlocked(false)} className="self-center mt-4">
+                                <span className="text-[#FFB6C1] font-bold text-[16px]">Close</span>
                             </button>
                         </div>
-
-                        {/* Content */}
-                        <div className="flex-1 flex flex-col items-center justify-center pb-12">
-                            <div className="w-[90px] h-[90px] rounded-[30px] bg-[#111] flex items-center justify-center mb-5">
-                                <Ban className="w-[40px] h-[40px] text-[#333]" />
-                            </div>
-                            <p className="text-[#666] text-[16px]">No one is blocked.</p>
-                        </div>
-
-                        <button onClick={() => setShowBlocked(false)} className="self-center mt-4">
-                            <span className="text-[#FFB6C1] font-bold text-[16px]">Close</span>
-                        </button>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }
 

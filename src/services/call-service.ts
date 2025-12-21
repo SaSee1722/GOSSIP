@@ -127,21 +127,32 @@ export const CallService = {
         }
     },
 
+    async getMessages(roomId: string, limit: number = 50, ascending: boolean = false): Promise<{ data: any[]; error: string | null }> {
+        try {
+            return await safeSupabaseOperation(async (client) => {
+                const { data, error } = await client
+                    .from('messages')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            id, username, full_name, avatar_url, gender
+                        )
+                    `)
+                    .eq('room_id', roomId)
+                    .order('created_at', { ascending })
+                    .limit(limit);
+                return { data: data || [], error: error?.message || null };
+            });
+        } catch (err: any) {
+            return { data: [], error: err.message };
+        }
+    },
+
     async getCallHistory(): Promise<{ data: Call[]; error: string | null }> {
         try {
             return await safeSupabaseOperation(async (client) => {
                 const { data: { user } } = await client.auth.getUser();
                 if (!user) throw new Error('Not authenticated');
-
-                // Get user's room IDs first to build filter
-                const { data: myRooms } = await client
-                    .from('room_participants')
-                    .select('room_id')
-                    .eq('user_id', user.id);
-
-                const roomIds = myRooms?.map(r => r.room_id) || [];
-                // Only add room filter if there are rooms
-                const roomFilter = roomIds.length > 0 ? `,room_id.in.(${roomIds.join(',')})` : '';
 
                 const { data, error } = await client
                     .from('calls')
@@ -150,8 +161,8 @@ export const CallService = {
                         caller:caller_id (id, username, full_name, avatar_url, gender),
                         receiver:receiver_id (id, username, full_name, avatar_url, gender)
                     `)
-                    .or(`caller_id.eq.${user.id}${roomFilter}`)
-                    .neq('status', 'ringing') // Only show completed/acted upon calls
+                    .or(`caller_id.eq.${user.id},receiver_id.eq.${user.id}`)
+                    .neq('status', 'ringing')
                     .order('created_at', { ascending: false });
 
                 if (error) return { data: [], error: error.message };

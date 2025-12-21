@@ -1,85 +1,434 @@
-[00:00:00.994] Server  LOG      ✓ Ready in 746ms
-[00:00:08.000] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:00:08.911] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:00:09.982] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:01:46.290] Server  LOG      ✓ Compiled in 392ms
-[00:02:11.270] Server  LOG      ✓ Compiled in 190ms
-[00:02:22.795] Server  LOG      ✓ Compiled in 162ms
-[00:02:32.883] Server  LOG      ✓ Compiled in 352ms
-[00:06:33.326] Server  LOG      ✓ Compiled in 426ms
-[00:08:07.893] Server  LOG      ✓ Compiled in 175ms
-[00:08:08.477] Browser ERROR   ./Desktop/GOSSIP/src/components/sidebar.tsx:235:18
+[00:00:00.928] Server  LOG      ✓ Ready in 698ms
+[00:00:06.549] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:07.313] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:00:07.815] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:00:08.926] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:00:09.152] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:00:09.378] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:00:09.620] Browser LOG     [ChatService] No participations found.
+[00:00:09.841] Browser LOG     [ChatService] No participations found.
+[00:00:09.841] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:00:10.093] Browser LOG     [ChatService] No participations found.
+[00:00:10.305] Browser LOG     [ChatService] No participations found.
+[00:00:23.484] Browser LOG     [ProfileService] Starting upload for file: wp2123108.jpg
+[00:00:25.643] Browser LOG     [ProfileService] Upload successful, URL: https://qjgrzydyicfxjcyqwanu.supabase.co/storage/v1/object/public/gossip-avatars/avatars/43e74d38-12c4-497c-97d2-eb9d7cbec1e3_1766309365007.jpg
+[00:00:37.560] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:00:38.263] Browser LOG     [ChatService] No participations found.
+[00:01:07.687] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:01:08.430] Browser LOG     [ChatService] No participations found.
+[00:01:37.616] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:01:38.574] Browser LOG     [ChatService] No participations found.
+[00:01:52.870] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:01:53.113] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:01:53.353] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:01:53.571] Browser LOG     [ChatService] No participations found.
+[00:01:53.793] Browser LOG     [ChatService] No participations found.
+[00:01:54.051] Browser LOG     [ChatService] No participations found.
+[00:02:07.627] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:02:08.285] Browser LOG     [ChatService] No participations found.
+[00:02:11.982] Server  LOG      ✓ Compiled in 208ms
+[00:02:39.983] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:02:40.702] Browser LOG     [ChatService] No participations found.
+[00:03:09.779] Browser ERROR   {}
+[00:03:09.780] Browser ERROR   [ChatService] getMyRooms exception: {}
+[00:03:37.637] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:03:38.482] Browser LOG     [ChatService] No participations found.
+[00:04:07.637] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:04:08.449] Browser LOG     [ChatService] No participations found.
+[00:04:37.454] Browser ERROR   {}
+[00:04:37.454] Browser ERROR   [ChatService] getMyRooms exception: {}
+[00:05:08.589] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:05:11.385] Browser LOG     [ChatService] No participations found.
+[00:05:24.404] Server  LOG      ✓ Compiled in 48ms
+[00:05:24.644] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:05:24.644] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:05:24.985] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:05:30.109] Browser LOG     [ChatService] No participations found.
+[00:05:54.756] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:05:56.275] Browser LOG     [ChatService] No participations found.
+[00:06:25.006] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:06:26.079] Browser LOG     [ChatService] No participations found.
+[00:06:27.188] Server  LOG      ✓ Compiled in 167ms
+[00:06:46.804] Server  LOG      ✓ Compiled in 287ms
+[00:06:54.853] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:06:55.698] Browser LOG     [ChatService] No participations found.
+[00:07:30.140] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:07:35.139] Browser LOG     [ChatService] No participations found.
+[00:07:56.140] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:07:57.140] Browser LOG     [ChatService] No participations found.
+[00:08:00.278] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:08:00.703] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:08:01.206] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:08:01.993] Browser LOG     [ChatService] No participations found.
+[00:08:01.993] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:08:31.009] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:08:31.760] Browser LOG     [ChatService] No participations found.
+[00:09:01.066] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:01.809] Browser LOG     [ChatService] No participations found.
+[00:09:04.621] Browser LOG     [StatusService] Starting upload for file: Screenshot 2025-11-14 at 8.40.12 pm.png
+[00:09:06.277] Browser LOG     [StatusService] Upload successful, URL: https://qjgrzydyicfxjcyqwanu.supabase.co/storage/v1/object/public/status-uploads/43e74d38-12c4-497c-97d2-eb9d7cbec1e3_1766309886131.png
+[00:09:14.310] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:14.523] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:14.771] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:15.017] Browser LOG     [ChatService] No participations found.
+[00:09:15.255] Browser LOG     [ChatService] No participations found.
+[00:09:15.462] Browser LOG     [ChatService] No participations found.
+[00:09:20.855] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:21.336] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:22.241] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:23.186] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:23.416] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:23.717] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:23.881] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:23.881] Browser LOG     [ChatService] No participations found.
+[00:09:24.114] Browser LOG     [ChatService] No participations found.
+[00:09:24.346] Browser LOG     [ChatService] No participations found.
+[00:09:24.597] Browser LOG     [ChatService] No participations found.
+[00:09:26.292] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:26.499] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:26.781] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:27.028] Browser LOG     [ChatService] No participations found.
+[00:09:27.243] Browser LOG     [ChatService] No participations found.
+[00:09:27.459] Browser LOG     [ChatService] No participations found.
+[00:09:46.921] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:47.154] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:47.415] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:47.639] Browser LOG     [ChatService] No participations found.
+[00:09:47.882] Browser LOG     [ChatService] No participations found.
+[00:09:48.108] Browser LOG     [ChatService] No participations found.
+[00:09:50.888] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:51.151] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:51.624] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:52.080] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:09:52.311] Browser LOG     [ChatService] No participations found.
+[00:09:52.560] Browser LOG     [ChatService] No participations found.
+[00:09:52.779] Browser LOG     [ChatService] No participations found.
+[00:09:52.980] Browser LOG     [ChatService] No participations found.
+[00:10:21.619] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:10:22.342] Browser LOG     [ChatService] No participations found.
+[00:10:51.470] Browser ERROR   {}
+[00:10:51.470] Browser ERROR   [ChatService] getMyRooms exception: {}
+[00:11:12.710] Server  LOG      ✓ Compiled in 338ms
+[00:11:22.398] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:11:23.108] Browser LOG     [ChatService] No participations found.
+[00:11:51.886] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:11:52.844] Browser LOG     [ChatService] No participations found.
+[00:12:21.894] Browser ERROR   {}
+[00:12:21.894] Browser ERROR   [ChatService] getMyRooms exception: {}
+[00:12:46.060] Browser ERROR   ./Desktop/GOSSIP/src/app/chat/profile/page.tsx:188:38
 Parsing ecmascript source code failed
-  233 |                     </div>
-  234 |                 </div>
-> 235 |                 )}
-      |                  ^
-  236 |
-  237 |                 {/* Recent Gossips Section Header */}
-  238 |                 {/* Recent Gossips Section Header */}
-
-Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
-
-Import traces:
-  Client Component Browser:
-    ./Desktop/GOSSIP/src/components/sidebar.tsx [Client Component Browser]
-    ./Desktop/GOSSIP/src/app/chat/page.tsx [Client Component Browser]
-    ./Desktop/GOSSIP/src/app/chat/page.tsx [Server Component]
-
-  Client Component SSR:
-    ./Desktop/GOSSIP/src/components/sidebar.tsx [Client Component SSR]
-    ./Desktop/GOSSIP/src/app/chat/page.tsx [Client Component SSR]
-    ./Desktop/GOSSIP/src/app/chat/page.tsx [Server Component]
-[00:08:10.476] Browser ERROR   {}
-[00:09:08.467] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:09:08.752] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:09:09.833] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:09:29.311] Server  LOG      ✓ Compiled in 210ms
-[00:09:56.495] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:09:57.006] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:09:58.313] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:11:09.196] Server  LOG      ✓ Compiled in 407ms
-[00:11:17.632] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:11:17.986] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:11:19.135] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:13:50.681] Server  LOG      ✓ Compiled in 503ms
-[00:14:00.491] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:14:01.088] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:14:02.881] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:16:48.155] Server  LOG      ✓ Compiled in 361ms
-[00:16:59.570] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:16:59.854] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:17:00.859] Browser LOG     Listening for calls on user channel: 35024ebe-ed60-49e7-b002-36ca7248b26a
-[00:17:15.200] Server  LOG      ✓ Compiled in 395ms
-[00:19:00.237] Server  LOG      ✓ Compiled in 207ms
-[00:19:00.354] Browser ERROR   ./Desktop/GOSSIP/src/components/sidebar.tsx:350:29
-Parsing ecmascript source code failed
-  348 |                             </div>
-  349 |                         </div>
-> 350 |                     </aside>
-      |                             ^
-> 351 |                     {showSearch && <UserSearch onClose={() => setShowSearch(false)} currentUserId={user?.id} />}
-      | ^^^^^^^^^^^^^^^^^^^^^
-  352 |                     {showRequests && <ConnectionRequests onClose={() => setShowRequests(false)} currentUserId={user?.id} />}
-  353 |                     {showSettings && <SettingsModal onClose={() => setShowSettings(false)} user={user} />}
-  354 |                 </>
+  186 |                                     {myStatus ? <div className="w-2 h-2 bg-white rounded-full animate-pulse" /> : <Camera className="w-4 h-4 text-white" />}
+  187 |                                 </div>
+> 188 |                             </button>
+      |                                      ^
+> 189 |                         </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^
+  190 |                     </div>
+  191 |
+  192 |                     <div className="mt-5 text-center">
 
 Expected '</', got 'jsx text (
-                    )'
+                        )'
 
 Import traces:
   Client Component Browser:
-    ./Desktop/GOSSIP/src/components/sidebar.tsx [Client Component Browser]
-    ./Desktop/GOSSIP/src/app/chat/page.tsx [Client Component Browser]
-    ./Desktop/GOSSIP/src/app/chat/page.tsx [Server Component]
+    ./Desktop/GOSSIP/src/app/chat/profile/page.tsx [Client Component Browser]
+    ./Desktop/GOSSIP/src/app/chat/profile/page.tsx [Server Component]
 
   Client Component SSR:
-    ./Desktop/GOSSIP/src/components/sidebar.tsx [Client Component SSR]
-    ./Desktop/GOSSIP/src/app/chat/page.tsx [Client Component SSR]
-    ./Desktop/GOSSIP/src/app/chat/page.tsx [Server Component]
-[00:21:35.787] Server  LOG      ✓ Compiled in 243ms
-[00:21:50.448] Server  LOG      ✓ Compiled in 301ms
-[00:22:58.761] Server  LOG      ✓ Compiled in 301ms
-[00:25:28.283] Server  LOG      ✓ Compiled in 746ms
-[00:25:49.771] Server  LOG      ✓ Compiled in 217ms
-[00:26:05.681] Server  LOG      ✓ Compiled in 288ms
+    ./Desktop/GOSSIP/src/app/chat/profile/page.tsx [Client Component SSR]
+    ./Desktop/GOSSIP/src/app/chat/profile/page.tsx [Server Component]
+[00:12:53.969] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:12:54.649] Browser LOG     [ChatService] No participations found.
+[00:13:23.066] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:13:23.828] Browser LOG     [ChatService] No participations found.
+[00:13:36.333] Server  LOG      ✓ Compiled in 319ms
+[00:13:53.083] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:13:54.297] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:13:54.982] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:13:58.036] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:13:58.200] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:13:58.422] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:13:58.675] Browser LOG     [ChatService] No participations found.
+[00:13:58.675] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:13:58.912] Browser LOG     [ChatService] No participations found.
+[00:13:59.134] Browser LOG     [ChatService] No participations found.
+[00:13:59.344] Browser LOG     [ChatService] No participations found.
+[00:14:20.059] Browser ERROR   React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ ProfilePage 1. useContext                 useContext
+2. useContext                 useContext
+3. useState                   useState
+4. useState                   useState
+5. useState                   useState
+6. useState                   useState
+7. useState                   useState
+8. useState                   useState
+9. useRef                     useRef
+10. useEffect                 useEffect
+11. undefined                 useContext
+
+[00:14:22.025] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:14:22.237] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:14:22.468] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:14:22.696] Browser LOG     [ChatService] No participations found.
+[00:14:22.918] Browser LOG     [ChatService] No participations found.
+[00:14:23.237] Browser LOG     [ChatService] No participations found.
+[00:14:24.512] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:14:25.509] Browser LOG     [ChatService] No participations found.
+[00:14:50.661] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:14:51.971] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:14:52.662] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:14:53.542] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:14:53.542] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:14:53.972] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:14:54.223] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:14:54.223] Browser LOG     [ChatService] No participations found.
+[00:14:54.442] Browser LOG     [ChatService] No participations found.
+[00:14:54.650] Browser LOG     [ChatService] No participations found.
+[00:14:54.852] Browser LOG     [ChatService] No participations found.
+[00:15:03.158] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:15:03.399] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:15:03.633] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:15:03.870] Browser LOG     [ChatService] No participations found.
+[00:15:04.095] Browser LOG     [ChatService] No participations found.
+[00:15:04.339] Browser LOG     [ChatService] No participations found.
+[00:15:22.207] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:15:22.886] Browser LOG     [ChatService] No participations found.
+[00:15:28.449] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:15:28.668] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:15:28.906] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:15:29.136] Browser LOG     [ChatService] No participations found.
+[00:15:29.341] Browser LOG     [ChatService] No participations found.
+[00:15:29.544] Browser LOG     [ChatService] No participations found.
+[00:15:52.231] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:15:52.911] Browser LOG     [ChatService] No participations found.
+[00:16:22.426] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:16:23.213] Browser LOG     [ChatService] No participations found.
+[00:16:52.883] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:16:53.539] Browser LOG     [ChatService] No participations found.
+[00:17:22.290] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:17:22.981] Browser LOG     [ChatService] No participations found.
+[00:17:48.208] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:17:48.609] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:17:49.292] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:17:50.218] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:17:50.218] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:17:50.439] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:17:50.698] Browser LOG     [ChatService] No participations found.
+[00:17:50.698] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:17:50.942] Browser LOG     [ChatService] No participations found.
+[00:17:51.168] Browser LOG     [ChatService] No participations found.
+[00:17:51.400] Browser LOG     [ChatService] No participations found.
+[00:17:58.933] Browser LOG     [StatusService] Starting upload for file: IMAGE 2025-11-30 10:05:03.jpg
+[00:18:00.057] Browser LOG     [StatusService] Upload successful, URL: https://qjgrzydyicfxjcyqwanu.supabase.co/storage/v1/object/public/status-uploads/43e74d38-12c4-497c-97d2-eb9d7cbec1e3_1766310420443.jpg
+[00:18:06.371] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:06.584] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:06.837] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:07.065] Browser LOG     [ChatService] No participations found.
+[00:18:07.285] Browser LOG     [ChatService] No participations found.
+[00:18:07.503] Browser LOG     [ChatService] No participations found.
+[00:18:08.965] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:18:09.317] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:10.022] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:10.945] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:11.218] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:11.436] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:11.707] Browser LOG     [ChatService] No participations found.
+[00:18:11.707] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:11.939] Browser LOG     [ChatService] No participations found.
+[00:18:12.154] Browser LOG     [ChatService] No participations found.
+[00:18:12.361] Browser LOG     [ChatService] No participations found.
+[00:18:15.167] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:15.418] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:15.648] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:15.864] Browser LOG     [ChatService] No participations found.
+[00:18:16.085] Browser LOG     [ChatService] No participations found.
+[00:18:16.304] Browser LOG     [ChatService] No participations found.
+[00:18:28.066] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:28.304] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:28.543] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:28.786] Browser LOG     [ChatService] No participations found.
+[00:18:29.017] Browser LOG     [ChatService] No participations found.
+[00:18:29.228] Browser LOG     [ChatService] No participations found.
+[00:18:39.747] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:18:40.375] Browser LOG     [ChatService] No participations found.
+[00:19:09.690] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:19:10.374] Browser LOG     [ChatService] No participations found.
+[00:19:39.622] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:19:40.330] Browser LOG     [ChatService] No participations found.
+[00:19:47.249] Server  LOG      ✓ Compiled in 1084ms
+[00:20:09.545] Browser ERROR   {}
+[00:20:09.548] Browser ERROR   [ChatService] getMyRooms exception: {}
+[00:20:24.961] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:20:26.302] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:20:27.475] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:20:28.381] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:20:28.381] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:20:28.786] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:20:29.030] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:20:29.030] Browser LOG     [ChatService] No participations found.
+[00:20:29.240] Browser LOG     [ChatService] No participations found.
+[00:20:29.450] Browser LOG     [ChatService] No participations found.
+[00:20:29.664] Browser LOG     [ChatService] No participations found.
+[00:20:56.547] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:20:57.187] Browser LOG     [ChatService] No participations found.
+[00:21:26.549] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:21:27.267] Browser LOG     [ChatService] No participations found.
+[00:21:56.913] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:21:57.720] Browser LOG     [ChatService] No participations found.
+[00:22:26.534] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:22:27.201] Browser LOG     [ChatService] No participations found.
+[00:22:56.571] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:22:57.252] Browser LOG     [ChatService] No participations found.
+[00:23:26.585] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:23:27.278] Browser LOG     [ChatService] No participations found.
+[00:23:43.583] Server  LOG      ✓ Compiled in 357ms
+[00:23:56.907] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:23:57.592] Browser LOG     [ChatService] No participations found.
+[00:24:03.007] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:24:03.495] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:24:05.046] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:24:06.458] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:24:06.458] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:24:06.919] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:24:07.153] Browser LOG     [ChatService] No participations found.
+[00:24:07.153] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:24:07.404] Browser LOG     [ChatService] No participations found.
+[00:24:07.664] Browser LOG     [ChatService] No participations found.
+[00:24:07.869] Browser LOG     [ChatService] No participations found.
+[00:24:33.769] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:24:34.427] Browser LOG     [ChatService] No participations found.
+[00:25:04.108] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:25:05.338] Browser LOG     [ChatService] No participations found.
+[00:25:33.753] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:25:34.668] Browser LOG     [ChatService] No participations found.
+[00:26:03.999] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:26:04.836] Browser LOG     [ChatService] No participations found.
+[00:26:33.799] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:26:34.523] Browser LOG     [ChatService] No participations found.
+[00:27:03.530] Browser ERROR   {}
+[00:27:03.530] Browser ERROR   [ChatService] getMyRooms exception: {}
+[00:27:12.306] Server  LOG      ✓ Compiled in 185ms
+[00:27:30.176] Server  LOG      ✓ Compiled in 310ms
+[00:27:34.801] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:27:39.382] Browser LOG     [ChatService] No participations found.
+[00:28:05.835] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:28:08.451] Browser LOG     [ChatService] No participations found.
+[00:28:25.200] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:28:25.720] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:28:26.428] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:28:27.650] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:28:27.650] Browser LOG     [ChatService] No participations found.
+[00:28:55.999] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:28:56.708] Browser LOG     [ChatService] No participations found.
+[00:29:05.481] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:29:05.745] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:29:06.048] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:29:06.339] Browser LOG     [ChatService] No participations found.
+[00:29:06.639] Browser LOG     [ChatService] No participations found.
+[00:29:06.925] Browser LOG     [ChatService] No participations found.
+[00:29:08.724] Browser ERROR   React has detected a change in the order of Hooks called by %s. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+%s   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ ProfilePage 1. useContext                 useContext
+2. useContext                 useContext
+3. useState                   useState
+4. useState                   useState
+5. useState                   useState
+6. useState                   useState
+7. useState                   useState
+8. useState                   useState
+9. useRef                     useRef
+10. useEffect                 useEffect
+11. undefined                 useContext
+
+[00:29:11.440] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:29:11.687] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:29:11.961] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:29:12.250] Browser LOG     [ChatService] No participations found.
+[00:29:12.519] Browser LOG     [ChatService] No participations found.
+[00:29:12.788] Browser LOG     [ChatService] No participations found.
+[00:29:26.002] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:29:26.784] Browser LOG     [ChatService] No participations found.
+[00:29:56.365] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:29:57.234] Browser LOG     [ChatService] No participations found.
+[00:30:26.030] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:30:26.778] Browser LOG     [ChatService] No participations found.
+[00:30:34.820] Server  LOG      ✓ Compiled in 253ms
+[00:31:00.391] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:31:01.297] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:31:03.150] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:31:03.150] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:31:05.911] Browser LOG     [ChatService] No participations found.
+[00:31:06.181] Browser LOG     [ChatService] No participations found.
+[00:31:06.481] Browser LOG     [ChatService] No participations found.
+[00:31:06.668] Browser LOG     [ChatService] No participations found.
+[00:31:40.979] Browser LOG     Listening for calls on user channel: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:31:42.799] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:31:43.062] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:31:43.340] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:31:43.596] Browser LOG     [ChatService] No participations found.
+[00:31:43.596] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:31:43.779] Browser LOG     [ChatService] No participations found.
+[00:31:44.014] Browser LOG     [ChatService] No participations found.
+[00:31:44.505] Browser LOG     [ChatService] No participations found.
+[00:32:11.252] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:32:12.662] Browser LOG     [ChatService] No participations found.
+[00:32:41.338] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:32:42.029] Browser LOG     [ChatService] No participations found.
+[00:33:04.025] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:33:04.278] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:33:04.508] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:33:04.747] Browser LOG     [ChatService] No participations found.
+[00:33:04.972] Browser LOG     [ChatService] No participations found.
+[00:33:05.197] Browser LOG     [ChatService] No participations found.
+[00:33:11.247] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:33:11.955] Browser LOG     [ChatService] No participations found.
+[00:33:16.595] Server  LOG      ✓ Compiled in 398ms
+[00:33:37.733] Server  LOG      ✓ Compiled in 178ms
+[00:33:44.871] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:33:46.814] Browser LOG     [ChatService] No participations found.
+[00:33:53.060] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:33:53.706] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:33:54.207] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:33:54.761] Browser LOG     [ChatService] No participations found.
+[00:33:55.251] Browser LOG     [ChatService] No participations found.
+[00:33:55.762] Browser LOG     [ChatService] No participations found.
+[00:33:59.220] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:33:59.592] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:34:00.009] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:34:00.435] Browser LOG     [ChatService] No participations found.
+[00:34:00.904] Browser LOG     [ChatService] No participations found.
+[00:34:01.322] Browser LOG     [ChatService] No participations found.
+[00:34:13.311] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:34:14.349] Browser LOG     [ChatService] No participations found.
+[00:34:44.483] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:34:54.343] Browser LOG     [ChatService] No participations found.
+[00:35:11.217] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:35:11.933] Browser LOG     [ChatService] No participations found.
+[00:35:19.260] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:35:19.515] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:35:19.767] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:35:20.019] Browser LOG     [ChatService] No participations found.
+[00:35:20.231] Browser LOG     [ChatService] No participations found.
+[00:35:20.498] Browser LOG     [ChatService] No participations found.
+[00:35:41.232] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:35:41.975] Browser LOG     [ChatService] No participations found.
+[00:36:03.042] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:36:03.319] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:36:03.580] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:36:03.866] Browser LOG     [ChatService] No participations found.
+[00:36:04.107] Browser LOG     [ChatService] No participations found.
+[00:36:04.399] Browser LOG     [ChatService] No participations found.
+[00:36:11.360] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:36:12.162] Browser LOG     [ChatService] No participations found.
+[00:36:41.337] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:36:42.334] Browser LOG     [ChatService] No participations found.
+[00:37:11.547] Browser LOG     [ChatService] Fetching rooms for user: 43e74d38-12c4-497c-97d2-eb9d7cbec1e3
+[00:37:12.257] Browser LOG     [ChatService] No participations found.

@@ -20,7 +20,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_mo
 let clientInstance = null;
 function createClient() {
     if (!clientInstance) {
-        clientInstance = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createBrowserClient$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createBrowserClient"])(("TURBOPACK compile-time value", "https://gnbympdrsgesbbpnlocm.supabase.co"), ("TURBOPACK compile-time value", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImduYnltcGRyc2dlc2JicG5sb2NtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyMTM1ODYsImV4cCI6MjA4MTc4OTU4Nn0.5_ZsJ2phLUAlKjCJXHQynC91OhlcH8lTJ1mzUyLSGuo"));
+        clientInstance = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f40$supabase$2f$ssr$2f$dist$2f$module$2f$createBrowserClient$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createBrowserClient"])(("TURBOPACK compile-time value", "https://qjgrzydyicfxjcyqwanu.supabase.co"), ("TURBOPACK compile-time value", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqZ3J6eWR5aWNmeGpjeXF3YW51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMDE2NTksImV4cCI6MjA4MTg3NzY1OX0.gW-3FsBdqUThe1wUR8OeoWWmcBOKx0lb-NIlvlTUiJU"));
     }
     return clientInstance;
 }
@@ -180,42 +180,70 @@ const ChatService = {
             return await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$supabase$2f$client$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["safeSupabaseOperation"])(async (client)=>{
                 const { data: { user } } = await client.auth.getUser();
                 if (!user) throw new Error('Not authenticated');
-                const { data, error } = await client.from('room_participants').select(`
-            room_id,
-            rooms (*)
-          `).eq('user_id', user.id);
-                if (error) return {
-                    data: [],
-                    error: error.message
-                };
-                if (!data || data.length === 0) return {
-                    data: [],
-                    error: null
-                };
-                // Get blocked users to filter them out
+                console.log('[ChatService] Fetching rooms for user:', user.id);
+                // Step 1: Get My Room IDs
+                const { data: myParticipations, error: partError } = await client.from('room_participants').select('room_id').eq('user_id', user.id);
+                if (partError) {
+                    console.error('[ChatService] Error fetching participations:', partError);
+                    return {
+                        data: [],
+                        error: partError.message
+                    };
+                }
+                if (!myParticipations || myParticipations.length === 0) {
+                    console.log('[ChatService] No participations found.');
+                    return {
+                        data: [],
+                        error: null
+                    };
+                }
+                const roomIds = myParticipations.map((p)=>p.room_id);
+                // Step 2: Fetch Rooms with Full Details
+                const { data: roomsData, error: roomsError } = await client.from('rooms').select(`
+                        *,
+                        participants:room_participants(
+                            user_id,
+                            profiles(username, full_name, avatar_url, gender, is_online, last_seen)
+                        )
+                    `).in('id', roomIds).order('created_at', {
+                    ascending: false
+                });
+                if (roomsError) {
+                    console.error('[ChatService] Error fetching rooms:', roomsError);
+                    return {
+                        data: [],
+                        error: roomsError.message
+                    };
+                }
+                // Get Blocked Users
                 const { data: blockedData } = await client.from('blocked_users').select('blocked_id').eq('blocker_id', user.id);
-                const blockedIds = (blockedData || []).map((b)=>b.blocked_id);
-                // Get rooms and filter out those with blocked participants (for direct chats)
-                const filteredRooms = [];
-                for (const item of data){
-                    const room = item.rooms;
-                    if (!room) continue;
+                const blockedIds = new Set((blockedData || []).map((b)=>b.blocked_id));
+                // Transform and Filter
+                const seenPartners = new Set();
+                const finalRooms = roomsData.map((room)=>({
+                        ...room,
+                        room_participants: room.participants // Map to expected structure for Sidebar
+                    })).filter((room)=>{
                     if (room.type === 'direct') {
-                        // For direct chats, we need to check if the other person is blocked
-                        const { data: participants } = await client.from('room_participants').select('user_id').eq('room_id', room.id).neq('user_id', user.id);
-                        const otherUserId = participants?.[0]?.user_id;
-                        if (otherUserId && blockedIds.includes(otherUserId)) {
-                            continue; // Skip this room
+                        const other = room.participants.find((p)=>p.user_id !== user.id);
+                        // Check blocked
+                        if (other && blockedIds.has(other.user_id)) return false;
+                        // Check duplicates
+                        if (other) {
+                            if (seenPartners.has(other.user_id)) return false;
+                            seenPartners.add(other.user_id);
                         }
                     }
-                    filteredRooms.push(room);
-                }
+                    return true;
+                });
+                console.log('[ChatService] Returning rooms:', finalRooms.length);
                 return {
-                    data: filteredRooms,
+                    data: finalRooms,
                     error: null
                 };
             });
         } catch (err) {
+            console.error('[ChatService] getMyRooms exception:', err);
             return {
                 data: [],
                 error: err.message
@@ -257,7 +285,12 @@ const ChatService = {
     async getMessages (roomId, limit = 50, ascending = true) {
         try {
             return await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$supabase$2f$client$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["safeSupabaseOperation"])(async (client)=>{
-                const { data, error } = await client.from('messages').select('*').eq('room_id', roomId).order('created_at', {
+                const { data, error } = await client.from('messages').select(`
+                        *,
+                        profiles:user_id (
+                            id, username, full_name, avatar_url, gender
+                        )
+                    `).eq('room_id', roomId).order('created_at', {
                     ascending
                 }).limit(limit);
                 if (error) return {
@@ -285,6 +318,7 @@ const ChatService = {
                 const { data: participants } = await client.from('room_participants').select('user_id').eq('room_id', roomId).neq('user_id', user.id);
                 if (participants && participants.length > 0) {
                     const participantIds = participants.map((p)=>p.user_id);
+                    // Check if sender is blocked by any participant OR sender has blocked any participant
                     const { data: blocks } = await client.from('blocked_users').select('id').or(`and(blocker_id.eq.${user.id},blocked_id.in.(${participantIds.join(',')})),and(blocker_id.in.(${participantIds.join(',')}),blocked_id.eq.${user.id})`).maybeSingle();
                     if (blocks) {
                         throw new Error('Cannot send message: Blocked connection');
@@ -1267,6 +1301,38 @@ const StatusService = {
                 error: err.message
             };
         }
+    },
+    async uploadMedia (file) {
+        return await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$supabase$2f$client$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["safeSupabaseOperation"])(async (client)=>{
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
+                console.log('[StatusService] Starting upload for file:', file.name);
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${user.id}_${Date.now()}.${fileExt}`;
+                const filePath = `${fileName}`;
+                const { error: uploadError } = await client.storage.from('status-uploads').upload(filePath, file, {
+                    contentType: file.type,
+                    upsert: false
+                });
+                if (uploadError) {
+                    console.error('[StatusService] Upload error:', uploadError);
+                    throw uploadError;
+                }
+                const { data } = client.storage.from('status-uploads').getPublicUrl(filePath);
+                console.log('[StatusService] Upload successful, URL:', data.publicUrl);
+                return {
+                    data: data.publicUrl,
+                    error: null
+                };
+            } catch (err) {
+                console.error('[StatusService] Upload failed:', err);
+                return {
+                    data: null,
+                    error: err.message
+                };
+            }
+        });
     }
 };
 }),
@@ -1877,22 +1943,39 @@ const CallService = {
             };
         }
     },
+    async getMessages (roomId, limit = 50, ascending = false) {
+        try {
+            return await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$supabase$2f$client$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["safeSupabaseOperation"])(async (client)=>{
+                const { data, error } = await client.from('messages').select(`
+                        *,
+                        profiles:user_id (
+                            id, username, full_name, avatar_url, gender
+                        )
+                    `).eq('room_id', roomId).order('created_at', {
+                    ascending
+                }).limit(limit);
+                return {
+                    data: data || [],
+                    error: error?.message || null
+                };
+            });
+        } catch (err) {
+            return {
+                data: [],
+                error: err.message
+            };
+        }
+    },
     async getCallHistory () {
         try {
             return await (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$supabase$2f$client$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["safeSupabaseOperation"])(async (client)=>{
                 const { data: { user } } = await client.auth.getUser();
                 if (!user) throw new Error('Not authenticated');
-                // Get user's room IDs first to build filter
-                const { data: myRooms } = await client.from('room_participants').select('room_id').eq('user_id', user.id);
-                const roomIds = myRooms?.map((r)=>r.room_id) || [];
-                // Only add room filter if there are rooms
-                const roomFilter = roomIds.length > 0 ? `,room_id.in.(${roomIds.join(',')})` : '';
                 const { data, error } = await client.from('calls').select(`
                         *,
                         caller:caller_id (id, username, full_name, avatar_url, gender),
                         receiver:receiver_id (id, username, full_name, avatar_url, gender)
-                    `).or(`caller_id.eq.${user.id}${roomFilter}`).neq('status', 'ringing') // Only show completed/acted upon calls
-                .order('created_at', {
+                    `).or(`caller_id.eq.${user.id},receiver_id.eq.${user.id}`).neq('status', 'ringing').order('created_at', {
                     ascending: false
                 });
                 if (error) return {

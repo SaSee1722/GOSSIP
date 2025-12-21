@@ -58,5 +58,42 @@ export const StatusService = {
         } catch (err: any) {
             return { error: err.message };
         }
+    },
+
+    async uploadMedia(file: File): Promise<{ data: string | null; error: string | null }> {
+        return await safeSupabaseOperation(async (client) => {
+            try {
+                const { data: { user } } = await client.auth.getUser();
+                if (!user) throw new Error('Not authenticated');
+
+                console.log('[StatusService] Starting upload for file:', file.name);
+
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${user.id}_${Date.now()}.${fileExt}`;
+                const filePath = `${fileName}`;
+
+                const { error: uploadError } = await client.storage
+                    .from('status-uploads')
+                    .upload(filePath, file, {
+                        contentType: file.type,
+                        upsert: false
+                    });
+
+                if (uploadError) {
+                    console.error('[StatusService] Upload error:', uploadError);
+                    throw uploadError;
+                }
+
+                const { data } = client.storage
+                    .from('status-uploads')
+                    .getPublicUrl(filePath);
+
+                console.log('[StatusService] Upload successful, URL:', data.publicUrl);
+                return { data: data.publicUrl, error: null };
+            } catch (err: any) {
+                console.error('[StatusService] Upload failed:', err);
+                return { data: null, error: err.message };
+            }
+        });
     }
 };

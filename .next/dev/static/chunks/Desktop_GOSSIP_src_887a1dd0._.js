@@ -4255,14 +4255,13 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/next/dist/client/app-dir/link.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/next/navigation.js [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/src/lib/utils.ts [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOut$3e$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/lucide-react/dist/esm/icons/log-out.js [app-client] (ecmascript) <export default as LogOut>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$message$2d$square$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__MessageSquare$3e$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/lucide-react/dist/esm/icons/message-square.js [app-client] (ecmascript) <export default as MessageSquare>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$plus$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Plus$3e$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/lucide-react/dist/esm/icons/plus.js [app-client] (ecmascript) <export default as Plus>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Search$3e$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/lucide-react/dist/esm/icons/search.js [app-client] (ecmascript) <export default as Search>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$user$2d$search$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/src/components/user-search.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$connection$2d$requests$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/src/components/connection-requests.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$settings$2d$modal$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/src/components/settings-modal.tsx [app-client] (ecmascript)");
-var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$settings$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Settings$3e$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/lucide-react/dist/esm/icons/settings.js [app-client] (ecmascript) <export default as Settings>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$services$2f$chat$2d$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/src/services/chat-service.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$contexts$2f$status$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/src/contexts/status-context.tsx [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$ui$2f$gradient$2d$text$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/src/components/ui/gradient-text.tsx [app-client] (ecmascript)");
 ;
@@ -4285,12 +4284,12 @@ var _s = __turbopack_context__.k.signature();
 ;
 function Sidebar(t0) {
     _s();
-    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(106);
-    if ($[0] !== "91a931c85f96cfd926389056f868497c7433b7b821fe1270712a20bf171a85c7") {
-        for(let $i = 0; $i < 106; $i += 1){
+    const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(92);
+    if ($[0] !== "5a32b4d4ff896953e2cf2c903e9ffe5d6469befb8557d75fc7a332e581f3ca99") {
+        for(let $i = 0; $i < 92; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "91a931c85f96cfd926389056f868497c7433b7b821fe1270712a20bf171a85c7";
+        $[0] = "5a32b4d4ff896953e2cf2c903e9ffe5d6469befb8557d75fc7a332e581f3ca99";
     }
     const { user } = t0;
     let t1;
@@ -4349,11 +4348,13 @@ function Sidebar(t0) {
             "Sidebar[useEffect()]": ()=>{
                 const fetchRooms = {
                     "Sidebar[useEffect() > fetchRooms]": async ()=>{
-                        const { data } = await supabase.from("rooms").select("\n                    *,\n                    room_participants(\n                        user_id,\n                        profiles(username, full_name, avatar_url, gender)\n                    )\n                ").order("updated_at", {
-                            ascending: false
-                        });
+                        const { data, error } = await __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$services$2f$chat$2d$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ChatService"].getMyRooms();
                         if (data) {
                             setRooms(data);
+                        } else {
+                            if (error) {
+                                console.error("fetchRooms error:", error);
+                            }
                         }
                     }
                 }["Sidebar[useEffect() > fetchRooms]"];
@@ -4410,26 +4411,12 @@ function Sidebar(t0) {
         t7 = $[9];
     }
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])(t6, t7);
-    let t8;
-    if ($[10] !== router) {
-        t8 = ({
-            "Sidebar[handleLogout]": async ()=>{
-                await supabase.auth.signOut();
-                router.push("/login");
-            }
-        })["Sidebar[handleLogout]"];
-        $[10] = router;
-        $[11] = t8;
-    } else {
-        t8 = $[11];
-    }
-    const handleLogout = t8;
     const getNameColor = _SidebarGetNameColor;
     const formatTime = _SidebarFormatTime;
-    let t10;
+    let t8;
     let t9;
-    if ($[12] === Symbol.for("react.memo_cache_sentinel")) {
-        t9 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    if ($[10] === Symbol.for("react.memo_cache_sentinel")) {
+        t8 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "flex items-center gap-1",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$ui$2f$gradient$2d$text$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["GradientText"], {
@@ -4437,7 +4424,7 @@ function Sidebar(t0) {
                     className: "text-[32px] font-[900] tracking-[0.5px]"
                 }, void 0, false, {
                     fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                    lineNumber: 206,
+                    lineNumber: 196,
                     columnNumber: 51
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -4446,145 +4433,158 @@ function Sidebar(t0) {
                     className: "w-[50px] h-[50px] object-contain -mt-2 opacity-80"
                 }, void 0, false, {
                     fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                    lineNumber: 206,
+                    lineNumber: 196,
                     columnNumber: 134
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 206,
+            lineNumber: 196,
             columnNumber: 10
         }, this);
-        t10 = ({
+        t9 = ({
             "Sidebar[<button>.onClick]": ()=>setShowRequests(true)
         })["Sidebar[<button>.onClick]"];
-        $[12] = t10;
-        $[13] = t9;
+        $[10] = t8;
+        $[11] = t9;
     } else {
-        t10 = $[12];
-        t9 = $[13];
+        t8 = $[10];
+        t9 = $[11];
     }
-    let t11;
-    if ($[14] === Symbol.for("react.memo_cache_sentinel")) {
-        t11 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
-            src: "data:image/svg+xml;base64,...",
-            alt: "",
-            className: "hidden"
+    let t10;
+    if ($[12] === Symbol.for("react.memo_cache_sentinel")) {
+        t10 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "w-[28px] h-[28px]",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                xmlns: "http://www.w3.org/2000/svg",
+                width: "28",
+                height: "28",
+                viewBox: "0 0 24 24",
+                fill: "none",
+                stroke: "white",
+                strokeWidth: "2",
+                strokeLinecap: "round",
+                strokeLinejoin: "round",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                        d: "M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"
+                    }, void 0, false, {
+                        fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
+                        lineNumber: 208,
+                        columnNumber: 217
+                    }, this),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
+                        d: "M10.3 21a1.94 1.94 0 0 0 3.4 0"
+                    }, void 0, false, {
+                        fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
+                        lineNumber: 208,
+                        columnNumber: 271
+                    }, this)
+                ]
+            }, void 0, true, {
+                fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
+                lineNumber: 208,
+                columnNumber: 46
+            }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 218,
+            lineNumber: 208,
             columnNumber: 11
         }, this);
-        $[14] = t11;
+        $[12] = t10;
     } else {
-        t11 = $[14];
+        t10 = $[12];
     }
-    let t12;
-    if ($[15] === Symbol.for("react.memo_cache_sentinel")) {
-        t12 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "w-[28px] h-[28px]",
-            children: [
-                t11,
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
-                    xmlns: "http://www.w3.org/2000/svg",
-                    width: "28",
-                    height: "28",
-                    viewBox: "0 0 24 24",
-                    fill: "none",
-                    stroke: "white",
-                    strokeWidth: "2",
-                    strokeLinecap: "round",
-                    strokeLinejoin: "round",
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
-                            d: "M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"
-                        }, void 0, false, {
-                            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                            lineNumber: 225,
-                            columnNumber: 222
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("path", {
-                            d: "M10.3 21a1.94 1.94 0 0 0 3.4 0"
-                        }, void 0, false, {
-                            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                            lineNumber: 225,
-                            columnNumber: 276
-                        }, this)
-                    ]
-                }, void 0, true, {
-                    fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                    lineNumber: 225,
-                    columnNumber: 51
-                }, this)
-            ]
-        }, void 0, true, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 225,
-            columnNumber: 11
-        }, this);
-        $[15] = t12;
-    } else {
-        t12 = $[15];
-    }
-    let t13;
-    if ($[16] !== pendingCount) {
-        t13 = pendingCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    let t11;
+    if ($[13] !== pendingCount) {
+        t11 = pendingCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-red-500 border-2 border-black flex items-center justify-center",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                 className: "text-white text-[10px] font-[900]",
                 children: pendingCount
             }, void 0, false, {
                 fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                lineNumber: 232,
+                lineNumber: 215,
                 columnNumber: 174
             }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 232,
+            lineNumber: 215,
             columnNumber: 31
         }, this);
-        $[16] = pendingCount;
-        $[17] = t13;
+        $[13] = pendingCount;
+        $[14] = t11;
     } else {
-        t13 = $[17];
+        t11 = $[14];
     }
-    let t14;
-    if ($[18] !== t13) {
-        t14 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    let t12;
+    if ($[15] !== t11) {
+        t12 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "flex justify-between items-center mb-1",
             children: [
-                t9,
+                t8,
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                    onClick: t10,
+                    onClick: t9,
                     className: "relative p-1",
                     children: [
-                        t12,
-                        t13
+                        t10,
+                        t11
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                    lineNumber: 240,
+                    lineNumber: 223,
                     columnNumber: 71
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 240,
+            lineNumber: 223,
             columnNumber: 11
         }, this);
-        $[18] = t13;
+        $[15] = t11;
+        $[16] = t12;
+    } else {
+        t12 = $[16];
+    }
+    let t13;
+    if ($[17] === Symbol.for("react.memo_cache_sentinel")) {
+        t13 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+            className: "text-[13px] text-[#888] font-medium mt-1",
+            children: "Connect, share, and whisper in style."
+        }, void 0, false, {
+            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
+            lineNumber: 231,
+            columnNumber: 11
+        }, this);
+        $[17] = t13;
+    } else {
+        t13 = $[17];
+    }
+    let t14;
+    if ($[18] !== t12) {
+        t14 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "px-[20px] pt-[10px] pb-[15px]",
+            children: [
+                t12,
+                t13
+            ]
+        }, void 0, true, {
+            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
+            lineNumber: 238,
+            columnNumber: 11
+        }, this);
+        $[18] = t12;
         $[19] = t14;
     } else {
         t14 = $[19];
     }
     let t15;
     if ($[20] === Symbol.for("react.memo_cache_sentinel")) {
-        t15 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-            className: "text-[13px] text-[#888] font-medium mt-1",
-            children: "Connect, share, and whisper in style."
+        t15 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Search$3e$__["Search"], {
+            className: "w-5 h-5 text-[#666]"
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 248,
+            lineNumber: 246,
             columnNumber: 11
         }, this);
         $[20] = t15;
@@ -4592,44 +4592,13 @@ function Sidebar(t0) {
         t15 = $[20];
     }
     let t16;
-    if ($[21] !== t14) {
+    if ($[21] === Symbol.for("react.memo_cache_sentinel")) {
         t16 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "px-[20px] pt-[10px] pb-[15px]",
-            children: [
-                t14,
-                t15
-            ]
-        }, void 0, true, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 255,
-            columnNumber: 11
-        }, this);
-        $[21] = t14;
-        $[22] = t16;
-    } else {
-        t16 = $[22];
-    }
-    let t17;
-    if ($[23] === Symbol.for("react.memo_cache_sentinel")) {
-        t17 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$search$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Search$3e$__["Search"], {
-            className: "w-5 h-5 text-[#666]"
-        }, void 0, false, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 263,
-            columnNumber: 11
-        }, this);
-        $[23] = t17;
-    } else {
-        t17 = $[23];
-    }
-    let t18;
-    if ($[24] === Symbol.for("react.memo_cache_sentinel")) {
-        t18 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "px-[20px] mb-[15px]",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "bg-[#111] h-[48px] rounded-[24px] flex items-center px-[15px] gap-3 border border-[#222]",
                 children: [
-                    t17,
+                    t15,
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                         placeholder: "Search friends or gossip...",
                         className: "bg-transparent border-none outline-none text-[15px] w-full placeholder-[#666] text-white font-normal",
@@ -4639,165 +4608,225 @@ function Sidebar(t0) {
                         }["Sidebar[<input>.onClick]"]
                     }, void 0, false, {
                         fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                        lineNumber: 270,
+                        lineNumber: 253,
                         columnNumber: 159
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                lineNumber: 270,
+                lineNumber: 253,
                 columnNumber: 48
             }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 270,
+            lineNumber: 253,
             columnNumber: 11
         }, this);
-        $[24] = t18;
+        $[21] = t16;
     } else {
-        t18 = $[24];
+        t16 = $[21];
     }
-    let t19;
-    if ($[25] === Symbol.for("react.memo_cache_sentinel")) {
-        t19 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+    let t17;
+    if ($[22] === Symbol.for("react.memo_cache_sentinel")) {
+        t17 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
             className: "text-[11px] font-[800] tracking-[1.5px] text-[#444] mb-4 uppercase ml-1",
             children: "VIBES"
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 279,
+            lineNumber: 262,
             columnNumber: 11
         }, this);
-        $[25] = t19;
+        $[22] = t17;
     } else {
-        t19 = $[25];
+        t17 = $[22];
     }
+    let myStatus;
+    let t18;
+    let t19;
     let t20;
-    if ($[26] !== router) {
-        t20 = ({
-            "Sidebar[<button>.onClick]": ()=>router.push("/chat/status")
-        })["Sidebar[<button>.onClick]"];
-        $[26] = router;
-        $[27] = t20;
-    } else {
-        t20 = $[27];
-    }
-    const t21 = user?.user_metadata?.avatar_url;
-    const t22 = user?.email?.[0] || "?";
-    let t23;
-    if ($[28] !== t21 || $[29] !== t22) {
-        t23 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$ui$2f$avatar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Avatar"], {
-            src: t21,
-            fallback: t22,
-            className: "w-[58px] h-[58px] rounded-full border-2 border-[#333] opacity-50"
-        }, void 0, false, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 298,
-            columnNumber: 11
-        }, this);
-        $[28] = t21;
-        $[29] = t22;
-        $[30] = t23;
-    } else {
-        t23 = $[30];
-    }
-    let t24;
-    if ($[31] === Symbol.for("react.memo_cache_sentinel")) {
-        t24 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "absolute bottom-0 right-0 w-[20px] h-[20px] bg-[#00BFFF] rounded-full flex items-center justify-center border-2 border-black",
-            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$plus$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Plus$3e$__["Plus"], {
-                className: "w-[12px] h-[12px] text-black",
-                strokeWidth: 3
+    if ($[23] !== router || $[24] !== statuses || $[25] !== user.email?.[0] || $[26] !== user.id || $[27] !== user.user_metadata?.avatar_url) {
+        let t21;
+        if ($[32] !== user.id) {
+            t21 = ({
+                "Sidebar[statuses.find()]": (s)=>s.user_id === user?.id
+            })["Sidebar[statuses.find()]"];
+            $[32] = user.id;
+            $[33] = t21;
+        } else {
+            t21 = $[33];
+        }
+        myStatus = statuses.find(t21);
+        const isVideo = _SidebarIsVideo;
+        if ($[34] !== router) {
+            t18 = ({
+                "Sidebar[<button>.onClick]": ()=>router.push("/chat/status")
+            })["Sidebar[<button>.onClick]"];
+            $[34] = router;
+            $[35] = t18;
+        } else {
+            t18 = $[35];
+        }
+        t19 = "flex flex-col items-center gap-3 min-w-[58px]";
+        t20 = myStatus ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            className: "relative p-[2px] rounded-full bg-gradient-to-tr from-[#00BFFF] to-[#FFB6C1] animate-in zoom-in duration-300",
+            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "p-[2px] bg-black rounded-full",
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "w-[50px] h-[50px] rounded-full overflow-hidden relative bg-zinc-900 border border-white/10",
+                    children: isVideo(myStatus.media_url) ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("video", {
+                        src: myStatus.media_url,
+                        className: "w-full h-full object-cover",
+                        muted: true,
+                        loop: true,
+                        autoPlay: true,
+                        playsInline: true
+                    }, void 0, false, {
+                        fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
+                        lineNumber: 294,
+                        columnNumber: 333
+                    }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                        src: myStatus.media_url,
+                        alt: "My Vibe",
+                        className: "w-full h-full object-cover"
+                    }, void 0, false, {
+                        fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
+                        lineNumber: 294,
+                        columnNumber: 469
+                    }, this)
+                }, void 0, false, {
+                    fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
+                    lineNumber: 294,
+                    columnNumber: 194
+                }, this)
             }, void 0, false, {
                 fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                lineNumber: 307,
-                columnNumber: 153
+                lineNumber: 294,
+                columnNumber: 147
             }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 307,
-            columnNumber: 11
-        }, this);
-        $[31] = t24;
-    } else {
-        t24 = $[31];
-    }
-    let t25;
-    if ($[32] !== t23) {
-        t25 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            lineNumber: 294,
+            columnNumber: 22
+        }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "relative",
             children: [
-                t23,
-                t24
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$ui$2f$avatar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Avatar"], {
+                    src: user?.user_metadata?.avatar_url,
+                    fallback: user?.email?.[0] || "?",
+                    className: "w-[58px] h-[58px] rounded-full border-2 border-[#333] opacity-50"
+                }, void 0, false, {
+                    fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
+                    lineNumber: 294,
+                    columnNumber: 602
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: "absolute bottom-0 right-0 w-[20px] h-[20px] bg-[#00BFFF] rounded-full flex items-center justify-center border-2 border-black",
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$plus$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Plus$3e$__["Plus"], {
+                        className: "w-[12px] h-[12px] text-black",
+                        strokeWidth: 3
+                    }, void 0, false, {
+                        fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
+                        lineNumber: 294,
+                        columnNumber: 904
+                    }, this)
+                }, void 0, false, {
+                    fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
+                    lineNumber: 294,
+                    columnNumber: 762
+                }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 314,
-            columnNumber: 11
+            lineNumber: 294,
+            columnNumber: 576
         }, this);
-        $[32] = t23;
-        $[33] = t25;
+        $[23] = router;
+        $[24] = statuses;
+        $[25] = user.email?.[0];
+        $[26] = user.id;
+        $[27] = user.user_metadata?.avatar_url;
+        $[28] = myStatus;
+        $[29] = t18;
+        $[30] = t19;
+        $[31] = t20;
     } else {
-        t25 = $[33];
+        myStatus = $[28];
+        t18 = $[29];
+        t19 = $[30];
+        t20 = $[31];
     }
-    let t26;
-    if ($[34] === Symbol.for("react.memo_cache_sentinel")) {
-        t26 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-            className: "text-[11px] font-bold text-white/60",
+    const t21 = myStatus ? "text-white" : "text-white/60";
+    let t22;
+    if ($[36] !== t21) {
+        t22 = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("text-[11px] font-bold", t21);
+        $[36] = t21;
+        $[37] = t22;
+    } else {
+        t22 = $[37];
+    }
+    let t23;
+    if ($[38] !== t22) {
+        t23 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+            className: t22,
             children: "Your Vibe"
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 322,
+            lineNumber: 321,
             columnNumber: 11
         }, this);
-        $[34] = t26;
+        $[38] = t22;
+        $[39] = t23;
     } else {
-        t26 = $[34];
+        t23 = $[39];
     }
-    let t27;
-    if ($[35] !== t20 || $[36] !== t25) {
-        t27 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-            onClick: t20,
-            className: "flex flex-col items-center gap-3 min-w-[58px]",
+    let t24;
+    if ($[40] !== t18 || $[41] !== t19 || $[42] !== t20 || $[43] !== t23) {
+        t24 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+            onClick: t18,
+            className: t19,
             children: [
-                t25,
-                t26
+                t20,
+                t23
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
             lineNumber: 329,
             columnNumber: 11
         }, this);
-        $[35] = t20;
-        $[36] = t25;
-        $[37] = t27;
+        $[40] = t18;
+        $[41] = t19;
+        $[42] = t20;
+        $[43] = t23;
+        $[44] = t24;
     } else {
-        t27 = $[37];
+        t24 = $[44];
     }
-    let t28;
-    if ($[38] !== statuses || $[39] !== user.id) {
-        let t29;
-        if ($[41] !== user.id) {
-            t29 = ({
-                "Sidebar[statuses.filter()]": (s)=>s.user_id !== user.id
+    const t25 = t24;
+    let t26;
+    if ($[45] !== statuses || $[46] !== user.id) {
+        let t27;
+        if ($[48] !== user.id) {
+            t27 = ({
+                "Sidebar[statuses.filter()]": (s_0)=>s_0.user_id !== user.id
             })["Sidebar[statuses.filter()]"];
-            $[41] = user.id;
-            $[42] = t29;
+            $[48] = user.id;
+            $[49] = t27;
         } else {
-            t29 = $[42];
+            t27 = $[49];
         }
-        t28 = Array.from(new Set(statuses.filter(t29).map(_SidebarAnonymous)));
-        $[38] = statuses;
-        $[39] = user.id;
-        $[40] = t28;
+        t26 = Array.from(new Set(statuses.filter(t27).map(_SidebarAnonymous)));
+        $[45] = statuses;
+        $[46] = user.id;
+        $[47] = t26;
     } else {
-        t28 = $[40];
+        t26 = $[47];
     }
-    let t29;
-    if ($[43] !== router || $[44] !== statuses || $[45] !== t28) {
-        t29 = t28.map({
+    let t27;
+    if ($[50] !== router || $[51] !== statuses || $[52] !== t26) {
+        t27 = t26.map({
             "Sidebar[(anonymous)()]": (userId)=>{
                 const status = statuses.find({
-                    "Sidebar[(anonymous)() > statuses.find()]": (s_1)=>s_1.user_id === userId
+                    "Sidebar[(anonymous)() > statuses.find()]": (s_2)=>s_2.user_id === userId
                 }["Sidebar[(anonymous)() > statuses.find()]"]);
                 if (!status || !status.profiles) {
                     return null;
@@ -4819,17 +4848,17 @@ function Sidebar(t0) {
                                     className: "w-[50px] h-[50px]"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                                    lineNumber: 368,
+                                    lineNumber: 371,
                                     columnNumber: 255
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                                lineNumber: 368,
+                                lineNumber: 371,
                                 columnNumber: 208
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                            lineNumber: 368,
+                            lineNumber: 371,
                             columnNumber: 115
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -4837,86 +4866,86 @@ function Sidebar(t0) {
                             children: profile.username
                         }, void 0, false, {
                             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                            lineNumber: 368,
+                            lineNumber: 371,
                             columnNumber: 372
                         }, this)
                     ]
                 }, userId, true, {
                     fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                    lineNumber: 366,
+                    lineNumber: 369,
                     columnNumber: 16
                 }, this);
             }
         }["Sidebar[(anonymous)()]"]);
-        $[43] = router;
-        $[44] = statuses;
-        $[45] = t28;
-        $[46] = t29;
+        $[50] = router;
+        $[51] = statuses;
+        $[52] = t26;
+        $[53] = t27;
     } else {
-        t29 = $[46];
+        t27 = $[53];
     }
-    let t30;
-    if ($[47] !== t27 || $[48] !== t29) {
-        t30 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    let t28;
+    if ($[54] !== t25 || $[55] !== t27) {
+        t28 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "px-4 mb-4",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "bg-[#111] border border-[#222] rounded-[35px] p-5",
                 children: [
-                    t19,
+                    t17,
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex gap-5 overflow-x-auto pb-2 scrollbar-hide",
                         children: [
-                            t27,
-                            t29
+                            t25,
+                            t27
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                        lineNumber: 380,
+                        lineNumber: 383,
                         columnNumber: 110
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                lineNumber: 380,
+                lineNumber: 383,
                 columnNumber: 38
             }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 380,
+            lineNumber: 383,
             columnNumber: 11
         }, this);
-        $[47] = t27;
-        $[48] = t29;
-        $[49] = t30;
+        $[54] = t25;
+        $[55] = t27;
+        $[56] = t28;
     } else {
-        t30 = $[49];
+        t28 = $[56];
     }
-    let t31;
-    if ($[50] === Symbol.for("react.memo_cache_sentinel")) {
-        t31 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    let t29;
+    if ($[57] === Symbol.for("react.memo_cache_sentinel")) {
+        t29 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "px-6 pt-5 pb-2 flex items-center gap-[10px]",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                 className: "text-[11px] font-[800] tracking-[1.5px] text-[#444] uppercase",
                 children: "RECENT GOSSIPS"
             }, void 0, false, {
                 fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                lineNumber: 389,
+                lineNumber: 392,
                 columnNumber: 72
             }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 389,
+            lineNumber: 392,
             columnNumber: 11
         }, this);
-        $[50] = t31;
+        $[57] = t29;
     } else {
-        t31 = $[50];
+        t29 = $[57];
     }
-    let t32;
-    if ($[51] !== blockedIds || $[52] !== currentRoomId || $[53] !== rooms || $[54] !== user.id) {
-        let t33;
-        if ($[56] !== blockedIds || $[57] !== user.id) {
-            t33 = ({
+    let t30;
+    if ($[58] !== blockedIds || $[59] !== currentRoomId || $[60] !== rooms || $[61] !== user.id) {
+        let t31;
+        if ($[63] !== blockedIds || $[64] !== user.id) {
+            t31 = ({
                 "Sidebar[rooms.filter()]": (room)=>{
                     const other = room.room_participants?.find({
                         "Sidebar[rooms.filter() > (anonymous)()]": (p)=>p.user_id !== user?.id
@@ -4927,15 +4956,15 @@ function Sidebar(t0) {
                     return true;
                 }
             })["Sidebar[rooms.filter()]"];
-            $[56] = blockedIds;
-            $[57] = user.id;
-            $[58] = t33;
+            $[63] = blockedIds;
+            $[64] = user.id;
+            $[65] = t31;
         } else {
-            t33 = $[58];
+            t31 = $[65];
         }
-        let t34;
-        if ($[59] !== currentRoomId || $[60] !== user.id) {
-            t34 = ({
+        let t32;
+        if ($[66] !== currentRoomId || $[67] !== user.id) {
+            t32 = ({
                 "Sidebar[(anonymous)()]": (room_0)=>{
                     let displayName = room_0.name || "UNNAMED CHAT";
                     let displayAvatar = undefined;
@@ -4968,20 +4997,20 @@ function Sidebar(t0) {
                                             className: "w-[58px] h-[58px] rounded-full ring-2 ring-white/5"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                                            lineNumber: 435,
+                                            lineNumber: 438,
                                             columnNumber: 266
                                         }, this),
                                         isOnline && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                             className: "absolute bottom-0 right-1 w-4 h-4 bg-online border-[3px] border-black rounded-full"
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                                            lineNumber: 435,
+                                            lineNumber: 438,
                                             columnNumber: 405
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                                    lineNumber: 435,
+                                    lineNumber: 438,
                                     columnNumber: 240
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4998,7 +5027,7 @@ function Sidebar(t0) {
                                                     children: displayName
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                                                    lineNumber: 435,
+                                                    lineNumber: 438,
                                                     columnNumber: 663
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5006,13 +5035,13 @@ function Sidebar(t0) {
                                                     children: formatTime(room_0.updated_at)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                                                    lineNumber: 437,
+                                                    lineNumber: 440,
                                                     columnNumber: 39
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                                            lineNumber: 435,
+                                            lineNumber: 438,
                                             columnNumber: 607
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5022,58 +5051,58 @@ function Sidebar(t0) {
                                                 children: room_0.last_message || "Started a gossip..."
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                                                lineNumber: 437,
+                                                lineNumber: 440,
                                                 columnNumber: 182
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                                            lineNumber: 437,
+                                            lineNumber: 440,
                                             columnNumber: 131
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                                    lineNumber: 435,
+                                    lineNumber: 438,
                                     columnNumber: 515
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                            lineNumber: 435,
+                            lineNumber: 438,
                             columnNumber: 99
                         }, this)
                     }, room_0.id, false, {
                         fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                        lineNumber: 435,
+                        lineNumber: 438,
                         columnNumber: 18
                     }, this);
                 }
             })["Sidebar[(anonymous)()]"];
-            $[59] = currentRoomId;
-            $[60] = user.id;
-            $[61] = t34;
+            $[66] = currentRoomId;
+            $[67] = user.id;
+            $[68] = t32;
         } else {
-            t34 = $[61];
+            t32 = $[68];
         }
-        t32 = rooms.filter(t33).map(t34);
-        $[51] = blockedIds;
-        $[52] = currentRoomId;
-        $[53] = rooms;
-        $[54] = user.id;
-        $[55] = t32;
+        t30 = rooms.filter(t31).map(t32);
+        $[58] = blockedIds;
+        $[59] = currentRoomId;
+        $[60] = rooms;
+        $[61] = user.id;
+        $[62] = t30;
     } else {
-        t32 = $[55];
+        t30 = $[62];
     }
-    let t33;
-    if ($[62] !== rooms.length) {
-        t33 = rooms.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    let t31;
+    if ($[69] !== rooms.length) {
+        t31 = rooms.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "flex flex-col items-center justify-center p-12 text-center",
             children: [
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$message$2d$square$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__MessageSquare$3e$__["MessageSquare"], {
                     className: "w-12 h-12 text-white/10 mb-4"
                 }, void 0, false, {
                     fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                    lineNumber: 457,
+                    lineNumber: 460,
                     columnNumber: 109
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5081,332 +5110,158 @@ function Sidebar(t0) {
                     children: "No gossips yet"
                 }, void 0, false, {
                     fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                    lineNumber: 457,
+                    lineNumber: 460,
                     columnNumber: 167
                 }, this)
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 457,
+            lineNumber: 460,
             columnNumber: 33
         }, this);
-        $[62] = rooms.length;
-        $[63] = t33;
+        $[69] = rooms.length;
+        $[70] = t31;
     } else {
-        t33 = $[63];
+        t31 = $[70];
     }
-    let t34;
-    if ($[64] !== t32 || $[65] !== t33) {
-        t34 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+    let t32;
+    if ($[71] !== t30 || $[72] !== t31) {
+        t32 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             className: "flex-1 px-4 mb-4 min-h-0 flex flex-col",
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "bg-[#111] border border-[#222] rounded-[35px] flex-1 flex flex-col overflow-hidden",
                 children: [
-                    t31,
+                    t29,
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex-1 overflow-y-auto custom-scrollbar p-2",
                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "space-y-1",
                             children: [
-                                t32,
-                                t33
+                                t30,
+                                t31
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                            lineNumber: 465,
+                            lineNumber: 468,
                             columnNumber: 233
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                        lineNumber: 465,
+                        lineNumber: 468,
                         columnNumber: 172
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                lineNumber: 465,
+                lineNumber: 468,
                 columnNumber: 67
             }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 465,
+            lineNumber: 468,
             columnNumber: 11
         }, this);
-        $[64] = t32;
-        $[65] = t33;
-        $[66] = t34;
+        $[71] = t30;
+        $[72] = t31;
+        $[73] = t32;
     } else {
-        t34 = $[66];
+        t32 = $[73];
     }
-    const t35 = user?.user_metadata?.avatar_url;
-    const t36 = user?.email || "?";
-    let t37;
-    if ($[67] !== t35 || $[68] !== t36) {
-        t37 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$ui$2f$avatar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Avatar"], {
-            src: t35,
-            fallback: t36,
-            className: "w-10 h-10 ring-2 ring-white/10 shadow-lg"
-        }, void 0, false, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 476,
-            columnNumber: 11
-        }, this);
-        $[67] = t35;
-        $[68] = t36;
-        $[69] = t37;
-    } else {
-        t37 = $[69];
-    }
-    let t38;
-    if ($[70] !== user.email || $[71] !== user.user_metadata?.username) {
-        t38 = user?.user_metadata?.username || user?.email?.split("@")[0];
-        $[70] = user.email;
-        $[71] = user.user_metadata?.username;
-        $[72] = t38;
-    } else {
-        t38 = $[72];
-    }
-    let t39;
-    if ($[73] !== t38) {
-        t39 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-            className: "text-[13px] font-black truncate text-white uppercase tracking-tight",
-            children: t38
-        }, void 0, false, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 494,
-            columnNumber: 11
-        }, this);
-        $[73] = t38;
-        $[74] = t39;
-    } else {
-        t39 = $[74];
-    }
-    let t40;
-    if ($[75] === Symbol.for("react.memo_cache_sentinel")) {
-        t40 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-            className: "text-[11px] font-bold text-primary flex items-center gap-1 uppercase tracking-widest",
-            children: "Online"
-        }, void 0, false, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 502,
-            columnNumber: 11
-        }, this);
-        $[75] = t40;
-    } else {
-        t40 = $[75];
-    }
-    let t41;
-    if ($[76] !== t39) {
-        t41 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "flex-1 overflow-hidden",
-            children: [
-                t39,
-                t40
-            ]
-        }, void 0, true, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 509,
-            columnNumber: 11
-        }, this);
-        $[76] = t39;
-        $[77] = t41;
-    } else {
-        t41 = $[77];
-    }
-    let t42;
-    if ($[78] === Symbol.for("react.memo_cache_sentinel")) {
-        t42 = ({
-            "Sidebar[<button>.onClick]": ()=>setShowSettings(true)
-        })["Sidebar[<button>.onClick]"];
-        $[78] = t42;
-    } else {
-        t42 = $[78];
-    }
-    let t43;
-    if ($[79] === Symbol.for("react.memo_cache_sentinel")) {
-        t43 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-            onClick: t42,
-            className: "text-white/40 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-xl",
-            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$settings$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Settings$3e$__["Settings"], {
-                className: "w-5 h-5"
-            }, void 0, false, {
-                fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                lineNumber: 526,
-                columnNumber: 126
-            }, this)
-        }, void 0, false, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 526,
-            columnNumber: 11
-        }, this);
-        $[79] = t43;
-    } else {
-        t43 = $[79];
-    }
-    let t44;
-    if ($[80] === Symbol.for("react.memo_cache_sentinel")) {
-        t44 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOut$3e$__["LogOut"], {
-            className: "w-5 h-5"
-        }, void 0, false, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 533,
-            columnNumber: 11
-        }, this);
-        $[80] = t44;
-    } else {
-        t44 = $[80];
-    }
-    let t45;
-    if ($[81] !== handleLogout) {
-        t45 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "flex gap-1",
-            children: [
-                t43,
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                    onClick: handleLogout,
-                    className: "text-white/40 hover:text-secondary transition-colors p-2 hover:bg-white/5 rounded-xl",
-                    children: t44
-                }, void 0, false, {
-                    fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                    lineNumber: 540,
-                    columnNumber: 44
-                }, this)
-            ]
-        }, void 0, true, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 540,
-            columnNumber: 11
-        }, this);
-        $[81] = handleLogout;
-        $[82] = t45;
-    } else {
-        t45 = $[82];
-    }
-    let t46;
-    if ($[83] !== t37 || $[84] !== t41 || $[85] !== t45) {
-        t46 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-            className: "p-4 border-t border-white/5 bg-black/80 backdrop-blur-md",
-            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "flex items-center gap-3",
-                children: [
-                    t37,
-                    t41,
-                    t45
-                ]
-            }, void 0, true, {
-                fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-                lineNumber: 548,
-                columnNumber: 85
-            }, this)
-        }, void 0, false, {
-            fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 548,
-            columnNumber: 11
-        }, this);
-        $[83] = t37;
-        $[84] = t41;
-        $[85] = t45;
-        $[86] = t46;
-    } else {
-        t46 = $[86];
-    }
-    let t47;
-    if ($[87] !== t16 || $[88] !== t30 || $[89] !== t34 || $[90] !== t46) {
-        t47 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("aside", {
+    let t33;
+    if ($[74] !== t14 || $[75] !== t28 || $[76] !== t32) {
+        t33 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("aside", {
             className: "w-full h-full bg-black text-foreground flex flex-col font-sans overflow-hidden",
             children: [
+                t14,
                 t16,
-                t18,
-                t30,
-                t34,
-                t46
+                t28,
+                t32
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 558,
+            lineNumber: 477,
             columnNumber: 11
         }, this);
-        $[87] = t16;
-        $[88] = t30;
-        $[89] = t34;
-        $[90] = t46;
-        $[91] = t47;
+        $[74] = t14;
+        $[75] = t28;
+        $[76] = t32;
+        $[77] = t33;
     } else {
-        t47 = $[91];
+        t33 = $[77];
     }
-    let t48;
-    if ($[92] !== showSearch || $[93] !== user.id) {
-        t48 = showSearch && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$user$2d$search$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["UserSearch"], {
+    let t34;
+    if ($[78] !== showSearch || $[79] !== user.id) {
+        t34 = showSearch && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$user$2d$search$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["UserSearch"], {
             onClose: {
                 "Sidebar[<UserSearch>.onClose]": ()=>setShowSearch(false)
             }["Sidebar[<UserSearch>.onClose]"],
             currentUserId: user?.id
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 569,
+            lineNumber: 487,
             columnNumber: 25
         }, this);
-        $[92] = showSearch;
-        $[93] = user.id;
-        $[94] = t48;
+        $[78] = showSearch;
+        $[79] = user.id;
+        $[80] = t34;
     } else {
-        t48 = $[94];
+        t34 = $[80];
     }
-    let t49;
-    if ($[95] !== showRequests || $[96] !== user.id) {
-        t49 = showRequests && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$connection$2d$requests$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ConnectionRequests"], {
+    let t35;
+    if ($[81] !== showRequests || $[82] !== user.id) {
+        t35 = showRequests && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$connection$2d$requests$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["ConnectionRequests"], {
             onClose: {
                 "Sidebar[<ConnectionRequests>.onClose]": ()=>setShowRequests(false)
             }["Sidebar[<ConnectionRequests>.onClose]"],
             currentUserId: user?.id
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 580,
+            lineNumber: 498,
             columnNumber: 27
         }, this);
-        $[95] = showRequests;
-        $[96] = user.id;
-        $[97] = t49;
+        $[81] = showRequests;
+        $[82] = user.id;
+        $[83] = t35;
     } else {
-        t49 = $[97];
+        t35 = $[83];
     }
-    let t50;
-    if ($[98] !== showSettings || $[99] !== user) {
-        t50 = showSettings && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$settings$2d$modal$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SettingsModal"], {
+    let t36;
+    if ($[84] !== showSettings || $[85] !== user) {
+        t36 = showSettings && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$settings$2d$modal$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["SettingsModal"], {
             onClose: {
                 "Sidebar[<SettingsModal>.onClose]": ()=>setShowSettings(false)
             }["Sidebar[<SettingsModal>.onClose]"],
             user: user
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/components/sidebar.tsx",
-            lineNumber: 591,
+            lineNumber: 509,
             columnNumber: 27
         }, this);
-        $[98] = showSettings;
-        $[99] = user;
-        $[100] = t50;
+        $[84] = showSettings;
+        $[85] = user;
+        $[86] = t36;
     } else {
-        t50 = $[100];
+        t36 = $[86];
     }
-    let t51;
-    if ($[101] !== t47 || $[102] !== t48 || $[103] !== t49 || $[104] !== t50) {
-        t51 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
+    let t37;
+    if ($[87] !== t33 || $[88] !== t34 || $[89] !== t35 || $[90] !== t36) {
+        t37 = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
             children: [
-                t47,
-                t48,
-                t49,
-                t50
+                t33,
+                t34,
+                t35,
+                t36
             ]
         }, void 0, true);
-        $[101] = t47;
-        $[102] = t48;
-        $[103] = t49;
-        $[104] = t50;
-        $[105] = t51;
+        $[87] = t33;
+        $[88] = t34;
+        $[89] = t35;
+        $[90] = t36;
+        $[91] = t37;
     } else {
-        t51 = $[105];
+        t37 = $[91];
     }
-    return t51;
+    return t37;
 }
 _s(Sidebar, "RK1+ev1FQP62nlONXJKfJf4CfbI=", false, function() {
     return [
@@ -5417,8 +5272,16 @@ _s(Sidebar, "RK1+ev1FQP62nlONXJKfJf4CfbI=", false, function() {
     ];
 });
 _c = Sidebar;
-function _SidebarAnonymous(s_0) {
-    return s_0.user_id;
+function _SidebarAnonymous(s_1) {
+    return s_1.user_id;
+}
+function _SidebarIsVideo(url) {
+    return [
+        "mp4",
+        "webm",
+        "mov",
+        "ogg"
+    ].includes(url.split(".").pop()?.toLowerCase() || "");
 }
 function _SidebarFormatTime(dateStr) {
     if (!dateStr) {

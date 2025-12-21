@@ -202,9 +202,13 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$services$2f$profile$2d$service$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/src/services/profile-service.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/src/lib/utils.ts [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$contexts$2f$toast$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/src/contexts/toast-context.tsx [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/node_modules/next/navigation.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$contexts$2f$status$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/Desktop/GOSSIP/src/contexts/status-context.tsx [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 "use client";
+;
+;
 ;
 ;
 ;
@@ -226,19 +230,16 @@ function ProfilePage() {
     const [formData, setFormData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])({});
     const fileInputRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const currentGender = isEditing ? formData.gender : profile?.gender;
-    const getGenderColor = (g)=>{
-        switch(g){
-            case 'Male':
-                return '#00BFFF';
-            case 'Female':
-                return '#FFB6C1';
-            case 'Other':
-                return '#FFD700';
-            default:
-                return undefined;
-        }
-    };
-    const genderColor = getGenderColor(currentGender);
+    // const getGenderColor = (g?: string) => {
+    //     switch (g) {
+    //         case 'Male': return '#00BFFF';
+    //         case 'Female': return '#FFB6C1';
+    //         case 'Other': return '#FFD700';
+    //         default: return undefined;
+    //     }
+    // };
+    // Use static color to prevent theme changes
+    const genderColor = '#00BFFF';
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "ProfilePage.useEffect": ()=>{
             if (user) {
@@ -303,15 +304,28 @@ function ProfilePage() {
                 className: "w-10 h-10 text-primary animate-spin"
             }, void 0, false, {
                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                lineNumber: 106,
+                lineNumber: 107,
                 columnNumber: 17
             }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-            lineNumber: 105,
+            lineNumber: 106,
             columnNumber: 12
         }, this);
     }
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
+    const { statuses } = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$contexts$2f$status$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useStatus"])();
+    // Find my active status
+    const myStatus = statuses.find((s)=>s.user_id === user?.id);
+    const isVideo = (url_0)=>{
+        const ext = url_0.split('.').pop()?.toLowerCase();
+        return [
+            'mp4',
+            'webm',
+            'mov',
+            'ogg'
+        ].includes(ext || '');
+    };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "flex-1 flex flex-col bg-black h-full overflow-hidden relative",
         children: [
@@ -322,7 +336,7 @@ function ProfilePage() {
                 }
             }, void 0, false, {
                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                lineNumber: 111,
+                lineNumber: 123,
                 columnNumber: 29
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -332,30 +346,34 @@ function ProfilePage() {
                         className: "pt-8 pb-8 flex flex-col items-center relative z-10",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "relative w-[140px] h-[140px] flex items-center justify-center",
+                                className: "relative w-[140px] h-[140px] flex items-center justify-center cursor-pointer group",
+                                onClick: ()=>router.push('/chat/status'),
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("absolute inset-0 rounded-full opacity-60 bg-gradient-to-br", currentGender === 'Male' ? 'from-[#00BFFF] to-transparent' : currentGender === 'Female' ? 'from-[#FFB6C1] to-transparent' : currentGender === 'Other' ? 'from-[#FFD700] to-transparent' : 'from-white/20 to-transparent')
+                                        className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("absolute inset-0 rounded-full opacity-60 bg-gradient-to-br from-[#00BFFF] to-transparent", myStatus ? "opacity-100 from-[#00BFFF] via-[#FFB6C1] to-[#00BFFF] animate-spin-slow p-[3px]" : "")
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 118,
+                                        lineNumber: 131,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                        className: "p-1 bg-black rounded-full relative",
+                                        className: "p-1 bg-black rounded-full relative w-full h-full flex items-center justify-center overflow-hidden",
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$ui$2f$avatar$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Avatar"], {
                                                 src: profile?.avatar_url,
                                                 fallback: profile?.username?.[0] || "?",
-                                                className: "w-[120px] h-[120px] rounded-full border-0"
+                                                className: "w-[124px] h-[124px] rounded-full border-4 border-black"
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                lineNumber: 120,
+                                                lineNumber: 134,
                                                 columnNumber: 29
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                onClick: ()=>fileInputRef.current?.click(),
-                                                className: "absolute bottom-0 right-2 w-9 h-9 bg-black rounded-full flex items-center justify-center border-[4px] border-black hover:scale-110 transition-transform",
+                                                onClick: (e_0)=>{
+                                                    e_0.stopPropagation();
+                                                    fileInputRef.current?.click();
+                                                },
+                                                className: "absolute bottom-1 right-2 w-9 h-9 bg-black rounded-full flex items-center justify-center border-[4px] border-black hover:scale-110 transition-transform z-20 cursor-pointer",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "w-full h-full rounded-full flex items-center justify-center",
                                                     style: {
@@ -365,51 +383,51 @@ function ProfilePage() {
                                                         className: "w-4 h-4 text-white"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                        lineNumber: 125,
+                                                        lineNumber: 144,
                                                         columnNumber: 37
                                                     }, this)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 122,
+                                                    lineNumber: 141,
                                                     columnNumber: 33
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                lineNumber: 121,
+                                                lineNumber: 137,
                                                 columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 119,
-                                        columnNumber: 25
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        ref: fileInputRef,
-                                        type: "file",
-                                        className: "hidden",
-                                        accept: "image/*",
-                                        onChange: handleAvatarUpload
-                                    }, void 0, false, {
-                                        fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 129,
+                                        lineNumber: 133,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                lineNumber: 117,
+                                lineNumber: 129,
+                                columnNumber: 21
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                ref: fileInputRef,
+                                type: "file",
+                                className: "hidden",
+                                accept: "image/*",
+                                onChange: handleAvatarUpload
+                            }, void 0, false, {
+                                fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
+                                lineNumber: 150,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "mt-5 text-center",
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$components$2f$ui$2f$gradient$2d$text$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["GradientText"], {
-                                        text: profile?.full_name || profile?.username || 'User',
-                                        className: "text-[34px] font-bold tracking-[0.5px]"
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                                        className: "text-[34px] font-bold tracking-[0.5px] text-[#00BFFF]",
+                                        children: profile?.full_name || profile?.username || 'User'
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 133,
+                                        lineNumber: 154,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -417,19 +435,19 @@ function ProfilePage() {
                                         children: user?.email
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 134,
+                                        lineNumber: 157,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                lineNumber: 132,
+                                lineNumber: 153,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                        lineNumber: 116,
+                        lineNumber: 128,
                         columnNumber: 17
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -449,7 +467,7 @@ function ProfilePage() {
                                                         className: "text-[15px] font-[800] tracking-[1.5px]"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                        lineNumber: 144,
+                                                        lineNumber: 167,
                                                         columnNumber: 33
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -458,21 +476,21 @@ function ProfilePage() {
                                                         className: "w-[45px] h-[45px] object-contain opacity-80"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                        lineNumber: 145,
+                                                        lineNumber: 168,
                                                         columnNumber: 33
                                                     }, this)
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                lineNumber: 143,
+                                                lineNumber: 166,
                                                 columnNumber: 29
                                             }, this),
                                             !isEditing && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                 onClick: ()=>setIsEditing(true),
                                                 className: "px-3 py-1.5 rounded-[20px] border transition-colors bg-white/5 border-white/10",
                                                 style: {
-                                                    backgroundColor: genderColor ? `${genderColor}1A` : 'rgba(0,191,255,0.1)',
-                                                    borderColor: genderColor ? `${genderColor}33` : 'rgba(0,191,255,0.2)'
+                                                    backgroundColor: ("TURBOPACK compile-time truthy", 1) ? `${genderColor}1A` : "TURBOPACK unreachable",
+                                                    borderColor: ("TURBOPACK compile-time truthy", 1) ? `${genderColor}33` : "TURBOPACK unreachable"
                                                 },
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     className: "font-bold text-[13px]",
@@ -482,18 +500,18 @@ function ProfilePage() {
                                                     children: "Edit"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 151,
+                                                    lineNumber: 174,
                                                     columnNumber: 37
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                lineNumber: 147,
+                                                lineNumber: 170,
                                                 columnNumber: 44
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 142,
+                                        lineNumber: 165,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -512,26 +530,26 @@ function ProfilePage() {
                                                                     children: "Full Name"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                    lineNumber: 161,
+                                                                    lineNumber: 184,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                                     value: formData.full_name,
-                                                                    onChange: (e_0)=>setFormData({
+                                                                    onChange: (e_1)=>setFormData({
                                                                             ...formData,
-                                                                            full_name: e_0.target.value
+                                                                            full_name: e_1.target.value
                                                                         }),
                                                                     placeholder: "Full Name",
                                                                     className: "w-full bg-white/5 border border-white/5 rounded-2xl p-4 text-white font-bold outline-none focus:border-primary/50"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                    lineNumber: 162,
+                                                                    lineNumber: 185,
                                                                     columnNumber: 45
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                            lineNumber: 160,
+                                                            lineNumber: 183,
                                                             columnNumber: 41
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -542,26 +560,26 @@ function ProfilePage() {
                                                                     children: "Username"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                    lineNumber: 168,
+                                                                    lineNumber: 191,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                                     value: formData.username,
-                                                                    onChange: (e_1)=>setFormData({
+                                                                    onChange: (e_2)=>setFormData({
                                                                             ...formData,
-                                                                            username: e_1.target.value
+                                                                            username: e_2.target.value
                                                                         }),
                                                                     placeholder: "Username",
                                                                     className: "w-full bg-white/5 border border-white/5 rounded-2xl p-4 text-white font-bold outline-none focus:border-primary/50"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                    lineNumber: 169,
+                                                                    lineNumber: 192,
                                                                     columnNumber: 45
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                            lineNumber: 167,
+                                                            lineNumber: 190,
                                                             columnNumber: 41
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -575,27 +593,27 @@ function ProfilePage() {
                                                                             children: "Age"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                            lineNumber: 176,
+                                                                            lineNumber: 199,
                                                                             columnNumber: 49
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                                             type: "number",
                                                                             value: formData.age || '',
-                                                                            onChange: (e_2)=>setFormData({
+                                                                            onChange: (e_3)=>setFormData({
                                                                                     ...formData,
-                                                                                    age: parseInt(e_2.target.value)
+                                                                                    age: parseInt(e_3.target.value)
                                                                                 }),
                                                                             placeholder: "Age",
                                                                             className: "w-full bg-white/5 border border-white/5 rounded-2xl p-4 text-white font-bold outline-none focus:border-primary/50"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                            lineNumber: 177,
+                                                                            lineNumber: 200,
                                                                             columnNumber: 49
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                    lineNumber: 175,
+                                                                    lineNumber: 198,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -606,32 +624,32 @@ function ProfilePage() {
                                                                             children: "Phone"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                            lineNumber: 183,
+                                                                            lineNumber: 206,
                                                                             columnNumber: 49
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                                                             value: formData.phone || '',
-                                                                            onChange: (e_3)=>setFormData({
+                                                                            onChange: (e_4)=>setFormData({
                                                                                     ...formData,
-                                                                                    phone: e_3.target.value
+                                                                                    phone: e_4.target.value
                                                                                 }),
                                                                             placeholder: "Phone",
                                                                             className: "w-full bg-white/5 border border-white/5 rounded-2xl p-4 text-white font-bold outline-none focus:border-primary/50"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                            lineNumber: 184,
+                                                                            lineNumber: 207,
                                                                             columnNumber: 49
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                    lineNumber: 182,
+                                                                    lineNumber: 205,
                                                                     columnNumber: 45
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                            lineNumber: 174,
+                                                            lineNumber: 197,
                                                             columnNumber: 41
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -642,26 +660,26 @@ function ProfilePage() {
                                                                     children: "Bio"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                    lineNumber: 191,
+                                                                    lineNumber: 214,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
                                                                     value: formData.bio || '',
-                                                                    onChange: (e_4)=>setFormData({
+                                                                    onChange: (e_5)=>setFormData({
                                                                             ...formData,
-                                                                            bio: e_4.target.value
+                                                                            bio: e_5.target.value
                                                                         }),
                                                                     placeholder: "Bio",
                                                                     className: "w-full bg-white/5 border border-white/5 rounded-2xl p-4 text-white font-bold outline-none focus:border-primary/50 resize-none h-24"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                    lineNumber: 192,
+                                                                    lineNumber: 215,
                                                                     columnNumber: 45
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                            lineNumber: 190,
+                                                            lineNumber: 213,
                                                             columnNumber: 41
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -672,7 +690,7 @@ function ProfilePage() {
                                                                     children: "Gender"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                    lineNumber: 198,
+                                                                    lineNumber: 221,
                                                                     columnNumber: 45
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -681,33 +699,33 @@ function ProfilePage() {
                                                                         'Male',
                                                                         'Female',
                                                                         'Other'
-                                                                    ].map((g_0)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                                                    ].map((g)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                                                             onClick: ()=>setFormData({
                                                                                     ...formData,
-                                                                                    gender: g_0
+                                                                                    gender: g
                                                                                 }),
-                                                                            className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("py-3 rounded-2xl font-bold transition-all border", formData.gender === g_0 ? "bg-primary text-black border-primary shadow-lg shadow-primary/20" : "bg-white/5 text-white/40 border-transparent hover:border-white/10"),
-                                                                            children: g_0
-                                                                        }, g_0, false, {
+                                                                            className: (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$lib$2f$utils$2e$ts__$5b$app$2d$client$5d$__$28$ecmascript$29$__["cn"])("py-3 rounded-2xl font-bold transition-all border", formData.gender === g ? "bg-primary text-black border-primary shadow-lg shadow-primary/20" : "bg-white/5 text-white/40 border-transparent hover:border-white/10"),
+                                                                            children: g
+                                                                        }, g, false, {
                                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                            lineNumber: 200,
-                                                                            columnNumber: 89
+                                                                            lineNumber: 223,
+                                                                            columnNumber: 87
                                                                         }, this))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                    lineNumber: 199,
+                                                                    lineNumber: 222,
                                                                     columnNumber: 45
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                            lineNumber: 197,
+                                                            lineNumber: 220,
                                                             columnNumber: 41
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 159,
+                                                    lineNumber: 182,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -719,7 +737,7 @@ function ProfilePage() {
                                                             children: "Cancel"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                            lineNumber: 210,
+                                                            lineNumber: 233,
                                                             columnNumber: 41
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -730,24 +748,24 @@ function ProfilePage() {
                                                                 className: "w-4 h-4 animate-spin"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                                lineNumber: 214,
+                                                                lineNumber: 237,
                                                                 columnNumber: 57
                                                             }, this) : "Save Changes"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                            lineNumber: 213,
+                                                            lineNumber: 236,
                                                             columnNumber: 41
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 209,
+                                                    lineNumber: 232,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                            lineNumber: 158,
+                                            lineNumber: 181,
                                             columnNumber: 42
                                         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "flex flex-col gap-5",
@@ -759,7 +777,7 @@ function ProfilePage() {
                                                     color: genderColor || "#00BFFF"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 218,
+                                                    lineNumber: 241,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoItem, {
@@ -769,7 +787,7 @@ function ProfilePage() {
                                                     color: genderColor || "#00BFFF"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 219,
+                                                    lineNumber: 242,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoItem, {
@@ -779,7 +797,7 @@ function ProfilePage() {
                                                     color: genderColor || "#00BFFF"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 220,
+                                                    lineNumber: 243,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoItem, {
@@ -789,7 +807,7 @@ function ProfilePage() {
                                                     color: genderColor || "#00BFFF"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 221,
+                                                    lineNumber: 244,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoItem, {
@@ -799,7 +817,7 @@ function ProfilePage() {
                                                     color: genderColor || "#00BFFF"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 222,
+                                                    lineNumber: 245,
                                                     columnNumber: 37
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(InfoItem, {
@@ -809,24 +827,24 @@ function ProfilePage() {
                                                     color: genderColor || "#00BFFF"
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 223,
+                                                    lineNumber: 246,
                                                     columnNumber: 37
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                            lineNumber: 217,
+                                            lineNumber: 240,
                                             columnNumber: 42
                                         }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 157,
+                                        lineNumber: 180,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                lineNumber: 141,
+                                lineNumber: 164,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -837,7 +855,7 @@ function ProfilePage() {
                                         className: "text-[15px] font-[800] tracking-[1.5px] mb-[15px]"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 230,
+                                        lineNumber: 253,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -852,17 +870,17 @@ function ProfilePage() {
                                                         className: "w-[22px] h-[22px] bg-white rounded-full shadow-sm translate-x-[20px]"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                        lineNumber: 233,
+                                                        lineNumber: 256,
                                                         columnNumber: 41
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 232,
+                                                    lineNumber: 255,
                                                     columnNumber: 83
                                                 }, void 0)
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                lineNumber: 232,
+                                                lineNumber: 255,
                                                 columnNumber: 29
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(SettingItem, {
@@ -876,25 +894,25 @@ function ProfilePage() {
                                                             children: "English"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                            lineNumber: 236,
+                                                            lineNumber: 259,
                                                             columnNumber: 41
                                                         }, void 0),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__["ChevronRight"], {
                                                             className: "w-4 h-4 text-[#666]"
                                                         }, void 0, false, {
                                                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                            lineNumber: 237,
+                                                            lineNumber: 260,
                                                             columnNumber: 41
                                                         }, void 0)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 235,
+                                                    lineNumber: 258,
                                                     columnNumber: 79
                                                 }, void 0)
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                lineNumber: 235,
+                                                lineNumber: 258,
                                                 columnNumber: 29
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -907,29 +925,29 @@ function ProfilePage() {
                                                         className: "w-4 h-4 text-[#666]"
                                                     }, void 0, false, {
                                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                        lineNumber: 240,
+                                                        lineNumber: 263,
                                                         columnNumber: 86
                                                     }, void 0)
                                                 }, void 0, false, {
                                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                    lineNumber: 240,
+                                                    lineNumber: 263,
                                                     columnNumber: 33
                                                 }, this)
                                             }, void 0, false, {
                                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                                lineNumber: 239,
+                                                lineNumber: 262,
                                                 columnNumber: 29
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 231,
+                                        lineNumber: 254,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                lineNumber: 229,
+                                lineNumber: 252,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -940,7 +958,7 @@ function ProfilePage() {
                                         className: "w-5 h-5 text-[#FFB6C1]"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 247,
+                                        lineNumber: 270,
                                         columnNumber: 25
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -948,13 +966,13 @@ function ProfilePage() {
                                         children: "Logout"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 248,
+                                        lineNumber: 271,
                                         columnNumber: 25
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                lineNumber: 246,
+                                lineNumber: 269,
                                 columnNumber: 21
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -962,26 +980,26 @@ function ProfilePage() {
                                 children: "GOSSIP v1.2.0 • English"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                lineNumber: 251,
+                                lineNumber: 274,
                                 columnNumber: 21
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                        lineNumber: 139,
+                        lineNumber: 162,
                         columnNumber: 17
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                lineNumber: 114,
+                lineNumber: 126,
                 columnNumber: 13
             }, this),
             showBlocked && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: "fixed inset-0 z-[100] flex items-end justify-center bg-[rgba(0,0,0,0.85)] p-[25px] backdrop-blur-sm sm:items-center",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "w-full max-w-md bg-[rgba(30,30,30,0.95)] h-[80%] rounded-[35px] border border-[rgba(255,255,255,0.1)] p-[30px] flex flex-col backdrop-blur-xl animate-in slide-in-from-bottom duration-300",
-                    onClick: (e_5)=>e_5.stopPropagation(),
+                    onClick: (e_6)=>e_6.stopPropagation(),
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "flex items-center justify-between mb-[25px]",
@@ -991,8 +1009,8 @@ function ProfilePage() {
                                     className: "text-[24px] font-[800]"
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                    lineNumber: 261,
-                                    columnNumber: 29
+                                    lineNumber: 284,
+                                    columnNumber: 33
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                     onClick: ()=>setShowBlocked(false),
@@ -1000,19 +1018,19 @@ function ProfilePage() {
                                         className: "w-8 h-8 text-[#444]"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 263,
-                                        columnNumber: 33
+                                        lineNumber: 286,
+                                        columnNumber: 37
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                    lineNumber: 262,
-                                    columnNumber: 29
+                                    lineNumber: 285,
+                                    columnNumber: 33
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                            lineNumber: 260,
-                            columnNumber: 25
+                            lineNumber: 283,
+                            columnNumber: 29
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "flex-1 flex flex-col items-center justify-center pb-12",
@@ -1023,27 +1041,27 @@ function ProfilePage() {
                                         className: "w-[40px] h-[40px] text-[#333]"
                                     }, void 0, false, {
                                         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                        lineNumber: 270,
-                                        columnNumber: 33
+                                        lineNumber: 293,
+                                        columnNumber: 37
                                     }, this)
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                    lineNumber: 269,
-                                    columnNumber: 29
+                                    lineNumber: 292,
+                                    columnNumber: 33
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                     className: "text-[#666] text-[16px]",
                                     children: "No one is blocked."
                                 }, void 0, false, {
                                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                    lineNumber: 272,
-                                    columnNumber: 29
+                                    lineNumber: 295,
+                                    columnNumber: 33
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                            lineNumber: 268,
-                            columnNumber: 25
+                            lineNumber: 291,
+                            columnNumber: 29
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                             onClick: ()=>setShowBlocked(false),
@@ -1053,46 +1071,48 @@ function ProfilePage() {
                                 children: "Close"
                             }, void 0, false, {
                                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                                lineNumber: 276,
-                                columnNumber: 29
+                                lineNumber: 299,
+                                columnNumber: 33
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                            lineNumber: 275,
-                            columnNumber: 25
+                            lineNumber: 298,
+                            columnNumber: 29
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                    lineNumber: 259,
-                    columnNumber: 21
+                    lineNumber: 282,
+                    columnNumber: 25
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                lineNumber: 258,
+                lineNumber: 281,
                 columnNumber: 29
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-        lineNumber: 109,
+        lineNumber: 121,
         columnNumber: 10
     }, this);
 }
-_s(ProfilePage, "VDIhIw+2sEYOIYfsueE7uJpdjQo=", false, function() {
+_s(ProfilePage, "W+HG56bz8YiPM8bfCrj4zDPR+rI=", false, function() {
     return [
         __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$contexts$2f$auth$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useAuth"],
-        __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$contexts$2f$toast$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"]
+        __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$contexts$2f$toast$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useToast"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"],
+        __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$src$2f$contexts$2f$status$2d$context$2e$tsx__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useStatus"]
     ];
 });
 _c = ProfilePage;
 function InfoItem(t0) {
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(21);
-    if ($[0] !== "167ea524f0af512200fece3757de735b6e9cc6fc0e04f166714becd971955fb2") {
+    if ($[0] !== "15a05a8b8704f2b8ad4d15aaee6df3a5c27f49664714c3553287149a594879b2") {
         for(let $i = 0; $i < 21; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "167ea524f0af512200fece3757de735b6e9cc6fc0e04f166714becd971955fb2";
+        $[0] = "15a05a8b8704f2b8ad4d15aaee6df3a5c27f49664714c3553287149a594879b2";
     }
     const { icon: Icon, label, value, color } = t0;
     const t1 = `${color}1A`;
@@ -1123,7 +1143,7 @@ function InfoItem(t0) {
             style: t3
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-            lineNumber: 319,
+            lineNumber: 342,
             columnNumber: 10
         }, this);
         $[5] = Icon;
@@ -1140,7 +1160,7 @@ function InfoItem(t0) {
             children: t4
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-            lineNumber: 328,
+            lineNumber: 351,
             columnNumber: 10
         }, this);
         $[8] = t2;
@@ -1156,7 +1176,7 @@ function InfoItem(t0) {
             children: label
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-            lineNumber: 337,
+            lineNumber: 360,
             columnNumber: 10
         }, this);
         $[11] = label;
@@ -1172,7 +1192,7 @@ function InfoItem(t0) {
             children: t7
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-            lineNumber: 346,
+            lineNumber: 369,
             columnNumber: 10
         }, this);
         $[13] = t7;
@@ -1190,7 +1210,7 @@ function InfoItem(t0) {
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-            lineNumber: 354,
+            lineNumber: 377,
             columnNumber: 10
         }, this);
         $[15] = t6;
@@ -1209,7 +1229,7 @@ function InfoItem(t0) {
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-            lineNumber: 363,
+            lineNumber: 386,
             columnNumber: 11
         }, this);
         $[18] = t5;
@@ -1223,11 +1243,11 @@ function InfoItem(t0) {
 _c1 = InfoItem;
 function SettingItem(t0) {
     const $ = (0, __TURBOPACK__imported__module__$5b$project$5d2f$Desktop$2f$GOSSIP$2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$compiler$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["c"])(11);
-    if ($[0] !== "167ea524f0af512200fece3757de735b6e9cc6fc0e04f166714becd971955fb2") {
+    if ($[0] !== "15a05a8b8704f2b8ad4d15aaee6df3a5c27f49664714c3553287149a594879b2") {
         for(let $i = 0; $i < 11; $i += 1){
             $[$i] = Symbol.for("react.memo_cache_sentinel");
         }
-        $[0] = "167ea524f0af512200fece3757de735b6e9cc6fc0e04f166714becd971955fb2";
+        $[0] = "15a05a8b8704f2b8ad4d15aaee6df3a5c27f49664714c3553287149a594879b2";
     }
     const { icon: Icon, label, value } = t0;
     let t1;
@@ -1238,12 +1258,12 @@ function SettingItem(t0) {
                 className: "w-[18px] h-[18px] text-[#CCC]"
             }, void 0, false, {
                 fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-                lineNumber: 387,
+                lineNumber: 410,
                 columnNumber: 121
             }, this)
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-            lineNumber: 387,
+            lineNumber: 410,
             columnNumber: 10
         }, this);
         $[1] = Icon;
@@ -1258,7 +1278,7 @@ function SettingItem(t0) {
             children: label
         }, void 0, false, {
             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-            lineNumber: 395,
+            lineNumber: 418,
             columnNumber: 10
         }, this);
         $[3] = label;
@@ -1276,7 +1296,7 @@ function SettingItem(t0) {
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-            lineNumber: 403,
+            lineNumber: 426,
             columnNumber: 10
         }, this);
         $[5] = t1;
@@ -1295,7 +1315,7 @@ function SettingItem(t0) {
             ]
         }, void 0, true, {
             fileName: "[project]/Desktop/GOSSIP/src/app/chat/profile/page.tsx",
-            lineNumber: 412,
+            lineNumber: 435,
             columnNumber: 10
         }, this);
         $[8] = t3;

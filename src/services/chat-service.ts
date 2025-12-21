@@ -29,49 +29,77 @@ export const ChatService = {
                 const { data: { user } } = await client.auth.getUser();
                 if (!user) throw new Error('Not authenticated');
 
-                const { data, error } = await client
+                console.log('[ChatService] Fetching rooms for user:', user.id);
+
+                // Step 1: Get My Room IDs
+                const { data: myParticipations, error: partError } = await client
                     .from('room_participants')
-                    .select(`
-            room_id,
-            rooms (*)
-          `)
+                    .select('room_id')
                     .eq('user_id', user.id);
 
-                if (error) return { data: [], error: error.message };
-                if (!data || data.length === 0) return { data: [], error: null };
+                if (partError) {
+                    console.error('[ChatService] Error fetching participations:', partError);
+                    return { data: [], error: partError.message };
+                }
 
-                // Get blocked users to filter them out
+                if (!myParticipations || myParticipations.length === 0) {
+                    console.log('[ChatService] No participations found.');
+                    return { data: [], error: null };
+                }
+
+                const roomIds = myParticipations.map(p => p.room_id);
+
+                // Step 2: Fetch Rooms with Full Details
+                const { data: roomsData, error: roomsError } = await client
+                    .from('rooms')
+                    .select(`
+                        *,
+                        participants:room_participants(
+                            user_id,
+                            profiles(username, full_name, avatar_url, gender, is_online, last_seen)
+                        )
+                    `)
+                    .in('id', roomIds)
+                    .order('created_at', { ascending: false });
+
+                if (roomsError) {
+                    console.error('[ChatService] Error fetching rooms:', roomsError);
+                    return { data: [], error: roomsError.message };
+                }
+
+                // Get Blocked Users
                 const { data: blockedData } = await client
                     .from('blocked_users')
                     .select('blocked_id')
                     .eq('blocker_id', user.id);
-                const blockedIds = (blockedData || []).map((b: any) => b.blocked_id);
+                const blockedIds = new Set((blockedData || []).map((b: any) => b.blocked_id));
 
-                // Get rooms and filter out those with blocked participants (for direct chats)
-                const filteredRooms = [];
-                for (const item of data) {
-                    const room = item.rooms as any;
-                    if (!room) continue;
+                // Transform and Filter
+                const seenPartners = new Set<string>();
 
+                const finalRooms = roomsData.map((room: any) => ({
+                    ...room,
+                    room_participants: room.participants // Map to expected structure for Sidebar
+                })).filter((room: any) => {
                     if (room.type === 'direct') {
-                        // For direct chats, we need to check if the other person is blocked
-                        const { data: participants } = await client
-                            .from('room_participants')
-                            .select('user_id')
-                            .eq('room_id', room.id)
-                            .neq('user_id', user.id);
+                        const other = room.participants.find((p: any) => p.user_id !== user.id);
+                        // Check blocked
+                        if (other && blockedIds.has(other.user_id)) return false;
 
-                        const otherUserId = participants?.[0]?.user_id;
-                        if (otherUserId && blockedIds.includes(otherUserId)) {
-                            continue; // Skip this room
+                        // Check duplicates
+                        if (other) {
+                            if (seenPartners.has(other.user_id)) return false;
+                            seenPartners.add(other.user_id);
                         }
                     }
-                    filteredRooms.push(room);
-                }
+                    return true;
+                });
 
-                return { data: filteredRooms, error: null };
+                console.log('[ChatService] Returning rooms:', finalRooms.length);
+                return { data: finalRooms, error: null };
             });
         } catch (err: any) {
+            console.error('[ChatService] getMyRooms exception:', err);
             return { data: [], error: err.message };
         }
     },
@@ -109,7 +137,12 @@ export const ChatService = {
             return await safeSupabaseOperation(async (client) => {
                 const { data, error } = await client
                     .from('messages')
-                    .select('*')
+                    .select(`
+                        *,
+                        profiles:user_id (
+                            id, username, full_name, avatar_url, gender
+                        )
+                    `)
                     .eq('room_id', roomId)
                     .order('created_at', { ascending })
                     .limit(limit);
@@ -137,6 +170,7 @@ export const ChatService = {
 
                 if (participants && participants.length > 0) {
                     const participantIds = participants.map(p => p.user_id);
+                    // Check if sender is blocked by any participant OR sender has blocked any participant
                     const { data: blocks } = await client
                         .from('blocked_users')
                         .select('id')
